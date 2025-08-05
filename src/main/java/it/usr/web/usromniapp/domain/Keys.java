@@ -82,6 +82,7 @@ import it.usr.web.usromniapp.domain.tables.StatoProgetti;
 import it.usr.web.usromniapp.domain.tables.Tecnico;
 import it.usr.web.usromniapp.domain.tables.TipoProcAss;
 import it.usr.web.usromniapp.domain.tables.TipoProcProgressivo;
+import it.usr.web.usromniapp.domain.tables.TipoProcUffici;
 import it.usr.web.usromniapp.domain.tables.Uffici;
 import it.usr.web.usromniapp.domain.tables.UfficiProvvedimenti;
 import it.usr.web.usromniapp.domain.tables.Utenti;
@@ -164,6 +165,7 @@ import it.usr.web.usromniapp.domain.tables.records.StatoProgettiRecord;
 import it.usr.web.usromniapp.domain.tables.records.TecnicoRecord;
 import it.usr.web.usromniapp.domain.tables.records.TipoProcAssRecord;
 import it.usr.web.usromniapp.domain.tables.records.TipoProcProgressivoRecord;
+import it.usr.web.usromniapp.domain.tables.records.TipoProcUfficiRecord;
 import it.usr.web.usromniapp.domain.tables.records.UfficiProvvedimentiRecord;
 import it.usr.web.usromniapp.domain.tables.records.UfficiRecord;
 import it.usr.web.usromniapp.domain.tables.records.UtentiRecord;
@@ -275,6 +277,7 @@ public class Keys {
     public static final UniqueKey<TecnicoRecord> KEY_TECNICO_PRIMARY = Internal.createUniqueKey(Tecnico.TECNICO, DSL.name("KEY_tecnico_PRIMARY"), new TableField[] { Tecnico.TECNICO.ID_TECNICO }, true);
     public static final UniqueKey<TipoProcAssRecord> KEY_TIPO_PROC_ASS_PRIMARY = Internal.createUniqueKey(TipoProcAss.TIPO_PROC_ASS, DSL.name("KEY_tipo_proc_ass_PRIMARY"), new TableField[] { TipoProcAss.TIPO_PROC_ASS.ID_TIPO_PROC_ASS }, true);
     public static final UniqueKey<TipoProcProgressivoRecord> KEY_TIPO_PROC_PROGRESSIVO_PRIMARY = Internal.createUniqueKey(TipoProcProgressivo.TIPO_PROC_PROGRESSIVO, DSL.name("KEY_tipo_proc_progressivo_PRIMARY"), new TableField[] { TipoProcProgressivo.TIPO_PROC_PROGRESSIVO.ID_TIPO_PROC }, true);
+    public static final UniqueKey<TipoProcUfficiRecord> KEY_TIPO_PROC_UFFICI_PRIMARY = Internal.createUniqueKey(TipoProcUffici.TIPO_PROC_UFFICI, DSL.name("KEY_tipo_proc_uffici_PRIMARY"), new TableField[] { TipoProcUffici.TIPO_PROC_UFFICI.IDTIPO_PROC_UFFICI }, true);
     public static final UniqueKey<UfficiRecord> KEY_UFFICI_PRIMARY = Internal.createUniqueKey(Uffici.UFFICI, DSL.name("KEY_uffici_PRIMARY"), new TableField[] { Uffici.UFFICI.ID_UFFICIO }, true);
     public static final UniqueKey<UfficiProvvedimentiRecord> KEY_UFFICI_PROVVEDIMENTI_PRIMARY = Internal.createUniqueKey(UfficiProvvedimenti.UFFICI_PROVVEDIMENTI, DSL.name("KEY_uffici_provvedimenti_PRIMARY"), new TableField[] { UfficiProvvedimenti.UFFICI_PROVVEDIMENTI.ID }, true);
     public static final UniqueKey<UtentiRecord> KEY_UTENTI_PRIMARY = Internal.createUniqueKey(Utenti.UTENTI, DSL.name("KEY_utenti_PRIMARY"), new TableField[] { Utenti.UTENTI.ID_UTENTE }, true);
@@ -328,6 +331,8 @@ public class Keys {
     public static final ForeignKey<TipoProcAssRecord, UtentiRecord> FK_TIPOPROCASS_UTENTE = Internal.createForeignKey(TipoProcAss.TIPO_PROC_ASS, DSL.name("fk_tipoprocass_utente"), new TableField[] { TipoProcAss.TIPO_PROC_ASS.ID_UTENTE }, Keys.KEY_UTENTI_PRIMARY, new TableField[] { Utenti.UTENTI.ID_UTENTE }, true);
     public static final ForeignKey<TipoProcAssRecord, UtentiRecord> FK_TIPOPROCCASS_UTENTEASSEGNANTE = Internal.createForeignKey(TipoProcAss.TIPO_PROC_ASS, DSL.name("fk_tipoproccass_utenteassegnante"), new TableField[] { TipoProcAss.TIPO_PROC_ASS.ID_UTENTE_ASSEGNANTE }, Keys.KEY_UTENTI_PRIMARY, new TableField[] { Utenti.UTENTI.ID_UTENTE }, true);
     public static final ForeignKey<TipoProcProgressivoRecord, LTipoProcRecord> FK_TIPOPROCPROGRESSIVO_TIPOPROC = Internal.createForeignKey(TipoProcProgressivo.TIPO_PROC_PROGRESSIVO, DSL.name("fk_tipoprocprogressivo_tipoproc"), new TableField[] { TipoProcProgressivo.TIPO_PROC_PROGRESSIVO.ID_TIPO_PROC }, Keys.KEY_L_TIPO_PROC_PRIMARY, new TableField[] { LTipoProc.L_TIPO_PROC.ID_TIPO_PROC }, true);
+    public static final ForeignKey<TipoProcUfficiRecord, LTipoProcRecord> FK_TIPOPROCUFF_TIPOPROC = Internal.createForeignKey(TipoProcUffici.TIPO_PROC_UFFICI, DSL.name("fk_tipoprocuff_tipoproc"), new TableField[] { TipoProcUffici.TIPO_PROC_UFFICI.ID_TIPO_PROC }, Keys.KEY_L_TIPO_PROC_PRIMARY, new TableField[] { LTipoProc.L_TIPO_PROC.ID_TIPO_PROC }, true);
+    public static final ForeignKey<TipoProcUfficiRecord, UfficiRecord> FK_TIPOPROCUFF_UFFICI = Internal.createForeignKey(TipoProcUffici.TIPO_PROC_UFFICI, DSL.name("fk_tipoprocuff_uffici"), new TableField[] { TipoProcUffici.TIPO_PROC_UFFICI.ID_UFFICIO }, Keys.KEY_UFFICI_PRIMARY, new TableField[] { Uffici.UFFICI.ID_UFFICIO }, true);
     public static final ForeignKey<UfficiRecord, UfficiRecord> FK_UFFICI_SOVRAORDINATO = Internal.createForeignKey(Uffici.UFFICI, DSL.name("fk_uffici_sovraordinato"), new TableField[] { Uffici.UFFICI.ID_UFFICIO_SOVRAORDINATO }, Keys.KEY_UFFICI_PRIMARY, new TableField[] { Uffici.UFFICI.ID_UFFICIO }, true);
     public static final ForeignKey<UtentiRecord, LRuoloRecord> FK_UTENTE_RUOLO = Internal.createForeignKey(Utenti.UTENTI, DSL.name("fk_utente_ruolo"), new TableField[] { Utenti.UTENTI.ID_RUOLO_PREDEFINITO }, Keys.KEY_L_RUOLO_PRIMARY, new TableField[] { LRuolo.L_RUOLO.ID_RUOLO }, true);
 }

@@ -41,7 +41,7 @@ public class SecurityService {
     Logger logger;
 
     /**
-     * Restituisce true se l'utente indicato ha i diritti di assegnazione
+     * Restituisce true se l'utente indicato ha i diritti indicati
      * 
      * @param user
      * @param auth
@@ -126,7 +126,7 @@ public class SecurityService {
                         "((id_utente = {0} or " +
                         "(id_ufficio in (select id_ufficio from istruttori_uffici where id_utente = {0}))) " +
                         "and ((data_assegnazione <= {1} and data_rimozione is null) or ({1} between data_assegnazione and data_rimozione)) " +
-                        "and (autorizzazioni like {2}) " +
+                        "and (autorizzazioni like {2})) " +
                         "order by id_utente, id_ufficio) " +
                         "union " +
                         "(SELECT null as id_tipo_proc, id_proc, (select p.id_tipo_proc from proc p where p.id_proc = pa.id_proc) as id_tipo_proc_rif, id_utente, id_ufficio, autorizzazioni FROM decreti.proc_ass pa where " +
@@ -138,7 +138,7 @@ public class SecurityService {
                         "order by id_tipo_proc is null, id_tipo_proc, " +
                         "id_proc is null, id_proc, " +
                         "id_utente is null, id_utente, " +
-                        "id_ufficio is null, id_ufficio, " +
+                        "id_ufficio is null, id_ufficio, " + 
                         "autorizzazioni<>'X', autorizzazioni";
         List<Autorizzazione> lAuth = ctx.selectFrom(sql, user.getUtente().getIdUtente(), LocalDateTime.now(), likeOp).fetchInto(Autorizzazione.class);
         
@@ -246,6 +246,16 @@ public class SecurityService {
                     .and(PROC_ASS.AUTORIZZAZIONI.like(likeOp))
                     .and(PROC_ASS.DATA_ASSEGNAZIONE.le(now).and(PROC_ASS.DATA_RIMOZIONE.isNull()))
                     .or(DSL.val(now).between(PROC_ASS.DATA_ASSEGNAZIONE, PROC_ASS.DATA_RIMOZIONE))
+                .fetchOneInto(Long.class)>0;
+    }
+    
+    public boolean isAssigned(Utente user, int idProc, LocalDateTime when) {
+        return ctx.select(DSL.count())
+                .from(PROC_ASS)                
+                .where(PROC_ASS.ID_UTENTE.eq(user.getUtente().getIdUtente()))
+                    .and(PROC_ASS.AUTORIZZAZIONI.like("%M%"))
+                    .and(PROC_ASS.DATA_ASSEGNAZIONE.le(when).and(PROC_ASS.DATA_RIMOZIONE.isNull()))
+                    .or(DSL.val(when).between(PROC_ASS.DATA_ASSEGNAZIONE, PROC_ASS.DATA_RIMOZIONE))
                 .fetchOneInto(Long.class)>0;
     }
     

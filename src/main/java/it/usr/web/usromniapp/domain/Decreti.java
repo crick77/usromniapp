@@ -91,6 +91,7 @@ import it.usr.web.usromniapp.domain.tables.StatoProgetti;
 import it.usr.web.usromniapp.domain.tables.Tecnico;
 import it.usr.web.usromniapp.domain.tables.TipoProcAss;
 import it.usr.web.usromniapp.domain.tables.TipoProcProgressivo;
+import it.usr.web.usromniapp.domain.tables.TipoProcUffici;
 import it.usr.web.usromniapp.domain.tables.Uffici;
 import it.usr.web.usromniapp.domain.tables.UfficiProvvedimenti;
 import it.usr.web.usromniapp.domain.tables.Utenti;
@@ -100,6 +101,7 @@ import it.usr.web.usromniapp.domain.tables.VEstrazioniLavori;
 import it.usr.web.usromniapp.domain.tables.VOrd100Decretati;
 import it.usr.web.usromniapp.domain.tables.VOrd59Decretati;
 import it.usr.web.usromniapp.domain.tables.VRuoliutenteAttivi;
+import it.usr.web.usromniapp.domain.tables.VUtentiAttivi;
 
 import java.util.Arrays;
 import java.util.List;
@@ -564,6 +566,11 @@ public class Decreti extends SchemaImpl {
     public final TipoProcProgressivo TIPO_PROC_PROGRESSIVO = TipoProcProgressivo.TIPO_PROC_PROGRESSIVO;
 
     /**
+     * The table <code>decreti.tipo_proc_uffici</code>.
+     */
+    public final TipoProcUffici TIPO_PROC_UFFICI = TipoProcUffici.TIPO_PROC_UFFICI;
+
+    /**
      * The table <code>decreti.uffici</code>.
      */
     public final Uffici UFFICI = Uffici.UFFICI;
@@ -607,6 +614,11 @@ public class Decreti extends SchemaImpl {
      * The table <code>decreti.v_ruoliutente_attivi</code>.
      */
     public final VRuoliutenteAttivi V_RUOLIUTENTE_ATTIVI = VRuoliutenteAttivi.V_RUOLIUTENTE_ATTIVI;
+
+    /**
+     * The table <code>decreti.v_utenti_attivi</code>.
+     */
+    public final VUtentiAttivi V_UTENTI_ATTIVI = VUtentiAttivi.V_UTENTI_ATTIVI;
 
     /**
      * No further instances allowed
@@ -712,6 +724,7 @@ public class Decreti extends SchemaImpl {
             Tecnico.TECNICO,
             TipoProcAss.TIPO_PROC_ASS,
             TipoProcProgressivo.TIPO_PROC_PROGRESSIVO,
+            TipoProcUffici.TIPO_PROC_UFFICI,
             Uffici.UFFICI,
             UfficiProvvedimenti.UFFICI_PROVVEDIMENTI,
             Utenti.UTENTI,
@@ -720,7 +733,8 @@ public class Decreti extends SchemaImpl {
             VEstrazioniLavori.V_ESTRAZIONI_LAVORI,
             VOrd100Decretati.V_ORD100_DECRETATI,
             VOrd59Decretati.V_ORD59_DECRETATI,
-            VRuoliutenteAttivi.V_RUOLIUTENTE_ATTIVI
+            VRuoliutenteAttivi.V_RUOLIUTENTE_ATTIVI,
+            VUtentiAttivi.V_UTENTI_ATTIVI
         );
     }
 }

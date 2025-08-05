@@ -1,0 +1,111 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="primefaces"
+                xmlns:jsf="jakarta.faces"
+                xmlns:fn="jakarta.tags.functions"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="jakarta.tags.core"
+                xmlns:pe="primefaces.extensions">
+
+    <ui:define name="title">Uffici</ui:define>
+    <ui:define name="head">
+        <f:metadata>            
+            <f:viewAction action="#{ufficiController.init()}" />
+        </f:metadata>        
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form" enctype="multipart/form-data">
+            <p:growl id="msgs" showDetail="true"/>
+
+            <div class="grid">
+                <div class="col-12">
+                    <div class="card">                        
+                        <div class="ui-fluid formgrid grid">                            
+                            <p:treeTable id="uffici" widgetVar="vwUffici" var="u" value="#{ufficiController.uffici}" size="small" emptyMessage="Nessuna ufficio in archivio." style="margin-bottom: 0">
+                                <p:column headerText="UFFICIO">
+                                    #{u.ufficio}
+                                </p:column>
+
+                                <p:column headerText="TITOLARE RESPONSABILE">
+                                    #{ufficiController.decodeUtente(u.idUtente).nomeUtente}
+                                </p:column>
+
+                                <p:column style="width:3rem">                                     
+                                    <p:commandButton id="edit" icon="pi pi-pencil" styleClass="rounded-button ui-button-secondary" process="@this" update="form:ufficioDialog" oncomplete="PF('vwUfficioDialog').show();" title="Modifica">
+                                        <f:setPropertyActionListener target="#{ufficiController.ufficio}" value="#{u}" />
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column style="width:3rem">                                     
+                                    <p:commandButton id="disattivo" icon="pi pi-power-off" styleClass="rounded-button ui-button-help" process="@this" action="#{ufficiController.disattiva(u)}" title="Disattiva ufficio">
+                                        <p:confirm type="popup" header="Conferma" message="Sicuri di voler disattivare l'ufficio selezionato? L'operazione è irreversibile." icon="pi pi-exclamation-triangle"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:treeTable>
+                        </div>                        
+                        <div class="card">
+                            <div class="grid mt-3">
+                                <div class="col-12">
+                                    <p:commandButton id="aggiungiButton" value="Aggiungi" action="#{ufficiController.nuovo()}" process="@this" update="form:ufficioDialog" icon="pi pi-plus-circle" oncomplete="PF('vwUfficioDialog').show();"/>
+                                </div>
+                            </div>
+                        </div>                                
+                    </div>
+                </div>
+            </div>       
+
+            <p:dialog id="ufficioDialog" widgetVar="vwUfficioDialog" visible="false" header="Ufficio" modal="true" width="80%">
+                <div class="ui-fluid grid formgrid">
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">Nome ufficio:</p:outputLabel>
+                        <p:inputText id="nomeufficio" value="#{ufficiController.ufficio.ufficio}" maxlength="70" required="true" requiredMessage="Il nome dell'ufficio è obbligatorio" />
+                    </div>
+
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">Titolare:</p:outputLabel>
+                        <p:selectOneMenu id="titolare" value="#{ufficiController.ufficio.idUtente}" hideNoSelectionOption="#{not empty ufficiController.ufficio.idUtente}" required="true" requiredMessage="Il titolare è obbligatorio">
+                            <f:selectItem value="#{null}" itemValue="Selezionare un utente..." noSelectionOption="true" />
+                            <f:selectItems value="#{ufficiController.utentiList}" var="u" itemValue="#{u.idUtente}" itemLabel="#{u.nomeUtente}" />
+                        </p:selectOneMenu>
+                    </div>
+
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">Ufficio sovraordinato:</p:outputLabel>
+                        <p:selectOneMenu id="sovraordinato" value="#{ufficiController.ufficio.idUfficioSovraordinato}" hideNoSelectionOption="#{not empty ufficiController.ufficio.idUfficioSovraordinato}" required="true" requiredMessage="L'ufficio sovraordinato è obbligatorio">
+                            <f:selectItem value="#{null}" itemValue="Selezionare un ufficio..." noSelectionOption="true" />
+                            <f:selectItems value="#{ufficiController.ufficiPossibili}" var="u" itemValue="#{u.idUfficio}" itemLabel="#{u.ufficio}" />
+                        </p:selectOneMenu>
+                    </div>
+
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">Note:</p:outputLabel>
+                        <p:inputText id="note" value="#{ufficiController.ufficio.note}" maxlength="255" />
+                    </div>
+
+                    <ui:fragment rendered="#{not empty ufficiController.ufficio.idUfficio}">
+                        <div class="field col-12">
+                            <p:outputLabel for="@next">Estremi provvedimento:</p:outputLabel>
+                            <p:inputText id="estremiprovv" value="#{ufficiController.estremiProvv}" maxlength="255" required="true" requiredMessage="Gli estremi del provvedimento sono obbligatori" />
+                        </div>
+                    </ui:fragment>
+
+                    <div class="field col-2">
+                        <p:commandButton id="salva" value="Salva" icon="pi pi-save" process="form:ufficioDialog" update="@form" action="#{ufficiController.salva()}" styleClass="ui-button-success" />
+                    </div>
+                    <div class="field col-8" />
+                    <div class="field col-2">
+                        <p:commandButton id="annulla" value="Annulla" icon="pi pi-times" process="@this" update="@form" immediate="true" action="#{ufficiController.annulla()}" styleClass="ui-button-secondary" />
+                    </div>
+                </div>
+            </p:dialog>
+
+            <p:confirmPopup global="true">
+                <p:commandButton value="No" type="button" styleClass="ui-confirm-popup-no ui-button-flat"/>
+                <p:commandButton value="Si" type="button" styleClass="ui-confirm-popup-yes" />
+            </p:confirmPopup>
+        </h:form>       
+    </ui:define>
+
+</ui:composition>

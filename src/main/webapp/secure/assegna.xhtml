@@ -23,62 +23,70 @@
             <div class="grid">
                 <div class="col-12">
                     <div class="card">
-                        <div class="grid mt-3">
-                            <div class="col-12">
-                                <p:outputLabel for="tipiproc" value="Tipo procedura: "/>
-                                <p:selectOneMenu id="tipiproc" value="#{assegnaController.tipoProcedimentoSelezionato}" hideNoSelectionOption="#{not empty assegnaController.tipoProcedimentoSelezionato}" converter="lTipoProcConverter">
-                                    <p:ajax update="@this procedimenti" listener="#{assegnaController.aggiornaProcedimenti()}" />
-                                    <f:selectItem itemLabel="Selezionare..." itemValue="#{null}" noSelectionOption="true" />
+                        <div class="grid">
+                            <div class="col-2">
+                                <p:selectOneMenu id="tipiproc" value="#{assegnaController.tipoProcedimentoSelezionato}" hideNoSelectionOption="#{not empty assegnaController.tipoProcedimentoSelezionato}" converter="lTipoProcConverter" style="width: 100%">
+                                    <p:ajax update="@this procedimenti assegnaButton" listener="#{assegnaController.aggiornaProcedimenti()}" />
+                                    <f:selectItem itemLabel="Selezionare un tipo di procedura..." itemValue="#{null}" noSelectionOption="true" />
                                     <f:selectItems value="#{assegnaController.tipiProcedimento}" var="tp" itemValue="#{tp}" itemLabel="#{tp.tipoProc}" />
                                 </p:selectOneMenu>
                             </div>
                         </div>
-                        <div class="ui-fluid formgrid grid">                            
-                            <p:dataTable id="procedimenti" widgetVar="wvProcedimenti" var="proc" value="#{assegnaController.procedimenti}" size="small" emptyMessage="Nessuna procedura da assegnare."
-                                         selection="#{assegnaController.procedimentiSelezionati}" rowKey="#{proc.idProc}" stripedRows="true" paginatorPosition="bottom"
-                                         style="margin-bottom: 0" paginator="true" rows="5" selectionPageOnly="false" selectionRowMode="none" cellNavigation="true" styleClass="ui-datatable-sm">
-                                <p:ajax event="rowSelectCheckbox" update=":form:assegnaButton" />
-                                <p:ajax event="rowUnselectCheckbox" update=":form:assegnaButton" />
-                                <p:ajax event="toggleSelect" update=":form:assegnaButton" />
-                                
-                                <p:column selectionBox="true" style="width:16px;text-align:center"/>                                
-                                <p:column headerText="Procedimento">
-                                    #{assegnaController.decodificatProcedimento(proc.idTipoProc).tipoProc}
-                                </p:column>
+                        <div class="grid"> 
+                            <div class="col-12">
+                                <p:dataTable id="procedimenti" widgetVar="wvProcedimenti" var="proc" value="#{assegnaController.procedimenti}" size="small" emptyMessage="Nessuna procedura da assegnare o corrispondente ai criteri di ricerca impostati."
+                                             selection="#{assegnaController.procedimentiSelezionati}" rowKey="#{proc.idProc}" stripedRows="true" paginatorPosition="bottom" filteredValue="#{assegnaController.procedimentiFiltrati}"
+                                             style="margin-bottom: 0" paginator="true" rows="10" selectionPageOnly="false" selectionRowMode="none" cellNavigation="true" styleClass="ui-datatable-sm"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             currentPageReportTemplate="{startRecord}-{endRecord} di {totalRecords} procedure" rowsPerPageTemplate="5,10,{ShowAll|'Tutti'}" rowHover="true">
+                                    <p:ajax event="rowSelectCheckbox" update=":form:assegnaButton" />
+                                    <p:ajax event="rowUnselectCheckbox" update=":form:assegnaButton" />
+                                    <p:ajax event="toggleSelect" update=":form:assegnaButton" />
 
-                                <p:column headerText="N.">
-                                    #{proc.codice}
-                                </p:column>
+                                    <f:facet name="header">
+                                        <div class="flex align-items-center justify-content-between">
+                                            <span>ELENCO PROCEDIMENTI DA ASSEGNARE</span>
+                                            <div>
+                                                <p:inputText id="globalFilter" onkeyup="PrimeFaces.debounce(() => PF('wvProcedimenti').filter())" style="width:20rem" placeholder="Ricerca globale..." />
+                                            </div>
+                                        </div>
+                                    </f:facet>
+                                    
+                                    <p:column selectionBox="true" style="width:16px;text-align:center"/>                                
 
-                                <p:column headerText="Richiedente">
-                                    #{proc.richiedente}
-                                </p:column>
+                                    <p:column headerText="N." width="10%" filterBy="#{proc.codice}" filterMatchMode="contains">
+                                        #{proc.codice}
+                                    </p:column>
 
-                                <p:column headerText="Indirizzo">
-                                    #{proc.indirizzo}
-                                </p:column>
+                                    <p:column headerText="RICHIEDENTE" filterBy="#{proc.richiedente}" filterMatchMode="contains">
+                                        #{proc.richiedente}
+                                    </p:column>
 
-                                <p:column headerText="Codice Com.">
-                                    #{proc.codiceCom}
-                                </p:column>
+                                    <p:column headerText="INDIRIZZO" filterBy="#{proc.indirizzo}" filterMatchMode="contains">
+                                        #{proc.indirizzo}
+                                    </p:column>
 
-                                <p:column style="width:6rem">                                    
-                                    Bottoni
-                                </p:column>                                                                
-                            </p:dataTable>
-                        </div>                        
-                        <div class="card">
-                            <div class="grid mt-3">
-                                <div class="col-12">
-                                    <p:commandButton id="assegnaButton" value="Assegna" icon="pi pi-save" action="#{assegnaController.preparaAssegnazione()}" oncomplete="PF('wvUtentiDialog').show();" update="utentiDialog"/>
-                                </div>
+                                    <p:column headerText="COMUNE" width="20%" filterBy="#{assegnaController.decodificaCentroide(proc.codiceCom).comune}" filterMatchMode="contains">
+                                        #{assegnaController.decodificaCentroide(proc.codiceCom).comune} [#{proc.codiceCom}]
+                                    </p:column>
+
+                                    <p:column style="width:3rem">                                    
+                                        <p:commandButton id="assegnaSingoloButton" styleClass="rounded-button ui-button-help ui-button-outlined" icon="pi pi-users" title="Assegna" update=":form:procedimenti :form:utentiDialog :form:assegnaButton" action="#{assegnaController.preparaAssegnazione(proc)}" oncomplete="PF('wvUtentiDialog').show();" />
+                                    </p:column>                                                                
+                                </p:dataTable>
                             </div>
-                        </div>                                
+                            <div class="col-12" />
+                        </div>
+                        <div class="grid"> 
+                            <div class="col-3">
+                                <p:commandButton id="assegnaButton" value="Assegna selezionati" icon="pi pi-users" action="#{assegnaController.preparaAssegnazione()}" oncomplete="PF('wvUtentiDialog').show();" update="utentiDialog" disabled="#{empty assegnaController.tipoProcedimentoSelezionato or empty assegnaController.procedimentiSelezionati}"/>
+                            </div>
+                        </div>                        
                     </div>
                 </div>
             </div>
 
-            <p:dialog id="utentiDialog" widgetVar="wvUtentiDialog" width="70%" header="Utenti" modal="true">
+            <p:dialog id="utentiDialog" widgetVar="wvUtentiDialog" width="70%" header="ASSEGNA PROCEDIMENTO" modal="true" visible="hidden">
                 <div class="col-12">
                     <p:pickList id="utenti" value="#{assegnaController.utenti}" var="u" itemValue="#{u}" itemLabel="#{u.nomeUtente} [Ruolo #{u.ruolo}]"
                                 showSourceControls="false" showTargetControls="false" showCheckbox="true"
@@ -86,8 +94,8 @@
                                 sourceFilterPlaceholder="Filtra utenti disponibili"
                                 targetFilterPlaceholder="Filtra utenti selezionati"
                                 filterMatchMode="contains" converter="#{utenteRuoloConverter}" responsive="true">
-                        <f:facet name="sourceCaption">Disponibili</f:facet>
-                        <f:facet name="targetCaption">Selezionati</f:facet> 
+                        <f:facet name="sourceCaption">DISPONIBILI</f:facet>
+                        <f:facet name="targetCaption">ASSEGNATI</f:facet> 
                     </p:pickList>                    
                 </div>
                 <div class="col-12">

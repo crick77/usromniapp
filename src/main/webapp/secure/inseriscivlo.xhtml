@@ -62,28 +62,28 @@
                         <h5>Dati catastali</h5>
                         <div class="ui-fluid formgrid grid">
                             <p:dataTable id="daticatastali" widgetVar="wvCatastali" var="dc" value="#{inserisciVloController.procCat}" editable="true" emptyMessage="Nessun dato catastale presente." rows="5" paginator="true" paginatorPosition="bottom">
-                                <p:column headerText="ISTAT Comune">
+                                <p:column headerText="ISTAT COMUNE">
                                     <p:cellEditor>
                                         <f:facet name="output"><h:outputText value="#{dc.istatComune}" /></f:facet>
                                         <f:facet name="input"><p:inputText value="#{dc.istatComune}" maxlength="10" style="width:100%" /></f:facet>
                                     </p:cellEditor>
                                 </p:column>
 
-                                <p:column headerText="Sezione">
+                                <p:column headerText="SEZIONE">
                                     <p:cellEditor>
                                         <f:facet name="output"><h:outputText value="#{dc.sezione}" /></f:facet>
                                         <f:facet name="input"><p:inputText value="#{dc.sezione}" maxlength="10" style="width:100%" /></f:facet>
                                     </p:cellEditor>
                                 </p:column>
 
-                                <p:column headerText="Foglio">
+                                <p:column headerText="FOGLIO">
                                     <p:cellEditor>
                                         <f:facet name="output"><h:outputText value="#{dc.foglio}" /></f:facet>
                                         <f:facet name="input"><p:inputText value="#{dc.foglio}" maxlength="10" style="width:100%" /></f:facet>
                                     </p:cellEditor>
                                 </p:column>
 
-                                <p:column headerText="Particella">
+                                <p:column headerText="PARTICELLA">
                                     <p:cellEditor>
                                         <f:facet name="output"><h:outputText value="#{dc.particella}" /></f:facet>
                                         <f:facet name="input"><p:inputText value="#{dc.particella}" maxlength="10" style="width:100%" /></f:facet>
@@ -95,7 +95,7 @@
                                 </p:column>
                                 
                                 <p:column style="width:6rem">                                    
-                                    <p:commandButton id="elimina" icon="pi pi-trash" styleClass="rounded-button ui-button-flat ui-button-danger" process="@this" update="daticatastali" action="#{inserisciVloController.rimuoviProcCat(dc)}" />
+                                    <p:commandButton id="elimina" icon="pi pi-trash" title="Elimina" styleClass="rounded-button ui-button-flat ui-button-danger" process="@this" update="daticatastali" action="#{inserisciVloController.rimuoviProcCat(dc)}" />
                                 </p:column>
                             </p:dataTable>
                         </div>
@@ -108,7 +108,7 @@
                     <div class="card">
                         <div class="grid mt-3">
                             <div class="col-12">
-                                <p:commandButton value="Salva" icon="pi pi-save" update="@form" action="#{inserisciVloController.salva()}" />
+                                <p:commandButton value="Salva" icon="pi pi-save" update="@form" action="#{inserisciVloController.salva()}" styleClass="ui-button-info"/>
                             </div>
                         </div>
                     </div>

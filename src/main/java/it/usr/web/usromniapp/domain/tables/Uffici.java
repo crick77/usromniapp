@@ -9,9 +9,11 @@ import it.usr.web.usromniapp.domain.Indexes;
 import it.usr.web.usromniapp.domain.Keys;
 import it.usr.web.usromniapp.domain.tables.ProcAss.ProcAssPath;
 import it.usr.web.usromniapp.domain.tables.TipoProcAss.TipoProcAssPath;
+import it.usr.web.usromniapp.domain.tables.TipoProcUffici.TipoProcUfficiPath;
 import it.usr.web.usromniapp.domain.tables.Uffici.UfficiPath;
 import it.usr.web.usromniapp.domain.tables.records.UfficiRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -85,6 +87,16 @@ public class Uffici extends TableImpl<UfficiRecord> {
      * The column <code>decreti.uffici.id_ufficio_sovraordinato</code>.
      */
     public final TableField<UfficiRecord, Integer> ID_UFFICIO_SOVRAORDINATO = createField(DSL.name("id_ufficio_sovraordinato"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>decreti.uffici.data_disattivazione</code>.
+     */
+    public final TableField<UfficiRecord, LocalDateTime> DATA_DISATTIVAZIONE = createField(DSL.name("data_disattivazione"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.inline("NULL", SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>decreti.uffici.note</code>.
+     */
+    public final TableField<UfficiRecord, String> NOTE = createField(DSL.name("note"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
     private Uffici(Name alias, Table<UfficiRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -209,6 +221,19 @@ public class Uffici extends TableImpl<UfficiRecord> {
             _tipoProcAss = new TipoProcAssPath(this, null, Keys.FK_TIPOPROCASS_UFFICIO.getInverseKey());
 
         return _tipoProcAss;
+    }
+
+    private transient TipoProcUfficiPath _tipoProcUffici;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>decreti.tipo_proc_uffici</code> table
+     */
+    public TipoProcUfficiPath tipoProcUffici() {
+        if (_tipoProcUffici == null)
+            _tipoProcUffici = new TipoProcUfficiPath(this, null, Keys.FK_TIPOPROCUFF_UFFICI.getInverseKey());
+
+        return _tipoProcUffici;
     }
 
     @Override

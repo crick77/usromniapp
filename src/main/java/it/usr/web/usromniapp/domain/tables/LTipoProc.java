@@ -14,6 +14,7 @@ import it.usr.web.usromniapp.domain.tables.ProcEsiti.ProcEsitiPath;
 import it.usr.web.usromniapp.domain.tables.ProcPassoIniziale.ProcPassoInizialePath;
 import it.usr.web.usromniapp.domain.tables.TipoProcAss.TipoProcAssPath;
 import it.usr.web.usromniapp.domain.tables.TipoProcProgressivo.TipoProcProgressivoPath;
+import it.usr.web.usromniapp.domain.tables.TipoProcUffici.TipoProcUfficiPath;
 import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
 
 import java.util.Collection;
@@ -261,6 +262,19 @@ public class LTipoProc extends TableImpl<LTipoProcRecord> {
             _tipoProcProgressivo = new TipoProcProgressivoPath(this, null, Keys.FK_TIPOPROCPROGRESSIVO_TIPOPROC.getInverseKey());
 
         return _tipoProcProgressivo;
+    }
+
+    private transient TipoProcUfficiPath _tipoProcUffici;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>decreti.tipo_proc_uffici</code> table
+     */
+    public TipoProcUfficiPath tipoProcUffici() {
+        if (_tipoProcUffici == null)
+            _tipoProcUffici = new TipoProcUfficiPath(this, null, Keys.FK_TIPOPROCUFF_TIPOPROC.getInverseKey());
+
+        return _tipoProcUffici;
     }
 
     @Override

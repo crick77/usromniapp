@@ -11,14 +11,18 @@
             <h:form id="menuForm">
                 <pv:menu widgetVar="VeronaMenuWidget">
                     <p:menuitem id="m_index" value="Home" icon="pi pi-fw pi-home" outcome="/secure/index"/>
-                    <p:submenu id="m_assegnazioni" label="Assegnazioni">
-                        <p:menuitem id="m_assegna" value="Da assegnare" icon="pi pi-fw pi-objects-column" outcome="/secure/assegna" />
-                        <p:menuitem id="m_assegnate" value="Assegnate" icon="pi pi-fw pi-objects-column" outcome="/secure/assegnate" />
+                    <p:submenu id="m_assegnazioni" label="Assegnazioni" icon="pi pi-fw pi-arrow-right-arrow-left">
+                        <p:menuitem id="m_assegna" value="Da assegnare" icon="pi pi-fw pi-user-plus" outcome="/secure/assegna" />
+                        <p:menuitem id="m_assegnate" value="Assegnate" icon="pi pi-fw pi-users" outcome="/secure/assegnate" />
                     </p:submenu>
                     <p:submenu id="m_procedimento" label="Procedimento" icon="pi pi-fw pi-objects-column">                        
                         <p:menuitem id="m_apri" value="Nuovo" icon="pi pi-fw pi-file-plus" outcome="/secure/nuovoprocedimento"/>                        
                         <p:menuitem id="m_incarico" value="In carico" icon="pi pi-fw pi-wrench" outcome="/secure/incarico"/>
                     </p:submenu>                                        
+                    <p:submenu id="m_amministrazione" label="Amministrazione" icon="pi pi-fw pi-server">                        
+                        <p:menuitem id="m_tipiprocass" value="Autorizzazione Tipi Procedure" icon="pi pi-fw pi-flag" outcome="/secure/tipiprocauth"/>                        
+                        <p:menuitem id="m_uffici" value="Uffici" icon="pi pi-fw pi-building" outcome="/secure/uffici"/>                        
+                    </p:submenu>
                     <p:menuitem id="m_uscita" value="Uscita" icon="pi pi-fw pi-sign-out" outcome="/secure/uscita"/>
                 </pv:menu>
             </h:form>

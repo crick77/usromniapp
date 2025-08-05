@@ -29,7 +29,7 @@ public class NuovoProcedimentoController extends OmniappBaseController {
     LTipoProcRecord tipoProcedimento;
     
     public void init() {
-        tipiProcedimento = ps.getTipiProcedimenti(getUtenteOmniapp());
+        tipiProcedimento = ps.getTipiProcedimento(getUtenteOmniapp());
         tipoProcedimento = null;
     }
 

@@ -92,6 +92,7 @@ import it.usr.web.usromniapp.domain.tables.StatoProgetti;
 import it.usr.web.usromniapp.domain.tables.Tecnico;
 import it.usr.web.usromniapp.domain.tables.TipoProcAss;
 import it.usr.web.usromniapp.domain.tables.TipoProcProgressivo;
+import it.usr.web.usromniapp.domain.tables.TipoProcUffici;
 import it.usr.web.usromniapp.domain.tables.Uffici;
 import it.usr.web.usromniapp.domain.tables.UfficiProvvedimenti;
 import it.usr.web.usromniapp.domain.tables.Utenti;
@@ -101,6 +102,7 @@ import it.usr.web.usromniapp.domain.tables.VEstrazioniLavori;
 import it.usr.web.usromniapp.domain.tables.VOrd100Decretati;
 import it.usr.web.usromniapp.domain.tables.VOrd59Decretati;
 import it.usr.web.usromniapp.domain.tables.VRuoliutenteAttivi;
+import it.usr.web.usromniapp.domain.tables.VUtentiAttivi;
 
 
 /**
@@ -551,6 +553,11 @@ public class Tables {
     public static final TipoProcProgressivo TIPO_PROC_PROGRESSIVO = TipoProcProgressivo.TIPO_PROC_PROGRESSIVO;
 
     /**
+     * The table <code>decreti.tipo_proc_uffici</code>.
+     */
+    public static final TipoProcUffici TIPO_PROC_UFFICI = TipoProcUffici.TIPO_PROC_UFFICI;
+
+    /**
      * The table <code>decreti.uffici</code>.
      */
     public static final Uffici UFFICI = Uffici.UFFICI;
@@ -594,4 +601,9 @@ public class Tables {
      * The table <code>decreti.v_ruoliutente_attivi</code>.
      */
     public static final VRuoliutenteAttivi V_RUOLIUTENTE_ATTIVI = VRuoliutenteAttivi.V_RUOLIUTENTE_ATTIVI;
+
+    /**
+     * The table <code>decreti.v_utenti_attivi</code>.
+     */
+    public static final VUtentiAttivi V_UTENTI_ATTIVI = VUtentiAttivi.V_UTENTI_ATTIVI;
 }

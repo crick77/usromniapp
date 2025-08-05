@@ -130,6 +130,20 @@ public class LTipoPassoRecord extends UpdatableRecordImpl<LTipoPassoRecord> {
         return (Boolean) get(7);
     }
 
+    /**
+     * Setter for <code>decreti.l_tipo_passo.esito_obbligatorio</code>.
+     */
+    public void setEsitoObbligatorio(Boolean value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>decreti.l_tipo_passo.esito_obbligatorio</code>.
+     */
+    public Boolean getEsitoObbligatorio() {
+        return (Boolean) get(8);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -153,7 +167,7 @@ public class LTipoPassoRecord extends UpdatableRecordImpl<LTipoPassoRecord> {
     /**
      * Create a detached, initialised LTipoPassoRecord
      */
-    public LTipoPassoRecord(Integer codicePasso, String testoPasso, Integer visibile, String stato, Integer influenzaStato, Integer idTipoProc, Integer durataPrevista, Boolean protRichiesto) {
+    public LTipoPassoRecord(Integer codicePasso, String testoPasso, Integer visibile, String stato, Integer influenzaStato, Integer idTipoProc, Integer durataPrevista, Boolean protRichiesto, Boolean esitoObbligatorio) {
         super(LTipoPasso.L_TIPO_PASSO);
 
         setCodicePasso(codicePasso);
@@ -164,6 +178,7 @@ public class LTipoPassoRecord extends UpdatableRecordImpl<LTipoPassoRecord> {
         setIdTipoProc(idTipoProc);
         setDurataPrevista(durataPrevista);
         setProtRichiesto(protRichiesto);
+        setEsitoObbligatorio(esitoObbligatorio);
         resetChangedOnNotNull();
     }
 }

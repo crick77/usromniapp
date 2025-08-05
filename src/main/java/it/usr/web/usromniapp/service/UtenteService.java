@@ -28,6 +28,14 @@ public class UtenteService {
     @DSLCtx 
     DSLContext ctx;
         
+    public List<UtentiRecord> getUtenti() {
+        return ctx.selectFrom(UTENTI).fetch();
+    } 
+    
+    public List<UtentiRecord> getUtenti(List<Integer> idUtenti) {
+        return ctx.selectFrom(UTENTI).where(UTENTI.ID_UTENTE.in(idUtenti)).fetch();
+    }
+    
     public UtentiRecord getUtente(String username) {
         return ctx.selectFrom(UTENTI).where(UTENTI.UTENTE.eq(username).and(UTENTI.UTENTE_FISICO.eq(1))).fetchOne();
     }

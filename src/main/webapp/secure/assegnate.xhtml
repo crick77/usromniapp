@@ -22,66 +22,69 @@
 
             <div class="grid">
                 <div class="col-12">
-                    <div class="card">
-                        PRATICHE ASSEGNATE
-                        <div class="grid mt-3">
-                            <div class="col-12">
-                                <p:outputLabel for="tipiproc" value="Tipo procedura: "/>
-                                <p:selectOneMenu id="tipiproc" value="#{assegnateController.tipoProcedimentoSelezionato}" hideNoSelectionOption="#{not empty assegnateController.tipoProcedimentoSelezionato}" converter="lTipoProcConverter">
+                    <div class="card">                        
+                        <div class="grid">
+                            <div class="col-2">
+                                <p:selectOneMenu id="tipiproc" value="#{assegnateController.tipoProcedimentoSelezionato}" hideNoSelectionOption="#{not empty assegnateController.tipoProcedimentoSelezionato}" converter="lTipoProcConverter" style="width: 100%">
                                     <p:ajax update="@this procedimenti" listener="#{assegnateController.aggiornaProcedimenti()}" />
-                                    <f:selectItem itemLabel="Selezionare..." itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItem itemLabel="Selezionare un tipo di procedura..." itemValue="#{null}" noSelectionOption="true" />
                                     <f:selectItems value="#{assegnateController.tipiProcedimento}" var="tp" itemValue="#{tp}" itemLabel="#{tp.tipoProc}" />
                                 </p:selectOneMenu>
-                            </div>
+                            </div>                            
                         </div>
-                        <div class="ui-fluid formgrid grid">
-                            <p:dataTable id="procedimenti" widgetVar="wvProcedimenti" var="proc" value="#{assegnateController.procedimenti}" size="small" emptyMessage="Nessuna procedura assegnata."
-                                         rowKey="#{proc.idProc}" stripedRows="true" paginatorPosition="bottom" style="margin-bottom: 0" paginator="true" rows="5" selectionPageOnly="false"
-                                         selectionRowMode="none" cellNavigation="true" styleClass="ui-datatable-sm">                                
-                                <p:column headerText="Procedimento">
-                                    #{assegnateController.decodificatProcedimento(proc.idTipoProc).tipoProc}
+                        <div class="formgrid grid">
+                            <p:dataTable id="procedimenti" widgetVar="wvProcedimenti" var="proc" value="#{assegnateController.procedimenti}" size="small" emptyMessage="Nessuna procedura assegnata o corrispondete ai criteri di ricerca impostati."
+                                         rowKey="#{proc.idProc}" stripedRows="true" paginatorPosition="bottom" style="margin-bottom: 0" paginator="true" rows="10" selectionPageOnly="false" rowsPerPageTemplate="5,10,{ShowAll|'Tutti'}"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         selectionRowMode="none" styleClass="ui-datatable-sm" currentPageReportTemplate="{startRecord}-{endRecord} di {totalRecords} procedure" filteredValue="#{assegnateController.procedimentiFiltrati}">
+                                
+                                <f:facet name="header">
+                                    <div class="flex align-items-center justify-content-between">
+                                        <span>ELENCO PROCEDIMENTI ASSEGNATI</span>
+                                        <div>
+                                            <p:inputText id="globalFilter" onkeyup="PrimeFaces.debounce(() => PF('wvProcedimenti').filter())" style="width:20rem"
+                                                         placeholder="Ricerca globale..." />
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                                                
+                                <p:column headerText="PROCEDIMENTO" width="7%">
+                                    #{assegnateController.decodificaProcedimento(proc.idTipoProc).tipoProc}
                                 </p:column>
 
-                                <p:column headerText="N.">
+                                <p:column headerText="N." filterBy="#{proc.codice}" filterMatchMode="contains" width="5%">
                                     #{proc.codice}
                                 </p:column>
 
-                                <p:column headerText="Richiedente">
+                                <p:column headerText="RICHIEDENTE" filterBy="#{proc.richiedente}" filterMatchMode="contains">
                                     #{proc.richiedente}
                                 </p:column>
 
-                                <p:column headerText="Indirizzo">
+                                <p:column headerText="INDIRIZZO" filterBy="#{proc.indirizzo}" filterMatchMode="contains">
                                     #{proc.indirizzo}
                                 </p:column>
 
-                                <p:column headerText="Codice Com.">
+                                <p:column headerText="COMUNE" filterBy="#{proc.comune}" filterMatchMode="contains">
                                     #{proc.comune}
                                 </p:column>
 
-                                <p:column headerText="Assegnante">                                    
+                                <p:column headerText="ASSEGNANTE" filterBy="#{proc.assegnante}" filterMatchMode="contains">                                    
                                     #{proc.assegnante}
                                 </p:column>                                                                
-                                
-                                <p:column headerText="Utenti Assegnatari">   
+
+                                <p:column headerText="ASSEGNATARI">   
                                     <ul>
-                                        <ui:repeat value="#{assegnateController.splitAssegnatari(proc.assegnatari)}" var="ass">
+                                        <ui:repeat value="#{assegnateController.splitAssegnatari(proc.assegnatari)}" var="ass" rendered="#{not empty proc.assegnatari}">
                                             <li>#{ass}</li>
                                         </ui:repeat>
                                     </ul>
                                 </p:column>                                                                
-                                                                                                                                                            
-                                <p:column>                                    
+
+                                <p:column width="10%">                                    
                                     <p:commandButton id="assegnaButton" value="Modifica Assegnazioni" icon="pi pi-pencil" action="#{assegnateController.preparaAssegnazione(proc)}" update=":form:utenti" oncomplete="PF('wvUtentiDialog').show();"/>
                                 </p:column>                                                                
                             </p:dataTable>
-                        </div>                        
-                        <div class="card">
-                            <div class="grid mt-3">
-                                <div class="col-12">
-                                    
-                                </div>
-                            </div>
-                        </div>                                
+                        </div>                                                                             
                     </div>
                 </div>
             </div>

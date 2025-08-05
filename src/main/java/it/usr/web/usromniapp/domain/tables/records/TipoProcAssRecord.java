@@ -174,6 +174,24 @@ public class TipoProcAssRecord extends UpdatableRecordImpl<TipoProcAssRecord> {
         return (String) get(10);
     }
 
+    /**
+     * Setter for <code>decreti.tipo_proc_ass.modificato</code>. indica i record
+     * appena modificati nella gestione tipi_proc_ass - reset a 0 dopo
+     * l'aggiornamento a cascata
+     */
+    public void setModificato(Boolean value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>decreti.tipo_proc_ass.modificato</code>. indica i record
+     * appena modificati nella gestione tipi_proc_ass - reset a 0 dopo
+     * l'aggiornamento a cascata
+     */
+    public Boolean getModificato() {
+        return (Boolean) get(11);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -197,7 +215,7 @@ public class TipoProcAssRecord extends UpdatableRecordImpl<TipoProcAssRecord> {
     /**
      * Create a detached, initialised TipoProcAssRecord
      */
-    public TipoProcAssRecord(Integer idTipoProcAss, Integer idTipoProc, Integer idUtente, Integer idRuolo, Integer idUfficio, Integer idUtenteAssegnante, String autorizzazioni, LocalDateTime dataAssegnazione, LocalDateTime dataRimozione, LocalDateTime dataora, String note) {
+    public TipoProcAssRecord(Integer idTipoProcAss, Integer idTipoProc, Integer idUtente, Integer idRuolo, Integer idUfficio, Integer idUtenteAssegnante, String autorizzazioni, LocalDateTime dataAssegnazione, LocalDateTime dataRimozione, LocalDateTime dataora, String note, Boolean modificato) {
         super(TipoProcAss.TIPO_PROC_ASS);
 
         setIdTipoProcAss(idTipoProcAss);
@@ -211,6 +229,7 @@ public class TipoProcAssRecord extends UpdatableRecordImpl<TipoProcAssRecord> {
         setDataRimozione(dataRimozione);
         setDataora(dataora);
         setNote(note);
+        setModificato(modificato);
         resetChangedOnNotNull();
     }
 }

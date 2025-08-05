@@ -4,9 +4,9 @@
  */
 package it.usr.web.usromniapp.service;
 
-import it.usr.web.usromniapp.domain.Tables;
+
 import static it.usr.web.usromniapp.domain.Tables.*;
-import it.usr.web.usromniapp.domain.tables.ProcAssAttuali;
+import it.usr.web.usromniapp.domain.tables.records.DelegaRecord;
 import it.usr.web.usromniapp.domain.tables.records.LRuoloRecord;
 import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcAssAttualiRecord;
@@ -15,12 +15,12 @@ import it.usr.web.usromniapp.domain.tables.records.ProcCatRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcIterRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcPassoInizialeRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcRecord;
-import it.usr.web.usromniapp.domain.tables.records.RuoliUtenteRecord;
 import it.usr.web.usromniapp.domain.tables.records.UtentiRecord;
 import it.usr.web.usromniapp.domain.tables.records.VAssegnantiAttiviRecord;
 import it.usr.web.usromniapp.interceptor.LogDatabaseOperation;
 import it.usr.web.usromniapp.model.ElencoVisibili;
 import it.usr.web.usromniapp.model.ProcAssegnata;
+import it.usr.web.usromniapp.model.TipoProcAssModel;
 import it.usr.web.usromniapp.model.Utente;
 import it.usr.web.usromniapp.model.UtenteRuolo;
 import jakarta.ejb.Stateless;
@@ -31,12 +31,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.jooq.DSLContext;
 import it.usr.web.usromniapp.producer.DSLCtx;
+import it.usr.web.usromniapp.record.RProc;
+import it.usr.web.usromniapp.record.RProcIter;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.jooq.Condition;
+import org.jooq.Records;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 
@@ -45,7 +47,7 @@ import org.jooq.impl.DSL;
  * @author riccardo.iovenitti
  */
 @Stateless
-@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED) 
 public class ProcedimentoService {
     public final static String TOOL_AUTOMATICO = "tool.automatico";
     @Inject
@@ -56,7 +58,15 @@ public class ProcedimentoService {
     @Inject 
     SecurityService ss;
 
-    public List<LTipoProcRecord> getTipiProcedimenti(Utente utente) {
+    public List<LTipoProcRecord> getTipiProcedimento() {
+        return ctx.selectFrom(L_TIPO_PROC).orderBy(L_TIPO_PROC.TIPO_PROC).fetchInto(L_TIPO_PROC);
+    }
+    
+    public ProcAssRecord getAssegnazionebyId(int idProcAss) {
+        return ctx.selectFrom(PROC_ASS).where(PROC_ASS.ID_PROC_ASS.eq(idProcAss)).fetchSingle();
+    }
+    
+    public List<LTipoProcRecord> getTipiProcedimento(Utente utente) {
         LocalDateTime now = LocalDateTime.now();
         return ctx.select(L_TIPO_PROC.fields())
                 .from(L_TIPO_PROC)
@@ -158,21 +168,30 @@ public class ProcedimentoService {
         }
     }
         
-    public List<ProcRecord> getAssegnazioni(Utente utente) {
-        ElencoVisibili ev = ss.getElencoVisibili(utente, TipoOperazioneEnum.A);
+    public List<RProc> getAssegnazioni(Utente utente) {
+        ElencoVisibili ev = ss.getElencoVisibili(utente, TipoOperazioneEnum.M);
         Condition tipoProcCond = DSL.noCondition();
-        Condition procCond = DSL.noCondition();
+        Condition procCond = DSL.noCondition(); 
 
         if (!ev.getIdTipiProc().isEmpty()) {
-            tipoProcCond = tipoProcCond.and(Tables.PROC.ID_TIPO_PROC.in(ev.getIdTipiProc()));
+            tipoProcCond = tipoProcCond.and(PROC.ID_TIPO_PROC.in(ev.getIdTipiProc()));
         }
         if (!ev.getIdProcEsclusi().isEmpty()) {
-            tipoProcCond = tipoProcCond.and(Tables.PROC.ID_TIPO_PROC.notIn(ev.getIdProcEsclusi()));
+            tipoProcCond = tipoProcCond.and(PROC.ID_TIPO_PROC.notIn(ev.getIdProcEsclusi()));
         }
         if (!ev.getIdProcVisibili().isEmpty()) {
-            procCond = procCond.and(Tables.PROC.ID_PROC.in(ev.getIdProcVisibili()));
+            procCond = procCond.and(PROC.ID_PROC.in(ev.getIdProcVisibili()));
         }
-        return ctx.selectFrom(Tables.PROC).where(tipoProcCond).or(procCond).fetch();
+                        
+        return ctx.select(
+                    PROC.ID_PROC, PROC.ID_TIPO_PROC, PROC.DATAORA, PROC.LAT, PROC.LON, PROC.CODICE, PROC.RICHIEDENTE, PROC.INDIRIZZO, PROC.CODICE_COM, PROC.DESCRIZIONE, PROC.NOTE, PROC.ID_PROC_ITER_ULTIMO,
+                    DSL.row(PROC_ITER.ID_PROC_ITER, PROC_ITER.ID_PROC, PROC_ITER.DATAORA, 
+                            PROC_ITER.ATTIVO, PROC_ITER.MODIFICABILE, PROC_ITER.ID_UTENTE, 
+                            PROC_ITER.CODICE_PASSO, PROC_ITER.PROT, PROC_ITER.DATA_PROT,
+                            PROC_ITER.N_MUDE, PROC_ITER.ANNOTAZIONI, PROC_ITER.ID_ESITO,
+                            PROC_ITER.ID_PROC_ITER_LINK, PROC_ITER.GIORNI_SOSPENSIONE).mapping(RProcIter::new)
+                )
+                .from(PROC).join(PROC_ITER).on(PROC.ID_PROC_ITER_ULTIMO.eq(PROC_ITER.ID_PROC_ITER)).where(tipoProcCond).or(procCond).fetch(Records.mapping(RProc::new));        
     }
 
     public List<ProcRecord> getProcedureDaAssegnare(int idDelegato, int idTipoProc, LocalDateTime when) {
@@ -463,6 +482,31 @@ public class ProcedimentoService {
                "and ((pa.data_assegnazione <= {1} and pa.data_rimozione is null) or ({1} between pa.data_assegnazione and pa.data_rimozione))";
         
         return ctx.fetch(sql, utente.getUtente().getIdUtente(), LocalDateTime.now()).into(LTipoProcRecord.class);
-    }            
+    }      
+    
+    public List<TipoProcAssModel> getTipiProcAssModel(int idTipoProc) {
+        String sql = """
+                     select tpa.id_tipo_proc_ass, tpa.id_utente, tpa.id_ruolo, tpa.id_ufficio, tpa.id_utente_assegnante, ut.nome_utente, r.ruolo, uf.ufficio, tpa.autorizzazioni, ut2.nome_utente as assegnante, tpa.data_assegnazione, tpa.note
+                     from tipo_proc_ass tpa 
+                     left join utenti ut
+                        on tpa.id_utente = ut.id_utente
+                     left join uffici uf
+                        on tpa.id_ufficio = uf.id_ufficio
+                     left join l_ruolo r
+                        on tpa.id_ruolo = r.id_ruolo
+                     inner join utenti ut2
+                        on tpa.id_utente_assegnante = ut2.id_utente
+                     where id_tipo_proc = {0}
+                     """;
+        return ctx.fetch(sql, idTipoProc).into(TipoProcAssModel.class);
+    }
+
+    public ProcRecord getProcedimentoById(Integer idProc) {
+        return ctx.selectFrom(PROC).where(PROC.ID_PROC.eq(idProc)).fetchOne();
+    }
+    
+    public List<DelegaRecord> getDeleghe(int idTipoProc, int idDelegante) {
+        return ctx.selectFrom(DELEGA).where(DELEGA.ID_TIPO_PROC.eq(idTipoProc)).and(DELEGA.ID_DELEGANTE.eq(idDelegante)).fetch();
+    }
 }
  

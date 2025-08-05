@@ -1,0 +1,197 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="primefaces"
+                xmlns:jsf="jakarta.faces"
+                xmlns:fn="jakarta.tags.functions"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="jakarta.tags.core"
+                xmlns:pe="primefaces.extensions">
+
+    <ui:define name="title">Iter Pratica</ui:define>
+    <ui:define name="head">
+        <f:metadata>            
+            <f:viewParam name="idproc" value="#{iterController.idProc}" />
+            <f:viewAction action="#{iterController.init()}" />
+        </f:metadata>        
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form" enctype="multipart/form-data">
+            <p:growl id="msgs" showDetail="true"/>
+
+            <div class="grid">
+                <div class="col-12">                   
+                    <div class="card">
+                        PROCEDIMENTO: #{iterController.procedimento.codice}
+                    </div>
+                </div>                
+                <div class="col-12">                   
+                    <div class="card">
+                        <h5>Iter</h5>
+                        <div class="ui-fluid formgrid grid">
+                            <p:dataTable id="iter" widgetVar="wviter" var="it" value="#{iterController.iterPratica}" size="small" rowKey="#{it.idProcIter}" selection="#{iterController.iterPraticaSelezionato}">
+                                <p:ajax event="rowToggle" listener="#{iterController.onRowToggle}" update="iter_link" />
+                                
+                                <p:column style="width:2rem" ariaHeaderText="Row Toggler">
+                                    <p:rowToggler rendered="#{not empty it.idProcIterLink}"/>
+                                </p:column>
+
+                                <p:column headerText="PASSO">
+                                    #{iterController.decodeTipoPasso(it.codicePasso).testoPasso}
+                                </p:column>
+                                <p:column headerText="PROT.">
+                                    #{it.prot}
+                                </p:column>
+                                <p:column headerText="DATA PROT.">
+                                    <h:outputText value="#{it.dataProt}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy" type="localDate" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="UTENTE">
+                                    #{iterController.decodificaUtente(it.idUtente).nomeUtente}
+                                </p:column>
+                                <p:column style="width:3rem"> 
+                                    <p:commandButton id="dettaglio" icon="pi pi-eye" title="Dettaglio iter" action="#{iterController.mostraDettaglio(it)}" process="@this" update="form:iterDetailPanel" oncomplete="PF('dettaglioDialogWV').show()"/>
+                                </p:column>
+                                <p:column style="width:3rem">                                     
+                                    <p:commandButton id="modifica" icon="pi pi-pencil" disabled="#{it.modificabile eq 0}" title="Modifica iter" action="#{iterController.modifica(it)}" process="@this" update="form:iterPanel" oncomplete="PF('iterDialogWV').show()"/>
+                                </p:column>
+
+                                <p:rowExpansion id="expansion">
+                                    <p:dataTable id="iter_link" value="#{iterController.iterPraticaLink}" size="small" var="itl">
+                                        <f:facet name="header">
+                                            PASSI DI ITER PRECEDENTI
+                                        </f:facet>
+                                        
+                                        <p:column headerText="PASSO">
+                                            #{iterController.decodeTipoPasso(itl.codicePasso).testoPasso}
+                                        </p:column>
+                                        <p:column headerText="PROT.">
+                                            #{itl.prot}
+                                        </p:column>
+                                        <p:column headerText="DATA PROT.">
+                                            <h:outputText value="#{itl.dataProt}">
+                                                <f:convertDateTime pattern="dd-MM-yyyy" type="localDate" />
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="UTENTE">
+                                            #{iterController.decodificaUtente(itl.idUtente).nomeUtente}
+                                        </p:column>
+                                        <p:column style="width:3rem"> 
+                                            <p:commandButton id="dettaglio_link" icon="pi pi-eye" title="Dettaglio iter" action="#{iterController.mostraDettaglio(itl)}" process="@this" update="form:iterDetailPanel" oncomplete="PF('dettaglioDialogWV').show()"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:rowExpansion>
+                            </p:dataTable>
+                        </div>                        
+                    </div>
+                    <div class="card">
+                        <div class="grid mt-3">
+                            <div class="col-12">
+                                <p:commandButton value="Nuovo passo" icon="pi pi-plus" action="#{iterController.nuovo()}" process="@this" update="iterPanel" oncomplete="PF('iterDialogWV').show()"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p:dialog id="iterDialog" widgetVar="iterDialogWV" header="Nuovo iter" showEffect="fade" modal="true" responsive="true" width="60%">
+                <p:outputPanel class="ui-fluid grid formgrid" id="iterPanel">
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            Passo successivo
+                        </p:outputLabel>
+                        <p:selectOneMenu id="passosucc" value="#{iterController.iter.codicePasso}" hideNoSelectionOption="#{not empty iterController.iter.codicePasso}">
+                            <p:ajax event="change" listener="#{iterController.aggiornaPasso()}" update="protocollo dataprot protocollo_lab dataprot_lab esito" />
+                            <f:selectItem itemValue="#{null}" itemLabel="Selezionare una voce" noSelectionOption="true" />
+                            <f:selectItems value="#{iterController.tipiPassoIter}" />
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel id="protocollo_lab" for="@next">
+                            N. protocollo
+                        </p:outputLabel>
+                        <p:inputNumber id="protocollo" value="#{iterController.iter.prot}" decimalPlaces="0" thousandSeparator="" required="#{iterController.passoSelezionato.protRichiesto}" requiredMessage="Protocollo obbligatorio" />                            
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel id="dataprot_lab" for="@next">
+                            Data protocollo                          
+                        </p:outputLabel>
+                        <p:datePicker id="dataprot" value="#{iterController.iter.dataProt}" pattern="dd/MM/yyyy" required="#{iterController.passoSelezionato.protRichiesto}" requiredMessage="Data protocollo obbligatoria" />
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            N. MUDE
+                        </p:outputLabel>
+                        <p:inputText id="nmude" value="#{iterController.iter.NMude}" maxlength="32" />
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            Annotazioni
+                        </p:outputLabel>
+                        <p:inputText id="annotazioni" value="#{iterController.iter.annotazioni}" maxlength="128" />
+                    </div>                    
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            Esito
+                        </p:outputLabel>
+                        <p:selectOneMenu id="esito" value="#{iterController.iter.idEsito}" disabled="#{not iterController.esitoObbligatorio}">
+                            <f:selectItems value="#{iterController.esiti}" var="e" itemValue="#{e.idEsito}" itemLabel="#{e.codice}" />
+                        </p:selectOneMenu>
+                    </div>                    
+                </p:outputPanel>
+                <f:facet name="footer">                    
+                    <p:commandButton id="salva" value="Salva" icon="pi pi-save" action="#{iterController.salva()}" update="protocollo dataprot iter msgs" />                    
+                    <p:commandButton id="annulla" value="Annulla" icon="pi pi-times" oncomplete="PF('iterDialogWV').hide();" immediate="true" />                    
+                </f:facet>
+            </p:dialog>
+            
+            <p:dialog id="dettaglio" widgetVar="dettaglioDialogWV" header="Dettaglio iter" showEffect="fade" modal="true" responsive="true" width="60%" visible="hidden">
+                <p:outputPanel class="ui-fluid grid formgrid" id="iterDetailPanel">
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            Passo successivo
+                        </p:outputLabel>
+                        <p:inputText id="dett_passo" value="#{iterController.decodeTipoPasso(iterController.iter.codicePasso).testoPasso}" readonly="true" />
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            N. protocollo
+                        </p:outputLabel>
+                        <p:inputText id="dett_protocollo" value="#{iterController.iter.prot}" readonly="true"/>
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            Data protocollo                          
+                        </p:outputLabel>
+                        <p:datePicker id="dett_dataprot" value="#{iterController.iter.dataProt}" pattern="dd/MM/yyyy" readonly="true" />                            
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            N. MUDE
+                        </p:outputLabel>
+                        <p:inputText id="dett_nmude" value="#{iterController.iter.NMude}" readonly="true" />
+                    </div>
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            Annotazioni
+                        </p:outputLabel>
+                        <p:inputText id="dett_annotazioni" value="#{iterController.iter.annotazioni}" readonly="true" />
+                    </div>                    
+                    <div class="field col-12">
+                        <p:outputLabel for="@next">
+                            Esito
+                        </p:outputLabel>
+                        <p:inputText id="dett_esito" value="#{iterController.decodeEsito(iterController.iter.idEsito).codice}" readonly="true" />                        
+                    </div>                    
+                </p:outputPanel>
+                <f:facet name="footer">                                        
+                    <p:commandButton id="chiudi" value="Chiudi" icon="pi pi-times" oncomplete="PF('dettaglioDialogWV').hide();" immediate="true" process="@this" />                    
+                </f:facet>
+            </p:dialog>
+        </h:form>       
+    </ui:define>
+
+</ui:composition>

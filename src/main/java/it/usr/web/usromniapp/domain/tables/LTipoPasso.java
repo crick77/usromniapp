@@ -103,6 +103,11 @@ public class LTipoPasso extends TableImpl<LTipoPassoRecord> {
      */
     public final TableField<LTipoPassoRecord, Boolean> PROT_RICHIESTO = createField(DSL.name("prot_richiesto"), SQLDataType.BIT.nullable(false).defaultValue(DSL.inline("b'0'", SQLDataType.BIT)), this, "");
 
+    /**
+     * The column <code>decreti.l_tipo_passo.esito_obbligatorio</code>.
+     */
+    public final TableField<LTipoPassoRecord, Boolean> ESITO_OBBLIGATORIO = createField(DSL.name("esito_obbligatorio"), SQLDataType.BIT.nullable(false).defaultValue(DSL.inline("b'0'", SQLDataType.BIT)), this, "");
+
     private LTipoPasso(Name alias, Table<LTipoPassoRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

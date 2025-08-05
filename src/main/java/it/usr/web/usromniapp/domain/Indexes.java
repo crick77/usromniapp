@@ -36,6 +36,7 @@ import it.usr.web.usromniapp.domain.tables.ProcTecniciSospensione;
 import it.usr.web.usromniapp.domain.tables.RuoliUtente;
 import it.usr.web.usromniapp.domain.tables.RuoloAmbito;
 import it.usr.web.usromniapp.domain.tables.TipoProcAss;
+import it.usr.web.usromniapp.domain.tables.TipoProcUffici;
 import it.usr.web.usromniapp.domain.tables.Uffici;
 import it.usr.web.usromniapp.domain.tables.Utenti;
 
@@ -101,6 +102,8 @@ public class Indexes {
     public static final Index TIPO_PROC_ASS_FK_TIPOPROCASS_UFFICIO_IDX = Internal.createIndex(DSL.name("fk_tipoprocass_ufficio_idx"), TipoProcAss.TIPO_PROC_ASS, new OrderField[] { TipoProcAss.TIPO_PROC_ASS.ID_UFFICIO }, false);
     public static final Index TIPO_PROC_ASS_FK_TIPOPROCASS_UTENTE_IDX = Internal.createIndex(DSL.name("fk_tipoprocass_utente_idx"), TipoProcAss.TIPO_PROC_ASS, new OrderField[] { TipoProcAss.TIPO_PROC_ASS.ID_UTENTE }, false);
     public static final Index TIPO_PROC_ASS_FK_TIPOPROCASS_UTENTEASSEGNANTE_IDX = Internal.createIndex(DSL.name("fk_tipoprocass_utenteassegnante_idx"), TipoProcAss.TIPO_PROC_ASS, new OrderField[] { TipoProcAss.TIPO_PROC_ASS.ID_UTENTE_ASSEGNANTE }, false);
+    public static final Index TIPO_PROC_UFFICI_FK_TIPOPROCUFF_TIPOPROC_IDX = Internal.createIndex(DSL.name("fk_tipoprocuff_tipoproc_idx"), TipoProcUffici.TIPO_PROC_UFFICI, new OrderField[] { TipoProcUffici.TIPO_PROC_UFFICI.ID_TIPO_PROC }, false);
+    public static final Index TIPO_PROC_UFFICI_FK_TIPOPROCUFF_UFFICI_IDX = Internal.createIndex(DSL.name("fk_tipoprocuff_uffici_idx"), TipoProcUffici.TIPO_PROC_UFFICI, new OrderField[] { TipoProcUffici.TIPO_PROC_UFFICI.ID_UFFICIO }, false);
     public static final Index UFFICI_FK_UFFICI_SOVRAORDINATO_IDX = Internal.createIndex(DSL.name("fk_uffici_sovraordinato_idx"), Uffici.UFFICI, new OrderField[] { Uffici.UFFICI.ID_UFFICIO_SOVRAORDINATO }, false);
     public static final Index UTENTI_FK_UTENTE_RUOLO_IDX = Internal.createIndex(DSL.name("fk_utente_ruolo_idx"), Utenti.UTENTI, new OrderField[] { Utenti.UTENTI.ID_RUOLO_PREDEFINITO }, false);
     public static final Index MON_ASSEGNAZIONI_I_ID_PRATICA = Internal.createIndex(DSL.name("i_id_pratica"), MonAssegnazioni.MON_ASSEGNAZIONI, new OrderField[] { MonAssegnazioni.MON_ASSEGNAZIONI.ID_PRATICA }, false);

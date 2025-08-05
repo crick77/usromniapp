@@ -118,6 +118,13 @@ public class TipoProcAss extends TableImpl<TipoProcAssRecord> {
      */
     public final TableField<TipoProcAssRecord, String> NOTE = createField(DSL.name("note"), SQLDataType.VARCHAR(255).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
 
+    /**
+     * The column <code>decreti.tipo_proc_ass.modificato</code>. indica i record
+     * appena modificati nella gestione tipi_proc_ass - reset a 0 dopo
+     * l'aggiornamento a cascata
+     */
+    public final TableField<TipoProcAssRecord, Boolean> MODIFICATO = createField(DSL.name("modificato"), SQLDataType.BIT.nullable(false).defaultValue(DSL.inline("b'0'", SQLDataType.BIT)), this, "indica i record appena modificati nella gestione tipi_proc_ass - reset a 0 dopo l'aggiornamento a cascata");
+
     private TipoProcAss(Name alias, Table<TipoProcAssRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

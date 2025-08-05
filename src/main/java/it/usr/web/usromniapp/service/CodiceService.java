@@ -6,11 +6,14 @@ package it.usr.web.usromniapp.service;
 
 import static it.usr.web.usromniapp.domain.Tables.*;
 import it.usr.web.usromniapp.domain.tables.records.GisCentroidiRecord;
+import it.usr.web.usromniapp.domain.tables.records.LTipoPassoRecord;
+import it.usr.web.usromniapp.domain.tables.records.ProcEsitiRecord;
 import it.usr.web.usromniapp.domain.tables.records.TipoProcProgressivoRecord;
 import it.usr.web.usromniapp.producer.DSLCtx;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import java.util.List;
+import java.util.Map;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
 
@@ -43,5 +46,17 @@ public class CodiceService {
     
     public GisCentroidiRecord getCentroide(int codiceCom) {
         return ctx.selectFrom(GIS_CENTROIDI).where(GIS_CENTROIDI.CODICE_COM.eq(codiceCom)).fetchSingle();
+    }
+    
+    public Map<Integer, LTipoPassoRecord> getTipiPassoMap() {
+        return ctx.selectFrom(L_TIPO_PASSO).fetchMap(L_TIPO_PASSO.CODICE_PASSO);
+    }
+    
+    public Map<Integer, ProcEsitiRecord> getProcEsitiMap() {
+        return ctx.selectFrom(PROC_ESITI).fetchMap(PROC_ESITI.ID_ESITO);
+    }
+    
+    public Map<Integer, GisCentroidiRecord> getCentroidiMap() {
+        return ctx.selectFrom(GIS_CENTROIDI).fetchMap(GIS_CENTROIDI.CODICE_COM);
     }
 }

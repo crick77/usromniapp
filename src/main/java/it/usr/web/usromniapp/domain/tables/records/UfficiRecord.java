@@ -6,6 +6,8 @@ package it.usr.web.usromniapp.domain.tables.records;
 
 import it.usr.web.usromniapp.domain.tables.Uffici;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -88,6 +90,34 @@ public class UfficiRecord extends UpdatableRecordImpl<UfficiRecord> {
         return (Integer) get(4);
     }
 
+    /**
+     * Setter for <code>decreti.uffici.data_disattivazione</code>.
+     */
+    public void setDataDisattivazione(LocalDateTime value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>decreti.uffici.data_disattivazione</code>.
+     */
+    public LocalDateTime getDataDisattivazione() {
+        return (LocalDateTime) get(5);
+    }
+
+    /**
+     * Setter for <code>decreti.uffici.note</code>.
+     */
+    public void setNote(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>decreti.uffici.note</code>.
+     */
+    public String getNote() {
+        return (String) get(6);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -111,7 +141,7 @@ public class UfficiRecord extends UpdatableRecordImpl<UfficiRecord> {
     /**
      * Create a detached, initialised UfficiRecord
      */
-    public UfficiRecord(Integer idUfficio, Integer attivo, String ufficio, Integer idUtente, Integer idUfficioSovraordinato) {
+    public UfficiRecord(Integer idUfficio, Integer attivo, String ufficio, Integer idUtente, Integer idUfficioSovraordinato, LocalDateTime dataDisattivazione, String note) {
         super(Uffici.UFFICI);
 
         setIdUfficio(idUfficio);
@@ -119,6 +149,8 @@ public class UfficiRecord extends UpdatableRecordImpl<UfficiRecord> {
         setUfficio(ufficio);
         setIdUtente(idUtente);
         setIdUfficioSovraordinato(idUfficioSovraordinato);
+        setDataDisattivazione(dataDisattivazione);
+        setNote(note);
         resetChangedOnNotNull();
     }
 }

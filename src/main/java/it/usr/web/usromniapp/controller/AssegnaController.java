@@ -5,12 +5,14 @@
 package it.usr.web.usromniapp.controller;
 
 import it.usr.web.producer.AppLogger;
+import it.usr.web.usromniapp.domain.tables.records.GisCentroidiRecord;
 import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcRecord;
 import it.usr.web.usromniapp.domain.tables.records.UtentiRecord;
 import it.usr.web.usromniapp.interceptor.RequiredAuthorization;
 import it.usr.web.usromniapp.interceptor.SecurityCheck;
 import it.usr.web.usromniapp.model.UtenteRuolo;
+import it.usr.web.usromniapp.service.CodiceService;
 import it.usr.web.usromniapp.service.DatabaseException;
 import it.usr.web.usromniapp.service.ProcedimentoService;
 import it.usr.web.usromniapp.service.TipoOperazioneEnum;
@@ -40,12 +42,16 @@ public class AssegnaController extends OmniappBaseController {
     ProcedimentoService ps;    
     @Inject
     UtenteService us;
+    @Inject
+    CodiceService cs;
     List<LTipoProcRecord> tipiProcedimento;
     LTipoProcRecord tipoProcedimentoSelezionato;
     List<ProcRecord> procedimenti;
     List<ProcRecord> procedimentiSelezionati;
+    List<ProcRecord> procedimentiFiltrati;
     DualListModel<UtenteRuolo> utenti;
     Map<Integer, LTipoProcRecord> mTipiProc;
+    Map<Integer, GisCentroidiRecord> mCentroidi;
     
     @SecurityCheck
     @RequiredAuthorization(TipoOperazioneEnum.A)
@@ -88,7 +94,15 @@ public class AssegnaController extends OmniappBaseController {
     public void setTipoProcedimentoSelezionato(LTipoProcRecord tipoProcedimentoSelezionato) {
         this.tipoProcedimentoSelezionato = tipoProcedimentoSelezionato;
     }
-        
+
+    public List<ProcRecord> getProcedimentiFiltrati() {
+        return procedimentiFiltrati;
+    }
+
+    public void setProcedimentiFiltrati(List<ProcRecord> procedimentiFiltrati) {
+        this.procedimentiFiltrati = procedimentiFiltrati;
+    }
+                
     public void setUtenti(DualListModel<UtenteRuolo> utenti) {
         this.utenti = utenti;
     }
@@ -97,11 +111,27 @@ public class AssegnaController extends OmniappBaseController {
         return mTipiProc.get(idTipoProc);
     }
    
+    public GisCentroidiRecord decodificaCentroide(int codiceCom) {
+        return mCentroidi.get(codiceCom);
+    }
+    
+    public GisCentroidiRecord decodificaCentroide(String codiceCom) {
+        try {
+            return mCentroidi.get(Integer.valueOf(codiceCom));
+        }
+        catch(NumberFormatException nfe) {
+            logger.warn("Ricerca di codice comune con valore non inter [{}].", codiceCom);
+            return null; 
+        }
+    }
+    
     public void aggiorna() {
         tipiProcedimento = ps.getTipiProcedureAutorizzate(getUtenteOmniapp());
+        mCentroidi = cs.getCentroidiMap();
         tipoProcedimentoSelezionato = null;
         procedimenti = null;
         procedimentiSelezionati = null;
+        procedimentiFiltrati = null;
     }
     
     public void aggiornaProcedimenti() {
@@ -114,7 +144,14 @@ public class AssegnaController extends OmniappBaseController {
         utenti.setSource(us.getUtentiRuoloUfficio(getUtenteOmniapp().getUfficio().getIdUfficio(), tipoProcedimentoSelezionato.getIdTipoProc()));
         utenti.setTarget(new ArrayList<>());
     }
-            
+     
+    public void preparaAssegnazione(ProcRecord proc) {        
+        procedimentiSelezionati = new ArrayList<>();
+        procedimentiSelezionati.add(proc);
+         
+        preparaAssegnazione();
+    }
+    
     public void salva() {
         try {
             UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());

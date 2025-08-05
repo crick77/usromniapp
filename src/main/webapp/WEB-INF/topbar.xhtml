@@ -18,7 +18,7 @@
                 </div>
 
                 <a href="#" id="user-display">
-                    <span class="username">#{activeUser.currentUser.username}</span>
+                    <span class="username">#{activeUser.currentUser.attributes.utente.nomeUtente} [#{activeUser.currentUser.username}]</span>
                     <span class="userrole">#{activeUser.currentUser.attributes.ufficio.ufficio}</span>
                     <p:graphicImage name="images/avatar/#{activeUser.currentUser.attributes.gender.toLowerCase()}.svg" library="verona-layout" />
                 </a>

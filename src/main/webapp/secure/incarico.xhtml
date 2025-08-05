@@ -22,43 +22,81 @@
 
             <div class="grid">
                 <div class="col-12">
-                    <div class="card">
-                        <h5>Assegnazioni</h5>
-                        <div class="ui-fluid formgrid grid">
-                            <p:dataTable id="assegnazioni" widgetVar="wvAssegnazioni" var="ass" value="#{lavinCaricoControllersegnazioni}" size="small">
-                                <p:column headerText="Procedimento">
-                                    #{lavorainCaricoControllerificatProcedimento(ass.idTipoProc).tipoProc}
+                    <div class="card">                        
+                        <div class="formgrid grid">
+                            <p:dataTable id="assegnazioni" widgetVar="wvAssegnazioni" var="ass" value="#{inCaricoController.assegnazioni}" size="small" paginator="true"                                         
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rows="10"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} di {totalRecords} procedure"  rowsPerPageTemplate="5,10,{ShowAll|'Tutti'}"
+                                         filteredValue="#{inCaricoController.assegnazioniFiltrate}" emptyMessage="Nessuna procedura in carico o corrispondente ai criteri di ricerca inseriti.">
+
+                                <f:facet name="header">
+                                    <div class="flex align-items-center justify-content-between">
+                                        <span>ELENCO PROCEDIMENTI IN CARICO</span>
+                                        <div>
+                                            <p:inputText id="globalFilter" onkeyup="PrimeFaces.debounce(() => PF('wvAssegnazioni').filter())" style="width:20rem"
+                                                         placeholder="Ricerca globale..." />
+                                        </div>
+                                    </div>
+                                </f:facet>
+
+                                <p:column headerText="PROCEDIMENTO" width="6%" filterBy="#{ass.idTipoProc}" filterMatchMode="exact">
+                                    <f:facet name="filter">
+                                        <p:selectOneMenu onchange="PF('wvAssegnazioni').filter()" style="width: 100%">
+                                            <f:selectItem itemValue="#{null}" itemLabel="TUTTI" noSelectionOption="true" />                                            
+                                            <f:selectItems value="#{inCaricoController.tipiProcedimento}" var="tp" itemValue="#{tp.idTipoProc}" itemLabel="#{tp.tipoProc}" />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    #{inCaricoController.decodificatProcedimento(ass.idTipoProc).tipoProc}
                                 </p:column>
 
-                                <p:column headerText="N.">
+                                <p:column headerText="N." filterBy="#{ass.codice}" filterMatchMode="contains" width="7%">
                                     #{ass.codice}
                                 </p:column>
 
-                                <p:column headerText="Richiedente">
+                                <p:column headerText="RICHIEDENTE" filterBy="#{ass.richiedente}" filterMatchMode="contains">
                                     #{ass.richiedente}
                                 </p:column>
 
-                                <p:column headerText="Indirizzo">
+                                <p:column headerText="INDIRIZZO" filterBy="#{ass.indirizzo}" filterMatchMode="contains">
                                     #{ass.indirizzo}
                                 </p:column>
 
-                                <p:column headerText="Codice Com.">
-                                    #{ass.codiceCom}
+                                <p:column headerText="COMUNE" width="10%" filterBy="#{inCaricoController.decodificaCentroide(ass.codiceCom).comune}" filterMatchMode="contains">
+                                    #{inCaricoController.decodificaCentroide(ass.codiceCom).comune}
                                 </p:column>
-                                
-                                <p:column style="width:6rem">                                    
-                                    Bottoni
+
+                                <p:column headerText="ULTIMO STATO" width="12%" filterBy="#{ass.iter.codicePasso}" filterMatchMode="exact">
+                                    <f:facet name="filter">
+                                        <p:selectOneMenu onchange="PF('wvAssegnazioni').filter()" style="width: 100%">
+                                            <f:selectItem itemValue="#{null}" itemLabel="TUTTI" noSelectionOption="true" />                                            
+                                            <f:selectItems value="#{inCaricoController.tipiPasso}" var="tp" itemValue="#{tp.codicePasso}" itemLabel="#{tp.testoPasso}" />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    #{inCaricoController.decodificaPasso(ass.iter.codicePasso).testoPasso}
+                                </p:column>
+
+                                <p:column headerText="DATA" width="6%" sortBy="#{ass.iter.dataProt}">
+                                    <h:outputText value="#{ass.iter.dataProt}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy" type="localDate" />
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="ESITO" width="10%" filterBy="#{ass.iter.idEsito}" filterMatchMode="exact">
+                                    <f:facet name="filter">
+                                        <p:selectOneMenu onchange="PF('wvAssegnazioni').filter()" style="width: 100%">
+                                            <f:selectItem itemValue="#{null}" itemLabel="TUTTI" noSelectionOption="true" />                                            
+                                            <f:selectItems value="#{inCaricoController.esiti}" var="e" itemValue="#{e.idEsito}" itemLabel="#{e.codice}" />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    #{inCaricoController.decodificaEsito(ass.iter.idEsito).codice}
+                                </p:column>
+
+                                <p:column style="width:3rem">                                    
+                                    <p:commandButton id="iter" icon="pi pi-bolt" styleClass="ui-button-danger" title="Iter pratica" action="#{inCaricoController.mostraIter(ass)}"/>
                                 </p:column>                                                                
                             </p:dataTable>
                         </div>                        
-                    </div>
-                    <div class="card">
-                        <div class="grid mt-3">
-                            <div class="col-12">
-                                <p:commandButton value="Salva" icon="pi pi-save" />
-                            </div>
-                        </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
         </h:form>       

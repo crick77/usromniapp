@@ -254,7 +254,7 @@ public abstract class BaseController implements Serializable {
     public boolean contains(String where, String what) {
         if(isEmpty(where)) return false;
         
-        return where.trim().toLowerCase().contains(notNull(what));
+        return where.trim().toLowerCase().contains(notNull(what.toLowerCase()));
     }
     
     public boolean isDate(String s) {
