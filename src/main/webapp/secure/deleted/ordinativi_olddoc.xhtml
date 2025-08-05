@@ -4,7 +4,7 @@
                 xmlns:ui="jakarta.faces.facelets"
                 xmlns:p="primefaces"
                 xmlns:jsf="jakarta.faces"
-                ="http://primefaces.org/ui/extensions"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/template.xhtml">
 
     <ui:define name="title">Ordinativi</ui:define>
@@ -423,7 +423,7 @@
                             <ui:fragment rendered="#{empty ordinativiController.ordinativo.id}">
                                 <div class="field">                                    
                                     <p:outputLabel for="documento">Documenti</p:outputLabel>&#160;&#160;&#160;
-                                    <p:fileUpload id="documento" value="#{ordinativiController.documentFiles}" mode="simple" dragDropSupport="true"  update="msg" 
+                                    <p:fileUpload id="documento" value="#{ordinativiController.documentFiles}" mode="simple" update="msg" 
                                                   skinSimple="true" label="Seleziona documenti" style="width:100%" multiple="true">
                                         <p:validateFile sizeLimit="67108864" />
                                     </p:fileUpload>
@@ -553,7 +553,7 @@
         <h:form id="uploadForm" enctype="multipart/form-data">
             <p:dialog header="Allegati" showEffect="fade" modal="true" widgetVar="allegatiDialog" responsive="true" width="30%">
                 <p:outputPanel id="allegati-content" class="ui-fluid" >   
-                    <p:fileUpload id="documento" value="#{ordinativiController.documentFiles}" mode="simple" dragDropSupport="true"  update="form:msg" 
+                    <p:fileUpload id="documento" value="#{ordinativiController.documentFiles}" mode="simple"  update="form:msg" 
                                   skinSimple="true" label="Seleziona documenti" style="width:100%" multiple="true">
                         <p:validateFile sizeLimit="67108864" />
                     </p:fileUpload>
