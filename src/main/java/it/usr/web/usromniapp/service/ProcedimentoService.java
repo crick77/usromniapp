@@ -244,7 +244,7 @@ public class ProcedimentoService {
                      where 
                         (pa.id_utente = {0}) and 
                          (p.id_tipo_proc = {1}) and 
-                         (pa.autorizzazioni like '%M%' or pa.autorizzazioni like '%A%') and 
+                         (pa.autorizzazioni like '%A%') and 
                          ((pa.data_assegnazione <= {2} and pa.data_rimozione is null) or ({2} between pa.data_assegnazione and pa.data_rimozione))      
                      and exists (
                         select pass.id_proc 
@@ -451,7 +451,8 @@ public class ProcedimentoService {
                         join l_ruolo r 
                           on pa.id_ruolo = r.id_ruolo     
                      where 
-                     pa.id_utente_delegante = {0} 
+                         -- pa.id_utente_delegante = {0} 
+                         pa.autorizzazioni like '%M%'
                          and pa.id_proc = {1} 
                          and ((pa.data_assegnazione <= now() and pa.data_rimozione is null) or (now() between pa.data_assegnazione and pa.data_rimozione))""";
         return ctx.fetch(sql, idDelegante, idProc).into(UtenteRuolo.class);
