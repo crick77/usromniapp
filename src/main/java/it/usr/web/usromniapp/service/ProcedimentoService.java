@@ -173,14 +173,17 @@ public class ProcedimentoService {
         Condition tipoProcCond = DSL.noCondition();
         Condition procCond = DSL.noCondition(); 
 
+        // Permette di vedere le sole tipologie di procedure ammesse
         if (!ev.getIdTipiProc().isEmpty()) {
             tipoProcCond = tipoProcCond.and(PROC.ID_TIPO_PROC.in(ev.getIdTipiProc()));
-        }
-        if (!ev.getIdProcEsclusi().isEmpty()) {
-            tipoProcCond = tipoProcCond.and(PROC.ID_TIPO_PROC.notIn(ev.getIdProcEsclusi()));
-        }
+        }        
+        // Mostra solo le procedure permesse
         if (!ev.getIdProcVisibili().isEmpty()) {
             procCond = procCond.and(PROC.ID_PROC.in(ev.getIdProcVisibili()));
+        }
+        // Escludi quelle espressamente negate
+        if (!ev.getIdProcEsclusi().isEmpty()) {
+            procCond = procCond.and(PROC.ID_PROC.notIn(ev.getIdProcEsclusi()));
         }
                         
         return ctx.select(

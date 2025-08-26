@@ -53,10 +53,10 @@
                                     #{iterController.decodificaUtente(it.idUtente).nomeUtente}
                                 </p:column>
                                 <p:column style="width:3rem"> 
-                                    <p:commandButton id="dettaglio" icon="pi pi-eye" title="Dettaglio iter" action="#{iterController.mostraDettaglio(it)}" process="@this" update="form:iterDetailPanel" oncomplete="PF('dettaglioDialogWV').show()"/>
+                                    <p:commandButton id="dettaglio" icon="pi pi-eye" title="Dettaglio iter" action="#{iterController.mostraDettaglio(it)}" process="@this" update="@form" oncomplete="PF('dettaglioDialogWV').show()"/>
                                 </p:column>
                                 <p:column style="width:3rem">                                     
-                                    <p:commandButton id="modifica" icon="pi pi-pencil" disabled="#{it.modificabile eq 0}" title="Modifica iter" action="#{iterController.modifica(it)}" process="@this" update="form:iterPanel" oncomplete="PF('iterDialogWV').show()"/>
+                                    <p:commandButton id="modifica" icon="pi pi-pencil" disabled="#{it.modificabile eq 0}" title="Modifica iter" action="#{iterController.modifica(it)}" process="@this" update="@form" oncomplete="PF('iterDialogWV').show()"/>
                                 </p:column>
 
                                 <p:rowExpansion id="expansion">
@@ -80,7 +80,7 @@
                                             #{iterController.decodificaUtente(itl.idUtente).nomeUtente}
                                         </p:column>
                                         <p:column style="width:3rem"> 
-                                            <p:commandButton id="dettaglio_link" icon="pi pi-eye" title="Dettaglio iter" action="#{iterController.mostraDettaglio(itl)}" process="@this" update="form:iterDetailPanel" oncomplete="PF('dettaglioDialogWV').show()"/>
+                                            <p:commandButton id="dettaglio_link" icon="pi pi-eye" title="Dettaglio iter" action="#{iterController.mostraDettaglio(itl)}" process="@this" update="@form" oncomplete="PF('dettaglioDialogWV').show()"/>
                                         </p:column>
                                     </p:dataTable>
                                 </p:rowExpansion>
@@ -148,7 +148,7 @@
                 </f:facet>
             </p:dialog>
             
-            <p:dialog id="dettaglio" widgetVar="dettaglioDialogWV" header="Dettaglio iter" showEffect="fade" modal="true" responsive="true" width="60%" visible="hidden">
+            <p:dialog id="dettaglioDialog" widgetVar="dettaglioDialogWV" header="Dettaglio iter" showEffect="fade" modal="true" responsive="true" width="60%" visible="hidden">
                 <p:outputPanel class="ui-fluid grid formgrid" id="iterDetailPanel">
                     <div class="field col-12">
                         <p:outputLabel for="@next">
