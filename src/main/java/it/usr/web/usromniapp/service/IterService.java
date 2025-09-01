@@ -9,7 +9,6 @@ import it.usr.web.usromniapp.domain.tables.records.LTipoPassoRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcEsitiRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcIterRecord;
 import it.usr.web.usromniapp.interceptor.LogDatabaseOperation;
-import it.usr.web.usromniapp.model.Utente;
 import it.usr.web.usromniapp.producer.DSLCtx;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
@@ -18,7 +17,6 @@ import jakarta.inject.Inject;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Map;
-import org.jooq.CommonTableExpression;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
@@ -41,7 +39,7 @@ public class IterService {
     }*/
 
     public List<ProcIterRecord> getIterAttiviByIdProc(int idProc) {
-        return ctx.selectFrom(PROC_ITER).where(PROC_ITER.ID_PROC.eq(idProc).and(PROC_ITER.ATTIVO.eq(1))).orderBy(PROC_ITER.DATA_PROT.desc()).fetch();
+        return ctx.selectFrom(PROC_ITER).where(PROC_ITER.ID_PROC.eq(idProc).and(PROC_ITER.ATTIVO.eq(1))).orderBy(PROC_ITER.DATA_PROT.desc(), PROC_ITER.PROT.desc()).fetch();
     } 
   
     public List<ProcIterRecord> getSequenzaIter(int idProcIter) {
