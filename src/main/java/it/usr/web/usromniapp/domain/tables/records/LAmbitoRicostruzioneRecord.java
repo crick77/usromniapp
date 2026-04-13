@@ -68,6 +68,6 @@ public class LAmbitoRicostruzioneRecord extends TableRecordImpl<LAmbitoRicostruz
 
         setIdAmbitoRicostruzione(idAmbitoRicostruzione);
         setAmbitoRicostruzione(ambitoRicostruzione);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

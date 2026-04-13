@@ -7,6 +7,7 @@ package it.usr.web.usromniapp.controller;
 import it.usr.web.producer.AppLogger;
 import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
 import it.usr.web.usromniapp.service.ProcedimentoService;
+import it.usr.web.usromniapp.service.TipoOperazioneEnum;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -29,7 +30,7 @@ public class NuovoProcedimentoController extends OmniappBaseController {
     LTipoProcRecord tipoProcedimento;
     
     public void init() {
-        tipiProcedimento = ps.getTipiProcedimento(getUtenteOmniapp());
+        tipiProcedimento = ps.getTipiProcedureAutorizzate(getUtenteOmniapp(), new TipoOperazioneEnum[] { TipoOperazioneEnum.M });
         tipoProcedimento = null;
     }
 
@@ -39,7 +40,7 @@ public class NuovoProcedimentoController extends OmniappBaseController {
 
     public LTipoProcRecord getTipoProcedimento() {
         return tipoProcedimento;
-    }
+    } 
 
     public void setTipoProcedimento(LTipoProcRecord tipoProcedimento) {
         this.tipoProcedimento = tipoProcedimento;

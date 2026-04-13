@@ -151,6 +151,6 @@ public class DelegaRecord extends UpdatableRecordImpl<DelegaRecord> {
         setDataInizio(dataInizio);
         setDataFine(dataFine);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

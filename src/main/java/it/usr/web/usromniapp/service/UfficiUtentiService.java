@@ -4,6 +4,7 @@
  */
 package it.usr.web.usromniapp.service;
 
+import it.usr.web.service.BaseService;
 import static it.usr.web.usromniapp.domain.Tables.*;
 import it.usr.web.usromniapp.domain.routines.SpAggiornaUfficio;
 import it.usr.web.usromniapp.domain.tables.Uffici;
@@ -23,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
-import org.jooq.impl.DSL;
 
 /**
  *
@@ -31,7 +31,7 @@ import org.jooq.impl.DSL;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class UfficiUtentiService {    
+public class UfficiUtentiService extends BaseService {    
     @Inject
     @DSLCtx
     DSLContext ctx;
@@ -95,22 +95,33 @@ public class UfficiUtentiService {
             throw new DatabaseException(dae);
         }
     }
+
     
     @LogDatabaseOperation
     public void disattiva(UfficiRecord ufficio, String estremiProvv) throws DatabaseException {
         try {
             LocalDateTime now = LocalDateTime.now();
             final String note = truncate(ufficio.getNote()+" "+estremiProvv, 255);
-            final String auth = "%A%";
+            //final String auth = "%A%";
+            int A = TipoOperazioneEnum.A.getOperazione();
             
             ctx.transaction(trx -> {
+                // Disattiva prima l'ufficio 
                 trx.dsl().update(UFFICI).set(UFFICI.ATTIVO, 0).where(UFFICI.ID_UFFICIO.eq(ufficio.getIdUfficio())).execute();
                 
-                trx.dsl().update(PROC_ASS).set(PROC_ASS.DATA_RIMOZIONE, now).set(PROC_ASS.NOTE, note).where(PROC_ASS.ID_UTENTE.eq(ufficio.getIdUtente())).and(PROC_ASS.AUTORIZZAZIONI.like(auth)).and(PROC_ASS.DATA_RIMOZIONE.isNull()).execute();
+                // Disattiva tutte le ACL (sia di tipo che di singola procedura) per tutti i membri dell'ufficio
+                trx.dsl().update(PROC_ACL)
+                            .set(PROC_ACL.DATA_RIMOZIONE, now)
+                            .set(PROC_ACL.NOTE, note)
+                         .where(PROC_ACL.ID_UFFICIO.eq(ufficio.getIdUfficio()))
+                           //.and(PROC_ACL.AUTORIZZAZIONI.bitAnd(A).eq(A))
+                           .and(PROC_ACL.DATA_RIMOZIONE.isNull())
+                         .execute();
                 
-                trx.dsl().update(TIPO_PROC_ASS).set(TIPO_PROC_ASS.DATA_RIMOZIONE, now).set(TIPO_PROC_ASS.NOTE, note).where(TIPO_PROC_ASS.ID_UTENTE.eq(ufficio.getIdUtente())).and(TIPO_PROC_ASS.AUTORIZZAZIONI.like(auth)).and(TIPO_PROC_ASS.DATA_RIMOZIONE.isNull()).execute();
+                // Rimuove ogni record "orfano" (e non più necessario) negli abbinamenti ACL<->istruttori
+                trx.dsl().delete(PROC_ACL_ISTRUTTORI).where(PROC_ACL_ISTRUTTORI.ID_UFFICIO.eq(ufficio.getIdUfficio())).execute();
                 
-                trx.dsl().update(TIPO_PROC_ASS).set(TIPO_PROC_ASS.DATA_RIMOZIONE, now).set(TIPO_PROC_ASS.NOTE, note).where(TIPO_PROC_ASS.ID_UFFICIO.eq(ufficio.getIdUfficio())).and(TIPO_PROC_ASS.DATA_RIMOZIONE.isNull()).execute();
+                //trx.dsl().update(TIPO_PROC_ASS).set(TIPO_PROC_ASS.DATA_RIMOZIONE, now).set(TIPO_PROC_ASS.NOTE, note).where(TIPO_PROC_ASS.ID_UFFICIO.eq(ufficio.getIdUfficio())).and(TIPO_PROC_ASS.DATA_RIMOZIONE.isNull()).execute();
             });
         } catch (DataAccessException dae) {
             if (dae.getCause() instanceof SQLIntegrityConstraintViolationException) {
@@ -119,9 +130,5 @@ public class UfficiUtentiService {
 
             throw new DatabaseException(dae);
         }
-    }
-    
-    public String truncate(String s, int len) {
-        return (s==null || s.length()<len) ? s : s.substring(0, len);
-    }
+    }        
 }

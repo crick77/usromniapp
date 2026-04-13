@@ -136,6 +136,6 @@ public class TipoProcUfficiRecord extends UpdatableRecordImpl<TipoProcUfficiReco
         setDataInizio(dataInizio);
         setDataFine(dataFine);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

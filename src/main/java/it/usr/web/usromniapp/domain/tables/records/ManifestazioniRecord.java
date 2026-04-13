@@ -399,6 +399,6 @@ public class ManifestazioniRecord extends UpdatableRecordImpl<ManifestazioniReco
         setImportoDichiarato(importoDichiarato);
         setComune(comune);
         setNoteUsrAbruzzo(noteUsrAbruzzo);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

@@ -136,6 +136,6 @@ public class GisCentroidiElementiRecord extends TableRecordImpl<GisCentroidiElem
         setComune(comune);
         setCentro(centro);
         setNumElementi(numElementi);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

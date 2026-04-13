@@ -194,6 +194,6 @@ public class ProcTecniciRecord extends UpdatableRecordImpl<ProcTecniciRecord> {
         setPeo(peo);
         setTelefono(telefono);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

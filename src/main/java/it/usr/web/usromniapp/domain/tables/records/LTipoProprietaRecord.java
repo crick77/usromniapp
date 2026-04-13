@@ -74,6 +74,6 @@ public class LTipoProprietaRecord extends UpdatableRecordImpl<LTipoProprietaReco
 
         setIdTipoProprieta(idTipoProprieta);
         setProprieta(proprieta);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

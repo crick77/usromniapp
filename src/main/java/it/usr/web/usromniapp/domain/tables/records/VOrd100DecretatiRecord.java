@@ -68,6 +68,6 @@ public class VOrd100DecretatiRecord extends TableRecordImpl<VOrd100DecretatiReco
 
         setIdPratica(idPratica);
         setDataOraProvvedimento(dataOraProvvedimento);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

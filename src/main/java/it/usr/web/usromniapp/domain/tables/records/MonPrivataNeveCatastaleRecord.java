@@ -218,6 +218,6 @@ public class MonPrivataNeveCatastaleRecord extends TableRecordImpl<MonPrivataNev
         setIstruttore(istruttore);
         setFoglio(foglio);
         setParticella(particella);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

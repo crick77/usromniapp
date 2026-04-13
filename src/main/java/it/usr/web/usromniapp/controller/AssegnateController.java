@@ -127,7 +127,7 @@ public class AssegnateController extends OmniappBaseController {
     }
         
     public void aggiorna() {
-        tipiProcedimento = ps.getTipiProcedureAutorizzate(getUtenteOmniapp());
+        tipiProcedimento = ps.getTipiProcedureAutorizzate(getUtenteOmniapp(), new TipoOperazioneEnum[] { TipoOperazioneEnum.M });
         mCentroidi = cs.getCentroidiMap();
         tipoProcedimentoSelezionato = null;
         procedimenti = null;
@@ -136,32 +136,36 @@ public class AssegnateController extends OmniappBaseController {
     }
 
     public void aggiornaProcedimenti() {
-        UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());        
-        procedimenti = ps.getProcedureAssegnate(delegato.getIdUtente(), tipoProcedimentoSelezionato.getIdTipoProc(), LocalDateTime.now());
+        //UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());                
+        //procedimenti = ps.getProcedureAssegnate(delegato.getIdUtente(), tipoProcedimentoSelezionato.getIdTipoProc(), LocalDateTime.now());
+        tipiProcedimento = ps.getTipiProcedureAutorizzate(getUtenteOmniapp(), new TipoOperazioneEnum[] { TipoOperazioneEnum.M });
+        procedimenti = ps.getProcedureAssegnazione(getUtenteOmniapp(), tipoProcedimentoSelezionato.getIdTipoProc(), ProcAssegnata.class);
         procedimentoSelezionato = null;
     }
     
     public void preparaAssegnazione(ProcAssegnata proc) {
         procedimentoSelezionato = proc;
-        List<UtenteRuolo> sorgente = us.getUtentiRuoloUfficio(getUtenteOmniapp().getUfficio().getIdUfficio(), proc.getIdTipoProc());
-        UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());
-        List<UtenteRuolo> destinazione = ps.getAssegnazioniAttualiProcedura(delegato.getIdUtente(), procedimentoSelezionato.getIdProc());
+        //List<UtenteRuolo> sorgente = us.getUtentiRuoloUfficio(getUtenteOmniapp().getUfficio().getIdUfficio(), proc.getIdTipoProc());        
+        List<UtenteRuolo> sorgente = us.getUtentiRuoloUfficio(getUtenteOmniapp().getUffici(), proc.getIdTipoProc());        
+        int delega = getUtenteOmniapp().getDeleghe().get(tipoProcedimentoSelezionato.getIdTipoProc());
+        List<UtenteRuolo> destinazione = ps.getAssegnazioniAttualiProcedura(procedimentoSelezionato.getIdProc(), delega);
         sorgente.removeAll(destinazione);
         utentiOriginali = new DualListModel<>(sorgente, destinazione);        
         utenti = new DualListModel<>(new ArrayList<>(sorgente), new ArrayList<>(destinazione));
     }
-
+ 
     public void salva() {
         try {
             // copia per evitare interferenze con la pagina in caso di errore
             List<UtenteRuolo> source = new ArrayList<>(utenti.getSource());
-            List<UtenteRuolo> target = new ArrayList<>(utenti.getTarget()); 
+            List<UtenteRuolo> target = new ArrayList<>(utenti.getTarget());  
             
             source.removeAll(utentiOriginali.getSource()); // da rimuovere
             target.removeAll(utentiOriginali.getTarget()); // da aggiungere
             
-            UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());
-            ps.modificaAssegnazioni(procedimentoSelezionato, source, target, getUtenteOmniapp().getUtente(), delegato, LocalDateTime.now());
+            //UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());
+            int delega = getUtenteOmniapp().getDeleghe().get(tipoProcedimentoSelezionato.getIdTipoProc());
+            ps.modificaAssegnazioni(procedimentoSelezionato, source, target, getUtenteOmniapp().getUtente(), delega, LocalDateTime.now());
 
             aggiornaProcedimenti();
 
@@ -170,7 +174,6 @@ public class AssegnateController extends OmniappBaseController {
         } catch (DatabaseException dbe) {
             addMessage(Message.error(dbe.toString()));
         }
-
     }
             
     public String[] splitAssegnatari(String ass) {

@@ -136,6 +136,6 @@ public class ReportcommissarioworkRecord extends UpdatableRecordImpl<Reportcommi
         setDt(dt);
         setCompleted(completed);
         setError(error);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

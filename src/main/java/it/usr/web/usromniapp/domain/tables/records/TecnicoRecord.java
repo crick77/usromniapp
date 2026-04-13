@@ -226,6 +226,6 @@ public class TecnicoRecord extends UpdatableRecordImpl<TecnicoRecord> {
         setDataAlbo(dataAlbo);
         setProvAlbo(provAlbo);
         setSospeso(sospeso);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

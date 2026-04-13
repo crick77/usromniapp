@@ -74,6 +74,6 @@ public class LSceltaRecord extends UpdatableRecordImpl<LSceltaRecord> {
 
         setIdScelta(idScelta);
         setScelta(scelta);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

@@ -106,6 +106,6 @@ public class UfficiProvvedimentiRecord extends UpdatableRecordImpl<UfficiProvved
         setAttivo(attivo);
         setIdUfficio(idUfficio);
         setIdTipoProvvedimento(idTipoProvvedimento);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

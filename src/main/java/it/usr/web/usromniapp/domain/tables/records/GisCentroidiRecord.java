@@ -161,6 +161,6 @@ public class GisCentroidiRecord extends UpdatableRecordImpl<GisCentroidiRecord> 
         setCratere2016(cratere2016);
         setComune(comune);
         setCentro(centro);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

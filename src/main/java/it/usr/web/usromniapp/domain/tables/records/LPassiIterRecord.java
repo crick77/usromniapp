@@ -124,6 +124,6 @@ public class LPassiIterRecord extends TableRecordImpl<LPassiIterRecord> {
         setStato(stato);
         setStatoMudeUsr(statoMudeUsr);
         setPunteggio(punteggio);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

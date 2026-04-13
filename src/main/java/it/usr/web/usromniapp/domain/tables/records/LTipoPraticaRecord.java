@@ -104,6 +104,6 @@ public class LTipoPraticaRecord extends UpdatableRecordImpl<LTipoPraticaRecord> 
         setAttivo(attivo);
         setTipoPratica(tipoPratica);
         setTipoPraticaEsteso(tipoPraticaEsteso);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

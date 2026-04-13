@@ -89,6 +89,6 @@ public class UtentiUtentiRecord extends UpdatableRecordImpl<UtentiUtentiRecord> 
         setContatore(contatore);
         setIdUtente(idUtente);
         setIdUtenteUtente(idUtenteUtente);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

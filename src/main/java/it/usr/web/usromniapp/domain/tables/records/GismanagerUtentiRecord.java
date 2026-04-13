@@ -74,6 +74,6 @@ public class GismanagerUtentiRecord extends UpdatableRecordImpl<GismanagerUtenti
 
         setUsername(username);
         setAbilitato(abilitato);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

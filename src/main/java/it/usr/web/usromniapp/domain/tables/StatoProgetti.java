@@ -109,7 +109,7 @@ public class StatoProgetti extends TableImpl<StatoProgettiRecord> {
      * The column
      * <code>decreti.stato_progetti.assegnazioni_storico_privata2</code>.
      */
-    public final TableField<StatoProgettiRecord, String> ASSEGNAZIONI_STORICO_PRIVATA2 = createField(DSL.name("assegnazioni_storico_privata2"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<StatoProgettiRecord, String> ASSEGNAZIONI_STORICO_PRIVATA2 = createField(DSL.name("assegnazioni_storico_privata2"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column
@@ -131,7 +131,7 @@ public class StatoProgetti extends TableImpl<StatoProgettiRecord> {
      * The column
      * <code>decreti.stato_progetti.assegnazioni_storico_direttore</code>.
      */
-    public final TableField<StatoProgettiRecord, String> ASSEGNAZIONI_STORICO_DIRETTORE = createField(DSL.name("assegnazioni_storico_direttore"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<StatoProgettiRecord, String> ASSEGNAZIONI_STORICO_DIRETTORE = createField(DSL.name("assegnazioni_storico_direttore"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column
@@ -233,7 +233,7 @@ public class StatoProgetti extends TableImpl<StatoProgettiRecord> {
     /**
      * The column <code>decreti.stato_progetti.data_presentazione_sal</code>.
      */
-    public final TableField<StatoProgettiRecord, String> DATA_PRESENTAZIONE_SAL = createField(DSL.name("data_presentazione_sal"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<StatoProgettiRecord, String> DATA_PRESENTAZIONE_SAL = createField(DSL.name("data_presentazione_sal"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>decreti.stato_progetti.data_sal_finale</code>.

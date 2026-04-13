@@ -89,7 +89,7 @@ public class GisCentroidiElementi extends TableImpl<GisCentroidiElementiRecord> 
     }
 
     private GisCentroidiElementi(Name alias, Table<GisCentroidiElementiRecord> aliased, Field<?>[] parameters, Condition where) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view `gis_centroidi_elementi` as select `gc`.`id` AS `id`,`gc`.`codice_prov` AS `codice_prov`,`gc`.`codice_com` AS `codice_com`,`gc`.`comune` AS `comune`,`gc`.`centro` AS `centro`,(select count(`gp`.`id`) from `decreti`.`gis_privata` `gp` where `gp`.`istat` = `gc`.`codice_com`) AS `num_elementi` from `decreti`.`gis_centroidi` `gc`"), where);
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("CREATE VIEW `gis_centroidi_elementi` AS select `gc`.`id` AS `id`,`gc`.`codice_prov` AS `codice_prov`,`gc`.`codice_com` AS `codice_com`,`gc`.`comune` AS `comune`,`gc`.`centro` AS `centro`,(select count(`gp`.`id`) from `decreti`.`gis_privata` `gp` where `gp`.`istat` = `gc`.`codice_com`) AS `num_elementi` from `decreti`.`gis_centroidi` `gc`"), where);
     }
 
     /**

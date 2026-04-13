@@ -226,6 +226,6 @@ public class UtentiRecord extends UpdatableRecordImpl<UtentiRecord> {
         setUtentePigrego(utentePigrego);
         setPassword(password);
         setDataScadenzaPassword(dataScadenzaPassword);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

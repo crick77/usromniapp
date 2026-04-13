@@ -111,6 +111,6 @@ public class VEstrazioniLavoriRecord extends TableRecordImpl<VEstrazioniLavoriRe
         setDataFinelavori(dataFinelavori);
         setDataMetalavori(dataMetalavori);
         setOrd100(ord100);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

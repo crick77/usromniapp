@@ -6,11 +6,9 @@ package it.usr.web.usromniapp.interceptor;
 
 import it.usr.web.domain.ActiveUser;
 import it.usr.web.producer.AppLogger;
-import it.usr.web.usromniapp.domain.tables.records.UtentiRecord;
 import it.usr.web.usromniapp.model.Utente;
 import it.usr.web.usromniapp.service.SecurityService;
 import it.usr.web.usromniapp.service.TipoOperazioneEnum;
-import it.usr.web.usromniapp.service.UtenteService;
 import jakarta.annotation.Priority;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
@@ -18,8 +16,6 @@ import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 import java.io.Serializable;
-import java.util.LinkedHashSet;
-import java.util.StringJoiner;
 import org.slf4j.Logger;
 
 /**
@@ -48,14 +44,25 @@ public class SecurityCheckInterceptor implements Serializable {
         if(ra==null) throw new IllegalCallerException("Il metodo ["+context.getMethod().getName()+"] non contiene la specifica di RequiredAuthorization.");
         
         Utente u = (Utente)user.getCurrentUser().getAttributes();
-        logger.info("Verifico l'accesso alla risorsa [{}] per l'utente [{}] con le autorizzazioni [{}].", context.getMethod().getDeclaringClass().getSimpleName(), u.getUtente().getUtente(), ra.value());
-        if(!ss.canOpen(u, ss.arrayToString(ra.value()))) {
-           logger.warn("[{}] L'utente [{}] non ha alcun accesso alla pagina [{}]. Invio pagina di notifica.", this.getClass().getSimpleName(), u.getUtente().getUtente(), FacesContext.getCurrentInstance().getViewRoot().getViewId());
+        //String function = context.getMethod().getClass().getName()+"."+context.getMethod().getName();
+        String function = context.getMethod().getDeclaringClass().getSimpleName();
+        int authCalc = calcolaAutorizzazioni(ra);
+        logger.info("Verifico l'accesso alla risorsa [{}] per l'utente [{}] con le autorizzazioni [{}/{}].", function, u.getUtente().getUtente(), ra.value(), authCalc);
+        if(!ss.checkFunction(function, u, authCalc)) {
+           logger.warn("L'utente [{}] non ha accesso alla risorsa [{}]/pagina [{}] con autorizzazioni [{}]. Invio pagina di notifica.", u.getUtente().getUtente(), function, FacesContext.getCurrentInstance().getViewRoot().getViewId(), ra.value());
            return "/access";
         } 
         else {
-            logger.info("Accesso alla risorsa [{}] per l'utente [{}] con le autorizzazioni [{}] consentita.", context.getMethod().getDeclaringClass().getSimpleName(), u.getUtente().getUtente(), ra.value());
+            logger.info("L'utente [{}] ha accesso alla risorsa [{}] con le autorizzazioni [{}] consentita.", u.getUtente().getUtente(), function,  ra.value());
             return context.proceed();
         } 
-    }         
+    }       
+ 
+    private int calcolaAutorizzazioni(RequiredAuthorization a) {
+        int res = 0;
+        for(TipoOperazioneEnum op : a.value()) {
+            res = res | op.getOperazione();
+        }
+        return res;
+    }
 } 

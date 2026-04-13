@@ -62,31 +62,45 @@ public class VRuoliutenteAttiviRecord extends TableRecordImpl<VRuoliutenteAttivi
     }
 
     /**
+     * Setter for <code>decreti.v_ruoliutente_attivi.id_ufficio</code>.
+     */
+    public void setIdUfficio(Integer value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>decreti.v_ruoliutente_attivi.id_ufficio</code>.
+     */
+    public Integer getIdUfficio() {
+        return (Integer) get(3);
+    }
+
+    /**
      * Setter for <code>decreti.v_ruoliutente_attivi.data_inizio</code>.
      */
     public void setDataInizio(LocalDateTime value) {
-        set(3, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>decreti.v_ruoliutente_attivi.data_inizio</code>.
      */
     public LocalDateTime getDataInizio() {
-        return (LocalDateTime) get(3);
+        return (LocalDateTime) get(4);
     }
 
     /**
      * Setter for <code>decreti.v_ruoliutente_attivi.data_fine</code>.
      */
     public void setDataFine(LocalDateTime value) {
-        set(4, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>decreti.v_ruoliutente_attivi.data_fine</code>.
      */
     public LocalDateTime getDataFine() {
-        return (LocalDateTime) get(4);
+        return (LocalDateTime) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -103,14 +117,15 @@ public class VRuoliutenteAttiviRecord extends TableRecordImpl<VRuoliutenteAttivi
     /**
      * Create a detached, initialised VRuoliutenteAttiviRecord
      */
-    public VRuoliutenteAttiviRecord(Integer idRuoliUtente, Integer idRuolo, Integer idUtente, LocalDateTime dataInizio, LocalDateTime dataFine) {
+    public VRuoliutenteAttiviRecord(Integer idRuoliUtente, Integer idRuolo, Integer idUtente, Integer idUfficio, LocalDateTime dataInizio, LocalDateTime dataFine) {
         super(VRuoliutenteAttivi.V_RUOLIUTENTE_ATTIVI);
 
         setIdRuoliUtente(idRuoliUtente);
         setIdRuolo(idRuolo);
         setIdUtente(idUtente);
+        setIdUfficio(idUfficio);
         setDataInizio(dataInizio);
         setDataFine(dataFine);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

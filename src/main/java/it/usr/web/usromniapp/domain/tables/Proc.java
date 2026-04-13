@@ -9,8 +9,9 @@ import it.usr.web.usromniapp.domain.Indexes;
 import it.usr.web.usromniapp.domain.Keys;
 import it.usr.web.usromniapp.domain.tables.Incarico.IncaricoPath;
 import it.usr.web.usromniapp.domain.tables.LTipoProc.LTipoProcPath;
-import it.usr.web.usromniapp.domain.tables.ProcAss.ProcAssPath;
-import it.usr.web.usromniapp.domain.tables.ProcAssAttuali.ProcAssAttualiPath;
+import it.usr.web.usromniapp.domain.tables.Proc.ProcPath;
+import it.usr.web.usromniapp.domain.tables.ProcAcl.ProcAclPath;
+import it.usr.web.usromniapp.domain.tables.ProcAclIstruttori.ProcAclIstruttoriPath;
 import it.usr.web.usromniapp.domain.tables.ProcCat.ProcCatPath;
 import it.usr.web.usromniapp.domain.tables.ProcIncarichi.ProcIncarichiPath;
 import it.usr.web.usromniapp.domain.tables.ProcIter.ProcIterPath;
@@ -98,6 +99,11 @@ public class Proc extends TableImpl<ProcRecord> {
     public final TableField<ProcRecord, String> CODICE = createField(DSL.name("codice"), SQLDataType.VARCHAR(32).nullable(false), this, "");
 
     /**
+     * The column <code>decreti.proc.codice_sub</code>.
+     */
+    public final TableField<ProcRecord, String> CODICE_SUB = createField(DSL.name("codice_sub"), SQLDataType.VARCHAR(4).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
+
+    /**
      * The column <code>decreti.proc.richiedente</code>.
      */
     public final TableField<ProcRecord, String> RICHIEDENTE = createField(DSL.name("richiedente"), SQLDataType.VARCHAR(255).nullable(false), this, "");
@@ -126,6 +132,26 @@ public class Proc extends TableImpl<ProcRecord> {
      * The column <code>decreti.proc.id_proc_iter_ultimo</code>.
      */
     public final TableField<ProcRecord, Integer> ID_PROC_ITER_ULTIMO = createField(DSL.name("id_proc_iter_ultimo"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>decreti.proc.id_proc_iter_ultimo_ufficio</code>.
+     */
+    public final TableField<ProcRecord, Integer> ID_PROC_ITER_ULTIMO_UFFICIO = createField(DSL.name("id_proc_iter_ultimo_ufficio"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>decreti.proc.id_proc_iter_firma</code>.
+     */
+    public final TableField<ProcRecord, Integer> ID_PROC_ITER_FIRMA = createField(DSL.name("id_proc_iter_firma"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>decreti.proc.id_proc_sup</code>.
+     */
+    public final TableField<ProcRecord, Integer> ID_PROC_SUP = createField(DSL.name("id_proc_sup"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>decreti.proc.id_proc_iter_esito</code>.
+     */
+    public final TableField<ProcRecord, Integer> ID_PROC_ITER_ESITO = createField(DSL.name("id_proc_iter_esito"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "");
 
     private Proc(Name alias, Table<ProcRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -196,7 +222,7 @@ public class Proc extends TableImpl<ProcRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PROC_FK_PROC_GISCENTROIDI_IDX, Indexes.PROC_FK_PROC_PROCITER_IDX, Indexes.PROC_FK_PROC_TIPOPROC_IDX);
+        return Arrays.asList(Indexes.PROC_FK_PROC_GISCENTROIDI_IDX, Indexes.PROC_FK_PROC_ITER_ESITO_IDX, Indexes.PROC_FK_PROC_ITER_FIRMA_IDX, Indexes.PROC_FK_PROC_ITER_ULTIMOUFF_IDX, Indexes.PROC_FK_PROC_PROCITER_IDX, Indexes.PROC_FK_PROC_SUP_SELF_IDX, Indexes.PROC_FK_PROC_TIPOPROC_IDX);
     }
 
     @Override
@@ -211,7 +237,71 @@ public class Proc extends TableImpl<ProcRecord> {
 
     @Override
     public List<ForeignKey<ProcRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PROC_TIPOPROC);
+        return Arrays.asList(Keys.FK_PROC_ITER_ESITO, Keys.FK_PROC_ITER_FIRMA, Keys.FK_PROC_ITER_ULTIMO, Keys.FK_PROC_ITER_ULTIMOUFF, Keys.FK_PROC_SUP_SELF, Keys.FK_PROC_TIPOPROC);
+    }
+
+    private transient ProcIterPath _fkProcIterEsito;
+
+    /**
+     * Get the implicit join path to the <code>decreti.proc_iter</code> table,
+     * via the <code>fk_proc_iter_esito</code> key.
+     */
+    public ProcIterPath fkProcIterEsito() {
+        if (_fkProcIterEsito == null)
+            _fkProcIterEsito = new ProcIterPath(this, Keys.FK_PROC_ITER_ESITO, null);
+
+        return _fkProcIterEsito;
+    }
+
+    private transient ProcIterPath _fkProcIterFirma;
+
+    /**
+     * Get the implicit join path to the <code>decreti.proc_iter</code> table,
+     * via the <code>fk_proc_iter_firma</code> key.
+     */
+    public ProcIterPath fkProcIterFirma() {
+        if (_fkProcIterFirma == null)
+            _fkProcIterFirma = new ProcIterPath(this, Keys.FK_PROC_ITER_FIRMA, null);
+
+        return _fkProcIterFirma;
+    }
+
+    private transient ProcIterPath _fkProcIterUltimo;
+
+    /**
+     * Get the implicit join path to the <code>decreti.proc_iter</code> table,
+     * via the <code>fk_proc_iter_ultimo</code> key.
+     */
+    public ProcIterPath fkProcIterUltimo() {
+        if (_fkProcIterUltimo == null)
+            _fkProcIterUltimo = new ProcIterPath(this, Keys.FK_PROC_ITER_ULTIMO, null);
+
+        return _fkProcIterUltimo;
+    }
+
+    private transient ProcIterPath _fkProcIterUltimouff;
+
+    /**
+     * Get the implicit join path to the <code>decreti.proc_iter</code> table,
+     * via the <code>fk_proc_iter_ultimouff</code> key.
+     */
+    public ProcIterPath fkProcIterUltimouff() {
+        if (_fkProcIterUltimouff == null)
+            _fkProcIterUltimouff = new ProcIterPath(this, Keys.FK_PROC_ITER_ULTIMOUFF, null);
+
+        return _fkProcIterUltimouff;
+    }
+
+    private transient ProcPath _proc;
+
+    /**
+     * Get the implicit join path to the <code>decreti.proc</code> table.
+     */
+    public ProcPath proc() {
+        if (_proc == null)
+            _proc = new ProcPath(this, Keys.FK_PROC_SUP_SELF, null);
+
+        return _proc;
     }
 
     private transient LTipoProcPath _lTipoProc;
@@ -239,30 +329,30 @@ public class Proc extends TableImpl<ProcRecord> {
         return _incarico;
     }
 
-    private transient ProcAssPath _procAss;
+    private transient ProcAclPath _procAcl;
 
     /**
-     * Get the implicit to-many join path to the <code>decreti.proc_ass</code>
+     * Get the implicit to-many join path to the <code>decreti.proc_acl</code>
      * table
      */
-    public ProcAssPath procAss() {
-        if (_procAss == null)
-            _procAss = new ProcAssPath(this, null, Keys.FK_PROCASS_PROC.getInverseKey());
+    public ProcAclPath procAcl() {
+        if (_procAcl == null)
+            _procAcl = new ProcAclPath(this, null, Keys.FK_PROCACL_PROC.getInverseKey());
 
-        return _procAss;
+        return _procAcl;
     }
 
-    private transient ProcAssAttualiPath _procAssAttuali;
+    private transient ProcAclIstruttoriPath _procAclIstruttori;
 
     /**
      * Get the implicit to-many join path to the
-     * <code>decreti.proc_ass_attuali</code> table
+     * <code>decreti.proc_acl_istruttori</code> table
      */
-    public ProcAssAttualiPath procAssAttuali() {
-        if (_procAssAttuali == null)
-            _procAssAttuali = new ProcAssAttualiPath(this, null, Keys.FK_PROCASSATT_PROC.getInverseKey());
+    public ProcAclIstruttoriPath procAclIstruttori() {
+        if (_procAclIstruttori == null)
+            _procAclIstruttori = new ProcAclIstruttoriPath(this, null, Keys.FK_PROCACLISTR_PROC.getInverseKey());
 
-        return _procAssAttuali;
+        return _procAclIstruttori;
     }
 
     private transient ProcCatPath _procCat;

@@ -111,6 +111,6 @@ public class ComConcessioneRecord extends TableRecordImpl<ComConcessioneRecord> 
         setIdCommissario(idCommissario);
         setImporto(importo);
         setIdAtto(idAtto);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

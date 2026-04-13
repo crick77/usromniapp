@@ -74,6 +74,6 @@ public class LAmbitoRecord extends UpdatableRecordImpl<LAmbitoRecord> {
 
         setIdAmbito(idAmbito);
         setAmbito(ambito);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

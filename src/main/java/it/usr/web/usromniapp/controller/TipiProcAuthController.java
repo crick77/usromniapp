@@ -8,7 +8,6 @@ import it.usr.web.controller.BaseController;
 import it.usr.web.producer.AppLogger;
 import it.usr.web.usromniapp.domain.tables.records.DelegaRecord;
 import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
-import it.usr.web.usromniapp.domain.tables.records.ProcAssRecord;
 import it.usr.web.usromniapp.domain.tables.records.UtentiRecord;
 import it.usr.web.usromniapp.model.TipoProcAssModel;
 import it.usr.web.usromniapp.service.ProcedimentoService;
@@ -79,12 +78,12 @@ public class TipiProcAuthController extends BaseController {
     }
     
     public void aggiornaProcAss() {
-        tipiProcAss = ps.getTipiProcAssModel(tipoProcedimentoSelezionato.getIdTipoProc());
+        //tipiProcAss = ps.getTipiProcAssModel(tipoProcedimentoSelezionato.getIdTipoProc());
     }    
 
     public void caricaDeleghe(TipoProcAssModel pa) {
         if(pa.getIdUtente()!=null) {
-            deleghe = ps.getDeleghe(tipoProcedimentoSelezionato.getIdTipoProc(), pa.getIdUtente());
+            //deleghe = ps.getDeleghe(tipoProcedimentoSelezionato.getIdTipoProc(), pa.getIdUtente());
         }
         else {
             deleghe = null;

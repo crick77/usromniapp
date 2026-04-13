@@ -74,6 +74,6 @@ public class LRuoloTecnicoRecord extends UpdatableRecordImpl<LRuoloTecnicoRecord
 
         setIdRuoloTecnico(idRuoloTecnico);
         setRuoloTecnico(ruoloTecnico);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

@@ -91,6 +91,6 @@ public class AnnotazioniRecord extends UpdatableRecordImpl<AnnotazioniRecord> {
         setIdNota(idNota);
         setData(data);
         setNota(nota);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

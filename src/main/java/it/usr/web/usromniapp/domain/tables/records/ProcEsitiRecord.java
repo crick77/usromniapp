@@ -121,6 +121,6 @@ public class ProcEsitiRecord extends UpdatableRecordImpl<ProcEsitiRecord> {
         setCodice(codice);
         setDescrizione(descrizione);
         setVisibile(visibile);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

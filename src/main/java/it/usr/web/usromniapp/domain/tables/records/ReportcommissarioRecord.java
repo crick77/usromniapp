@@ -921,6 +921,6 @@ public class ReportcommissarioRecord extends UpdatableRecordImpl<Reportcommissar
         setDatadecretosalfinale(datadecretosalfinale);
         setContributoconcesso(contributoconcesso);
         setContributoliquidato(contributoliquidato);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

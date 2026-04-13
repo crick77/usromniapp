@@ -186,6 +186,6 @@ public class ReportcommissarioAggRecord extends UpdatableRecordImpl<Reportcommis
         setDestinazioneusoprevalente(destinazioneusoprevalente);
         setImportoRichiesto(importoRichiesto);
         setProceduraInCapoA(proceduraInCapoA);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

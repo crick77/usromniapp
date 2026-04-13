@@ -4,6 +4,7 @@
  */
 package it.usr.web.usromniapp.service;
 
+import it.usr.web.service.BaseService;
 import static it.usr.web.usromniapp.domain.Tables.*;
 import it.usr.web.usromniapp.domain.tables.records.LTipoPassoRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcEsitiRecord;
@@ -28,8 +29,7 @@ import org.jooq.impl.DSL;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class IterService {
-
+public class IterService extends BaseService {
     @DSLCtx
     @Inject
     DSLContext ctx;
@@ -65,12 +65,12 @@ public class IterService {
         } else {
             cond = cond.and(L_TIPO_PASSO.CODICE_PASSO.in(DSL.select(PROC_DIPENDENZE.CODICE_PASSO_SUCC).from(PROC_DIPENDENZE).where(PROC_DIPENDENZE.CODICE_PASSO.eq(ultimoPasso)).and(PROC_DIPENDENZE.ID_TIPO_PROC.eq(idTipoProc))));
         }
-        return ctx.selectFrom(L_TIPO_PASSO).where(L_TIPO_PASSO.ID_TIPO_PROC.eq(idTipoProc)).and(cond).fetch();
+        return ctx.selectFrom(L_TIPO_PASSO).where(L_TIPO_PASSO.ID_TIPO_PROC.eq(idTipoProc)).and(L_TIPO_PASSO.VISIBILE.eq(1)).and(cond).fetch();
     }
 
     public LTipoPassoRecord getPassoByCodice(int codicePasso) {
         return ctx.selectFrom(L_TIPO_PASSO).where(L_TIPO_PASSO.CODICE_PASSO.eq(codicePasso)).fetchSingle();
-    }
+    } 
 
     public List<ProcEsitiRecord> getEsiti(int idTipoProc) {
         return ctx.selectFrom(PROC_ESITI).where(PROC_ESITI.ID_TIPO_PROC.eq(idTipoProc).and(PROC_ESITI.VISIBILE.eq(1))).fetch();
@@ -79,7 +79,32 @@ public class IterService {
     @LogDatabaseOperation
     public void inserisci(ProcIterRecord iter) throws DatabaseException {
         try {
-            ctx.insertInto(PROC_ITER).set(iter).execute();
+            ctx.transaction(trx -> {
+                LTipoPassoRecord tipoPasso = trx.dsl().selectFrom(L_TIPO_PASSO).where(L_TIPO_PASSO.CODICE_PASSO.eq(iter.getCodicePasso())).fetchSingle();
+                                                
+                trx.dsl().insertInto(PROC_ITER).set(iter).execute();
+                int lastId = trx.dsl().lastID().intValue();
+                
+                // Use-Case passo 4.d
+                if(tipoPasso.getInfluenzaStato()==1) {
+                    trx.dsl().update(PROC).set(PROC.ID_PROC_ITER_ULTIMO, lastId).where(PROC.ID_PROC.eq(iter.getIdProc())).execute();                    
+                    
+                    // Use-case passo 4.d.i
+                    if(tipoPasso.getPassoUfficio()) {
+                        trx.dsl().update(PROC).setNull(PROC.ID_PROC_ITER_FIRMA).set(PROC.ID_PROC_ITER_ULTIMO_UFFICIO, lastId).where(PROC.ID_PROC.eq(iter.getIdProc())).execute();
+                    }
+                }
+                
+                // Use-case passo 4.e
+                if(tipoPasso.getPassoFirma()) {
+                    trx.dsl().update(PROC).set(PROC.ID_PROC_ITER_FIRMA, lastId).where(PROC.ID_PROC.eq(iter.getIdProc())).execute();
+                }           
+                
+                // Use-case passo 4.f.ii
+                if(tipoPasso.getEsitoObbligatorio()) {
+                    trx.dsl().update(PROC).set(PROC.ID_PROC_ITER_ESITO, lastId).where(PROC.ID_PROC.eq(iter.getIdProc())).execute();
+                }
+            });           
         } catch (DataAccessException dae) {
             if (dae.getCause() instanceof SQLIntegrityConstraintViolationException) {
                 throw new DuplicationException(dae.getCause().getMessage());

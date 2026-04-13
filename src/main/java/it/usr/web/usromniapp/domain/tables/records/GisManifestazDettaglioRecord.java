@@ -110,6 +110,6 @@ public class GisManifestazDettaglioRecord extends UpdatableRecordImpl<GisManifes
         setIdPoligon(idPoligon);
         setCodiceManifestazione(codiceManifestazione);
         setDataManifestazione(dataManifestazione);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

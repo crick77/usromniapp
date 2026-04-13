@@ -76,6 +76,6 @@ public class GisAccessiRecord extends UpdatableRecordImpl<GisAccessiRecord> {
 
         setDataAccesso(dataAccesso);
         setNumeroAccessi(numeroAccessi);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

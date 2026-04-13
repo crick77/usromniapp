@@ -51,6 +51,6 @@ public class IdPraticheConRigettoRecord extends TableRecordImpl<IdPraticheConRig
         super(IdPraticheConRigetto.ID_PRATICHE_CON_RIGETTO);
 
         setIdPraticaConRigetto(idPraticaConRigetto);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

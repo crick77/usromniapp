@@ -1670,7 +1670,7 @@ body a {
     transform: rotate(-180deg);
   }
   .layout-wrapper.layout-menu-horizontal .topbar .layout-menu-wrapper .layout-menu-container ul li.active-menuitem > ul {
-    z-index: 1;
+    z-index: 100; /* 1 */
   }
   .layout-wrapper.layout-menu-horizontal .topbar .layout-menu-wrapper .layout-menu-container ul li > ul {
     background-color: #0d526b;

@@ -5,6 +5,7 @@ package it.usr.web.usromniapp.domain;
 
 
 import it.usr.web.usromniapp.domain.routines.SpAggiornaUfficio;
+import it.usr.web.usromniapp.domain.routines.UtentiAttiviResponsabile;
 
 import org.jooq.Configuration;
 
@@ -32,6 +33,19 @@ public class Routines {
         p.setIdUtenteResp(idUtenteResp);
         p.setIdUtenteRespPrec(idUtenteRespPrec);
         p.setEstremiProvv(estremiProvv);
+
+        p.execute(configuration);
+    }
+
+    /**
+     * Call <code>decreti.utenti_attivi_responsabile</code>
+     */
+    public static void utentiAttiviResponsabile(
+          Configuration configuration
+        , Integer idresp
+    ) {
+        UtentiAttiviResponsabile p = new UtentiAttiviResponsabile();
+        p.setIdresp(idresp);
 
         p.execute(configuration);
     }

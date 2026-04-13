@@ -106,87 +106,157 @@ public class ProcRecord extends UpdatableRecordImpl<ProcRecord> {
     }
 
     /**
+     * Setter for <code>decreti.proc.codice_sub</code>.
+     */
+    public void setCodiceSub(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>decreti.proc.codice_sub</code>.
+     */
+    public String getCodiceSub() {
+        return (String) get(6);
+    }
+
+    /**
      * Setter for <code>decreti.proc.richiedente</code>.
      */
     public void setRichiedente(String value) {
-        set(6, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>decreti.proc.richiedente</code>.
      */
     public String getRichiedente() {
-        return (String) get(6);
+        return (String) get(7);
     }
 
     /**
      * Setter for <code>decreti.proc.indirizzo</code>.
      */
     public void setIndirizzo(String value) {
-        set(7, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>decreti.proc.indirizzo</code>.
      */
     public String getIndirizzo() {
-        return (String) get(7);
+        return (String) get(8);
     }
 
     /**
      * Setter for <code>decreti.proc.codice_com</code>.
      */
     public void setCodiceCom(Integer value) {
-        set(8, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>decreti.proc.codice_com</code>.
      */
     public Integer getCodiceCom() {
-        return (Integer) get(8);
+        return (Integer) get(9);
     }
 
     /**
      * Setter for <code>decreti.proc.descrizione</code>.
      */
     public void setDescrizione(String value) {
-        set(9, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>decreti.proc.descrizione</code>.
      */
     public String getDescrizione() {
-        return (String) get(9);
+        return (String) get(10);
     }
 
     /**
      * Setter for <code>decreti.proc.note</code>.
      */
     public void setNote(String value) {
-        set(10, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>decreti.proc.note</code>.
      */
     public String getNote() {
-        return (String) get(10);
+        return (String) get(11);
     }
 
     /**
      * Setter for <code>decreti.proc.id_proc_iter_ultimo</code>.
      */
     public void setIdProcIterUltimo(Integer value) {
-        set(11, value);
+        set(12, value);
     }
 
     /**
      * Getter for <code>decreti.proc.id_proc_iter_ultimo</code>.
      */
     public Integer getIdProcIterUltimo() {
-        return (Integer) get(11);
+        return (Integer) get(12);
+    }
+
+    /**
+     * Setter for <code>decreti.proc.id_proc_iter_ultimo_ufficio</code>.
+     */
+    public void setIdProcIterUltimoUfficio(Integer value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>decreti.proc.id_proc_iter_ultimo_ufficio</code>.
+     */
+    public Integer getIdProcIterUltimoUfficio() {
+        return (Integer) get(13);
+    }
+
+    /**
+     * Setter for <code>decreti.proc.id_proc_iter_firma</code>.
+     */
+    public void setIdProcIterFirma(Integer value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>decreti.proc.id_proc_iter_firma</code>.
+     */
+    public Integer getIdProcIterFirma() {
+        return (Integer) get(14);
+    }
+
+    /**
+     * Setter for <code>decreti.proc.id_proc_sup</code>.
+     */
+    public void setIdProcSup(Integer value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>decreti.proc.id_proc_sup</code>.
+     */
+    public Integer getIdProcSup() {
+        return (Integer) get(15);
+    }
+
+    /**
+     * Setter for <code>decreti.proc.id_proc_iter_esito</code>.
+     */
+    public void setIdProcIterEsito(Integer value) {
+        set(16, value);
+    }
+
+    /**
+     * Getter for <code>decreti.proc.id_proc_iter_esito</code>.
+     */
+    public Integer getIdProcIterEsito() {
+        return (Integer) get(16);
     }
 
     // -------------------------------------------------------------------------
@@ -212,7 +282,7 @@ public class ProcRecord extends UpdatableRecordImpl<ProcRecord> {
     /**
      * Create a detached, initialised ProcRecord
      */
-    public ProcRecord(Integer idProc, Integer idTipoProc, LocalDateTime dataora, BigDecimal lat, BigDecimal lon, String codice, String richiedente, String indirizzo, Integer codiceCom, String descrizione, String note, Integer idProcIterUltimo) {
+    public ProcRecord(Integer idProc, Integer idTipoProc, LocalDateTime dataora, BigDecimal lat, BigDecimal lon, String codice, String codiceSub, String richiedente, String indirizzo, Integer codiceCom, String descrizione, String note, Integer idProcIterUltimo, Integer idProcIterUltimoUfficio, Integer idProcIterFirma, Integer idProcSup, Integer idProcIterEsito) {
         super(Proc.PROC);
 
         setIdProc(idProc);
@@ -221,12 +291,17 @@ public class ProcRecord extends UpdatableRecordImpl<ProcRecord> {
         setLat(lat);
         setLon(lon);
         setCodice(codice);
+        setCodiceSub(codiceSub);
         setRichiedente(richiedente);
         setIndirizzo(indirizzo);
         setCodiceCom(codiceCom);
         setDescrizione(descrizione);
         setNote(note);
         setIdProcIterUltimo(idProcIterUltimo);
-        resetChangedOnNotNull();
+        setIdProcIterUltimoUfficio(idProcIterUltimoUfficio);
+        setIdProcIterFirma(idProcIterFirma);
+        setIdProcSup(idProcSup);
+        setIdProcIterEsito(idProcIterEsito);
+        resetTouchedOnNotNull();
     }
 }

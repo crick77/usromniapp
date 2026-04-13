@@ -1,0 +1,125 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="jakarta.faces.core"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="primefaces"
+                xmlns:jsf="jakarta.faces"
+                xmlns:fn="jakarta.tags.functions"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="jakarta.tags.core"
+                xmlns:pe="primefaces.extensions">
+
+    <ui:define name="title">Stato di fatto</ui:define>
+    <ui:define name="head">
+        <f:metadata>            
+            <f:viewAction action="#{statoDiFattoController.init()}" />
+        </f:metadata>        
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form" enctype="multipart/form-data">
+            <p:growl id="msgs" showDetail="true"/>
+
+            <div class="grid">
+                <div class="col-12">
+                    <div class="card">                        
+                        <div class="grid">
+                            <div class="col-2">
+                                <p:selectOneMenu id="tipiproc" value="#{statoDiFattoController.tipoProcedimentoSelezionato}" hideNoSelectionOption="#{not empty statoDiFattoController.tipoProcedimentoSelezionato}" converter="lTipoProcConverter" style="width: 100%">
+                                    <p:ajax update="@form" listener="#{statoDiFattoController.aggiornaProcedimenti()}" />
+                                    <f:selectItem itemLabel="Selezionare un tipo di procedura..." itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{statoDiFattoController.tipiProcedimento}" var="tp" itemValue="#{tp}" itemLabel="#{tp.tipoProc}" />
+                                </p:selectOneMenu>
+                            </div>                            
+                        </div>
+                        <div class="formgrid grid">
+                            <p:dataTable id="procedimenti" widgetVar="wvProcedimenti" var="proc" value="#{statoDiFattoController.procedimenti}" size="small" emptyMessage="Nessuna procedura assegnata o corrispondete ai criteri di ricerca impostati."
+                                         rowKey="#{proc.idProc}" stripedRows="true" paginatorPosition="bottom" style="margin-bottom: 0" paginator="true" rows="10" selectionPageOnly="false" rowsPerPageTemplate="5,10,{ShowAll|'Tutti'}"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         selectionRowMode="none" styleClass="ui-datatable-sm" currentPageReportTemplate="{startRecord}-{endRecord} di {totalRecords} procedure" filteredValue="#{statoDiFattoController.procedimentiFiltrati}" rendered="#{not empty statoDiFattoController.tipoProcedimentoSelezionato}">
+                                
+                                <f:facet name="header">
+                                    <div class="flex align-items-center justify-content-between">
+                                        <span>ELENCO PROCEDIMENTI ASSEGNATI/DA ASSEGNARE</span>
+                                        <div>
+                                            <p:inputText id="globalFilter" onkeyup="PrimeFaces.debounce(() => PF('wvProcedimenti').filter())" style="width:20rem"
+                                                         placeholder="Ricerca globale..." />
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                                                
+                                <p:column headerText="PROCEDIMENTO" width="7%">
+                                    #{statoDiFattoController.decodificaProcedimento(proc.idTipoProc).tipoProc}
+                                </p:column>
+
+                                <p:column headerText="N." filterBy="#{proc.codice}" filterMatchMode="contains" width="5%">
+                                    #{proc.codice}
+                                </p:column>
+
+                                <p:column headerText="RICHIEDENTE" filterBy="#{proc.richiedente}" filterMatchMode="contains">
+                                    #{proc.richiedente}
+                                </p:column>
+
+                                <p:column headerText="INDIRIZZO" filterBy="#{proc.indirizzo}" filterMatchMode="contains">
+                                    #{proc.indirizzo}
+                                </p:column>
+
+                                <p:column headerText="COMUNE" filterBy="#{proc.comune}" filterMatchMode="contains">
+                                    #{proc.comune}
+                                </p:column>                                                              
+                                
+                                <p:column headerText="ASSEGNATARI">   
+                                    <ul>
+                                        <ui:repeat value="#{statoDiFattoController.splitAssegnatari(proc.assegnatari)}" var="ass" rendered="#{not empty proc.assegnatari}">
+                                            <li>#{ass}</li>
+                                        </ui:repeat>
+                                    </ul>
+                                </p:column>    
+                                
+                                <p:column headerText="ULTIMO STATO" width="12%" filterBy="#{proc.codicePasso}" filterMatchMode="exact">
+                                    <f:facet name="filter">
+                                        <p:selectOneMenu onchange="PF('wvProcedimenti').filter()" style="width: 100%">
+                                            <f:selectItem itemValue="#{null}" itemLabel="TUTTI" noSelectionOption="true" />                                            
+                                            <f:selectItems value="#{statoDiFattoController.tipiPasso}" var="tp" itemValue="#{tp.codicePasso}" itemLabel="#{tp.testoPasso}" />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    #{statoDiFattoController.decodificaPasso(proc.codicePasso).testoPasso}
+                                </p:column>
+
+                                <p:column headerText="DATA" width="6%" sortBy="#{proc.dataProt}">
+                                    <h:outputText value="#{proc.dataProt}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy" type="localDate" />
+                                    </h:outputText>
+                                </p:column>
+                                
+                                <p:column headerText="STATO" width="6%" filterBy="#{proc.stato}" filterMatchMode="exact">
+                                    <f:facet name="filter">
+                                        <p:selectOneMenu onchange="PF('wvProcedimenti').filter()" style="width: 100%">
+                                            <f:selectItem itemValue="#{null}" itemLabel="TUTTI" noSelectionOption="true" />                                            
+                                            <f:selectItem itemValue="DA ISTRUIRE" itemLabel="DA ISTRUIRE" />
+                                            <f:selectItem itemValue="ISTRUITA" itemLabel="ISTRUITA" />
+                                            <f:selectItem itemValue="INTEGRATA" itemLabel="INTEGRATA" />
+                                            <f:selectItem itemValue="CONCLUSA" itemLabel="CONCLUSA" />
+                                            <f:selectItem itemValue="IN REVISIONE" itemLabel="IN REVISIONE" />
+                                            <f:selectItem itemValue="DA ISTRUIRE - ALLA FIRMA" itemLabel="DA ISTRUIRE - ALLA FIRMA" />
+                                            <f:selectItem itemValue="ISTRUITA - ALLA FIRMA" itemLabel="ISTRUITA - ALLA FIRMA" />
+                                            <f:selectItem itemValue="INTEGRATA - ALLA FIRMA" itemLabel="INTEGRATA - ALLA FIRMA" />
+                                            <f:selectItem itemValue="CONCLUSA - ALLA FIRMA" itemLabel="CONCLUSA - ALLA FIRMA" />
+                                            <f:selectItem itemValue="IN REVISIONE - ALLA FIRMA" itemLabel="IN REVISIONE - ALLA FIRMA" />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                    #{proc.stato}
+                                </p:column>
+                                
+                                <p:column style="width:3rem">                                    
+                                    <p:commandButton id="iter" icon="pi pi-bolt" styleClass="ui-button-danger" title="Iter pratica" action="#{statoDiFattoController.mostraIter(proc)}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>                                                                             
+                    </div>
+                </div>
+            </div>                                 
+        </h:form>       
+    </ui:define>
+
+</ui:composition>

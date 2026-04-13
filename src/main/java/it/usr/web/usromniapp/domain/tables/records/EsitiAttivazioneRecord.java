@@ -120,6 +120,6 @@ public class EsitiAttivazioneRecord extends UpdatableRecordImpl<EsitiAttivazione
         setCodicePasso(codicePasso);
         setAttivo(attivo);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

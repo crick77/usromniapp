@@ -23,7 +23,7 @@ public class UtentiRecordConverter implements Converter<UtentiRecord> {
     
     @Override
     public UtentiRecord getAsObject(FacesContext fc, UIComponent uic, String string) {
-        return (string!=null) ? us.getUtente(Integer.parseInt(string)) : null;        
+        return (string!=null) ? us.getUtenteById(Integer.parseInt(string)) : null;        
     }
 
     @Override

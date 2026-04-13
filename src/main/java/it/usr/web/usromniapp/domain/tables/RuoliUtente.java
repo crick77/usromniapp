@@ -8,6 +8,8 @@ import it.usr.web.usromniapp.domain.Decreti;
 import it.usr.web.usromniapp.domain.Indexes;
 import it.usr.web.usromniapp.domain.Keys;
 import it.usr.web.usromniapp.domain.tables.LRuolo.LRuoloPath;
+import it.usr.web.usromniapp.domain.tables.ProcAuthFun.ProcAuthFunPath;
+import it.usr.web.usromniapp.domain.tables.Uffici.UfficiPath;
 import it.usr.web.usromniapp.domain.tables.Utenti.UtentiPath;
 import it.usr.web.usromniapp.domain.tables.records.RuoliUtenteRecord;
 
@@ -75,6 +77,11 @@ public class RuoliUtente extends TableImpl<RuoliUtenteRecord> {
      * The column <code>decreti.ruoli_utente.id_utente</code>.
      */
     public final TableField<RuoliUtenteRecord, Integer> ID_UTENTE = createField(DSL.name("id_utente"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>decreti.ruoli_utente.id_ufficio</code>.
+     */
+    public final TableField<RuoliUtenteRecord, Integer> ID_UFFICIO = createField(DSL.name("id_ufficio"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("4", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>decreti.ruoli_utente.data_inizio</code>.
@@ -155,7 +162,7 @@ public class RuoliUtente extends TableImpl<RuoliUtenteRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.RUOLI_UTENTE_FK_RUOLIUTENTE_RUOLO_IDX, Indexes.RUOLI_UTENTE_FK_RUOLIUTENTE_UTENTE_IDX);
+        return Arrays.asList(Indexes.RUOLI_UTENTE_FK_RUOLIUTENTE_RUOLO_IDX, Indexes.RUOLI_UTENTE_FK_RUOLIUTENTE_UFFICI_IDX, Indexes.RUOLI_UTENTE_FK_RUOLIUTENTE_UTENTE_IDX);
     }
 
     @Override
@@ -169,8 +176,13 @@ public class RuoliUtente extends TableImpl<RuoliUtenteRecord> {
     }
 
     @Override
+    public List<UniqueKey<RuoliUtenteRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.KEY_RUOLI_UTENTE_UQ_UTENTE_RUOLO_UFFICIO);
+    }
+
+    @Override
     public List<ForeignKey<RuoliUtenteRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_RUOLIUTENTE_RUOLO, Keys.FK_RUOLIUTENTE_UTENTE);
+        return Arrays.asList(Keys.FK_RUOLIUTENTE_RUOLO, Keys.FK_RUOLIUTENTE_UFFICI, Keys.FK_RUOLIUTENTE_UTENTE);
     }
 
     private transient LRuoloPath _lRuolo;
@@ -185,6 +197,18 @@ public class RuoliUtente extends TableImpl<RuoliUtenteRecord> {
         return _lRuolo;
     }
 
+    private transient UfficiPath _uffici;
+
+    /**
+     * Get the implicit join path to the <code>decreti.uffici</code> table.
+     */
+    public UfficiPath uffici() {
+        if (_uffici == null)
+            _uffici = new UfficiPath(this, Keys.FK_RUOLIUTENTE_UFFICI, null);
+
+        return _uffici;
+    }
+
     private transient UtentiPath _utenti;
 
     /**
@@ -195,6 +219,19 @@ public class RuoliUtente extends TableImpl<RuoliUtenteRecord> {
             _utenti = new UtentiPath(this, Keys.FK_RUOLIUTENTE_UTENTE, null);
 
         return _utenti;
+    }
+
+    private transient ProcAuthFunPath _procAuthFun;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>decreti.proc_auth_fun</code> table
+     */
+    public ProcAuthFunPath procAuthFun() {
+        if (_procAuthFun == null)
+            _procAuthFun = new ProcAuthFunPath(this, null, Keys.FK_AUTHFUN_RUOLIUTENTE.getInverseKey());
+
+        return _procAuthFun;
     }
 
     @Override

@@ -165,6 +165,6 @@ public class GisPrivataRecord extends UpdatableRecordImpl<GisPrivataRecord> {
         setGeometria(geometria);
         setAbilitato(abilitato);
         setUidCaricamento(uidCaricamento);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

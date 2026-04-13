@@ -88,7 +88,7 @@
 
             <p:dialog id="utentiDialog" widgetVar="wvUtentiDialog" width="70%" header="ASSEGNA PROCEDIMENTO" modal="true" visible="hidden">
                 <div class="col-12">
-                    <p:pickList id="utenti" value="#{assegnaController.utenti}" var="u" itemValue="#{u}" itemLabel="#{u.nomeUtente} [Ruolo #{u.ruolo}]"
+                    <p:pickList id="utenti" value="#{assegnaController.utenti}" var="u" itemValue="#{u}" itemLabel="#{u.nomeUtente} [Ruolo #{u.ruolo} - #{u.ufficio}]"
                                 showSourceControls="false" showTargetControls="false" showCheckbox="true"
                                 showSourceFilter="true" showTargetFilter="true"
                                 sourceFilterPlaceholder="Filtra utenti disponibili"

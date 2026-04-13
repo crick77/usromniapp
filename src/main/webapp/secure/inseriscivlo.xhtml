@@ -20,101 +20,187 @@
         <h:form id="form" enctype="multipart/form-data">
             <p:growl id="msgs" showDetail="true"/>
 
-            <div class="grid">
-                <div class="col-12">
-                    <div class="card">
-                        <h5>Nuova VLO</h5>
-                        <div class="ui-fluid formgrid grid">
-                            <div class="field col-12 md:col-6">
-                                <p:outputLabel for="richiedente" value="Richiedente" />
-                                <p:inputText id="richiedente" value="#{inserisciVloController.proc.richiedente}" maxlength="255" required="true" requiredMessage="Il richiedente è obbligatorio" />
-                            </div>
-                            <div class="field col-12 md:col-6">
-                                <p:outputLabel for="indirizzo" value="Indirizzo" />
-                                <p:inputText id="indirizzo" value="#{inserisciVloController.proc.indirizzo}" maxlength="255" required="true" requiredMessage="L'indirizzo è obbligatorio" />
-                            </div>
-                            <div class="field col-12 md:col-2">
-                                <p:outputLabel for="codicecom" value="Codice Comune" />
-                                <p:autoComplete id="codicecom" value="#{inserisciVloController.codiceCom}" completeMethod="#{inserisciVloController.completaComune}" dropdown="true"
-                                                var="c" itemLabel="#{c.codiceCom} #{c.comune}" itemValue="#{c}" converter="gisCentroidiConverter" forceSelection="true" 
-                                                scrollHeight="250" required="true" requiredMessage="Il codice comune è obbligatorio" />                                
-                            </div>
-                            <div class="field col-12 md:col-2">
-                                <p:outputLabel for="lat" value="Latitutidne" />
-                                <p:inputNumber id="lat" value="#{inserisciVloController.proc.lat}" decimalPlaces="7" decimalSeparator="." decimalSeparatorAlternative="," thousandSeparator=""/>
-                            </div>
-                            <div class="field col-12 md:col-2">
-                                <p:outputLabel for="lon" value="Longitudine" />
-                                <p:inputNumber id="lon" value="#{inserisciVloController.proc.lon}" decimalPlaces="7" decimalSeparator="." decimalSeparatorAlternative="," thousandSeparator="" />
-                            </div>
-                            <div class="field col-12 md:col-6">
-                                <p:outputLabel for="descrizione" value="Descrizione" />
-                                <p:inputText id="descrizione" value="#{inserisciVloController.proc.descrizione}" maxlength="150" />
-                            </div>
-                            <div class="field col-12">
-                                <p:outputLabel for="note" value="Note" />
-                                <p:inputText id="note" value="#{inserisciVloController.proc.note}" maxlength="255" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h5>Dati catastali</h5>
-                        <div class="ui-fluid formgrid grid">
-                            <p:dataTable id="daticatastali" widgetVar="wvCatastali" var="dc" value="#{inserisciVloController.procCat}" editable="true" emptyMessage="Nessun dato catastale presente." rows="5" paginator="true" paginatorPosition="bottom">
-                                <p:column headerText="ISTAT COMUNE">
-                                    <p:cellEditor>
-                                        <f:facet name="output"><h:outputText value="#{dc.istatComune}" /></f:facet>
-                                        <f:facet name="input"><p:inputText value="#{dc.istatComune}" maxlength="10" style="width:100%" /></f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-
-                                <p:column headerText="SEZIONE">
-                                    <p:cellEditor>
-                                        <f:facet name="output"><h:outputText value="#{dc.sezione}" /></f:facet>
-                                        <f:facet name="input"><p:inputText value="#{dc.sezione}" maxlength="10" style="width:100%" /></f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-
-                                <p:column headerText="FOGLIO">
-                                    <p:cellEditor>
-                                        <f:facet name="output"><h:outputText value="#{dc.foglio}" /></f:facet>
-                                        <f:facet name="input"><p:inputText value="#{dc.foglio}" maxlength="10" style="width:100%" /></f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-
-                                <p:column headerText="PARTICELLA">
-                                    <p:cellEditor>
-                                        <f:facet name="output"><h:outputText value="#{dc.particella}" /></f:facet>
-                                        <f:facet name="input"><p:inputText value="#{dc.particella}" maxlength="10" style="width:100%" /></f:facet>
-                                    </p:cellEditor>
-                                </p:column>
-
-                                <p:column style="width:6rem">
-                                    <p:rowEditor/>                                    
-                                </p:column>
-                                
-                                <p:column style="width:6rem">                                    
-                                    <p:commandButton id="elimina" icon="pi pi-trash" title="Elimina" styleClass="rounded-button ui-button-flat ui-button-danger" process="@this" update="daticatastali" action="#{inserisciVloController.rimuoviProcCat(dc)}" />
-                                </p:column>
-                            </p:dataTable>
-                        </div>
-                        <div class="grid mt-3">
-                            <div class="col-12">
-                                <p:commandButton value="Aggiungi" icon="pi pi-plus" process="@this" update=":form:msgs" action="#{inserisciVloController.aggiungiProcCat()}" oncomplete="PF('wvCatastali').addRow();"/>
+            <ui:fragment id="istanza">
+                <div class="grid">
+                    <div class="col-12">
+                        <div class="card">
+                            <h5>Nuova VLO</h5>
+                            <div class="ui-fluid formgrid grid">
+                                <div class="field col-12 md:col-6">
+                                    <p:outputLabel for="richiedente" value="Richiedente" />
+                                    <p:inputText id="richiedente" value="#{inserisciVloController.proc.richiedente}" maxlength="255" required="true" requiredMessage="Il richiedente è obbligatorio" />
+                                </div>
+                                <div class="field col-12 md:col-6">
+                                    <p:outputLabel for="indirizzo" value="Indirizzo" />
+                                    <p:inputText id="indirizzo" value="#{inserisciVloController.proc.indirizzo}" maxlength="255" required="true" requiredMessage="L'indirizzo è obbligatorio" />
+                                </div>
+                                <div class="field col-12 md:col-2">
+                                    <p:outputLabel for="codicecom" value="Codice Comune" />
+                                    <p:autoComplete id="codicecom" value="#{inserisciVloController.codiceCom}" completeMethod="#{inserisciVloController.completaComune}" dropdown="true"
+                                                    var="c" itemLabel="#{c.codiceCom} #{c.comune}" itemValue="#{c}" converter="gisCentroidiConverter" forceSelection="true" 
+                                                    scrollHeight="250" required="true" requiredMessage="Il codice comune è obbligatorio">                                
+                                        <p:ajax event="itemSelect" process="@this" />
+                                    </p:autoComplete>
+                                </div>
+                                <div class="field col-12 md:col-2">
+                                    <p:outputLabel for="lat" value="Latitutidne" />
+                                    <p:inputNumber id="lat" value="#{inserisciVloController.proc.lat}" decimalPlaces="7" decimalSeparator="." decimalSeparatorAlternative="," thousandSeparator=""/>
+                                </div>
+                                <div class="field col-12 md:col-2">
+                                    <p:outputLabel for="lon" value="Longitudine" />
+                                    <p:inputNumber id="lon" value="#{inserisciVloController.proc.lon}" decimalPlaces="7" decimalSeparator="." decimalSeparatorAlternative="," thousandSeparator="" />
+                                </div>
+                                <div class="field col-12 md:col-6">
+                                    <p:outputLabel for="descrizione" value="Descrizione" />
+                                    <p:inputText id="descrizione" value="#{inserisciVloController.proc.descrizione}" maxlength="150" />
+                                </div>
+                                <div class="field col-1">
+                                    <p:outputLabel for="numprot" value="Protocollo" />
+                                    <p:inputText id="numprot" value="#{inserisciVloController.procIter.prot}" maxlength="7" required="true" requiredMessage="Numero protocollo obbligatorio" />
+                                </div>
+                                <div class="field col-1">
+                                    <p:outputLabel for="dataprot" value="Data Protocollo" />
+                                    <p:datePicker id="dataprot" value="#{inserisciVloController.procIter.dataProt}" pattern="dd-MM-yyyy" required="true" requiredMessage="Data protocollo obbligatoria" showButtonBar="true" mask="true" showOnFocus="false" showIcon="true" />                            
+                                </div>
+                                <div class="field col-10">
+                                    <p:outputLabel for="note" value="Note" />
+                                    <p:inputText id="note" value="#{inserisciVloController.proc.note}" maxlength="255" />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card">
-                        <div class="grid mt-3">
-                            <div class="col-12">
-                                <p:commandButton value="Salva" icon="pi pi-save" update="@form" action="#{inserisciVloController.salva()}" styleClass="ui-button-info"/>
+
+                        <div class="card">
+                            <h5>Dati catastali</h5>
+                            <div class="ui-fluid formgrid grid">
+                                <p:dataTable id="daticatastali" widgetVar="wvCatastali" var="dc" value="#{inserisciVloController.procCat}" editable="true" emptyMessage="Nessun dato catastale presente." rows="5" paginator="true" paginatorPosition="bottom">                                
+                                    <p:column headerText="SEZIONE">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{dc.sezione}" /></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{dc.sezione}" maxlength="10" style="width:100%" /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+
+                                    <p:column headerText="FOGLIO">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{dc.foglio}" /></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{dc.foglio}" maxlength="10" style="width:100%" /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+
+                                    <p:column headerText="PARTICELLA">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{dc.particella}" /></f:facet>
+                                            <f:facet name="input"><p:inputText value="#{dc.particella}" maxlength="10" style="width:100%" /></f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+
+                                    <p:column style="width:6rem">
+                                        <p:rowEditor/>                                    
+                                    </p:column>
+
+                                    <p:column style="width:6rem">                                    
+                                        <p:commandButton id="elimina" icon="pi pi-trash" title="Elimina" styleClass="rounded-button ui-button-flat ui-button-danger" process="@this" update="daticatastali" action="#{inserisciVloController.rimuoviProcCat(dc)}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                            <div class="grid mt-3">
+                                <div class="col-12">
+                                    <p:commandButton value="Aggiungi" icon="pi pi-plus" process="@this" update=":form:msgs" action="#{inserisciVloController.aggiungiProcCat()}" oncomplete="PF('wvCatastali').addRow();"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h5>Tecnici icaricati</h5>
+                            <div class="ui-fluid formgrid grid">
+                                <p:dataTable id="tecnici" widgetVar="wvTecnici" var="t" value="#{inserisciVloController.procTecnici}" emptyMessage="Nessun tecnico incaricato" rows="5" paginator="true" paginatorPosition="bottom">
+                                    <p:column headerText="TECNICO">
+                                        #{t.tecnico.titolo} #{t.tecnico.cognomeRagSoc} #{t.tecnico.nome}
+                                    </p:column>
+                                    <p:column headerText="INCARICO">
+                                        #{t.ruolo.ruoloTecnico}
+                                    </p:column>
+                                    <p:column style="width: 4%">                                    
+                                        <p:commandButton icon="pi pi-trash" title="Elimina" styleClass="rounded-button ui-button-flat ui-button-danger" process="@this" update="tecnici" action="#{inserisciVloController.rimuoviTecnicoRuolo(t)}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                            <div class="grid mt-3">
+                                <div class="col-12">
+                                    <p:commandButton value="Aggiungi" icon="pi pi-plus" process="@this" update=":form:msgs :form:incaricoDialog" action="#{inserisciVloController.nuovoTecnicoRuolo()}" oncomplete="PF('wvIncaricoDialog').show();"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="grid">
+                                <div class="col-12">
+                                    <p:commandButton value="Salva" icon="pi pi-save" process="istanza" update="@form" action="#{inserisciVloController.salva()}" styleClass="ui-button-info"/>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </h:form>       
+            </ui:fragment>
+
+            <p:dialog id="incaricoDialog" widgetVar="wvIncaricoDialog" width="40%" header="Incarico" modal="true">
+                <p:outputPanel class="ui-fluid grid formgrid" >
+                    <p:outputLabel value="Tecnico:" for="tecnico"/>
+                    <p:selectOneMenu id="tecnico" value="#{inserisciVloController.tecnicoRuolo.tecnico}" required="true" converter="procTecniciRecordConverter" var="ti" filter="true" filterMatchMode="contains" filterNormalize="true">
+                        <f:selectItems value="#{inserisciVloController.tecnici}" var="t" itemValue="#{t}" itemLabel="#{t.cognomeRagSoc} #{t.nome}" />
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Tecnico"/>
+                            </f:facet>
+                            <h:outputText value="#{ti.cognomeRagSoc} #{ti.nome}"/>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Nuovo tecnico" process="@this" action="#{inserisciVloController.nuovoTecnico()}" update="form:tecnicoDialog" oncomplete="PF('wvTecnicoDialog').show();"/>
+                            <h:outputText value="#{fn:length(inserisciVloController.tecnici)} tecnici" style="font-weight:bold; float: right; padding-right: .25rem;" styleClass="py-1" />
+                        </f:facet>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Incarico:" for="incarico"/>
+                    <p:selectOneMenu id="incarico" value="#{inserisciVloController.tecnicoRuolo.ruolo}" required="true" converter="lRuoloTecnicoRecordConverter">
+                        <f:selectItems value="#{inserisciVloController.ruoliTecnici}" var="rt" itemValue="#{rt}" itemLabel="#{rt.ruoloTecnico}" />
+                    </p:selectOneMenu>                                        
+                </p:outputPanel>
+                <f:facet name="footer">                    
+                    <p:commandButton value="Inserisci" process="incaricoDialog" action="#{inserisciVloController.aggiungiTecnicoRuolo()}" update="form:tecnici form:msgs" />
+                </f:facet>
+            </p:dialog>
+
+            <p:dialog id="tecnicoDialog" widgetVar="wvTecnicoDialog" width="50%" header="Nuovo Tecnico" modal="true">
+                <p:outputPanel id="tecnicoPanel" class="ui-fluid grid formgrid" >
+                    <p:outputLabel value="Titolo:" for="titolotec"/>
+                    <p:inputText id="titolotec" value="#{inserisciVloController.tecnico.titolo}" required="true" requiredMessage="Titolo obbligatorio" maxlength="8" />
+
+                    <p:outputLabel value="Cognome/Rag. Sociale:" for="cognometec"/>
+                    <p:inputText id="cognometec" value="#{inserisciVloController.tecnico.cognomeRagSoc}" required="true" requiredMessage="Cognome/Rag.soc. tecnico obbligatorio" maxlength="128" />
+
+                    <p:outputLabel value="Nome:" for="nometec"/>
+                    <p:inputText id="nometec" value="#{inserisciVloController.tecnico.nome}" maxlength="64" />
+
+                    <p:outputLabel value="CF/PIVA:" for="cfpivatec"/>
+                    <p:inputText id="cfpivatec" value="#{inserisciVloController.tecnico.cfPiva}" maxlength="16" required="true" requiredMessage="CD/PIVA tecnico obbligatoria"/>
+
+                    <p:outputLabel value="PEC:" for="pectec"/>
+                    <p:inputText id="pectec" value="#{inserisciVloController.tecnico.pec}" maxlength="128" required="true" requiredMessage="PEC tecnico obbligatoria"/>
+
+                    <p:outputLabel value="PEO:" for="peotec"/>
+                    <p:inputText id="peotec" value="#{inserisciVloController.tecnico.peo}" maxlength="128" />
+
+                    <p:outputLabel value="Telefono:" for="teltec"/>
+                    <p:inputText id="teltec" value="#{inserisciVloController.tecnico.telefono}" maxlength="64" />
+
+                    <p:outputLabel value="Note:" for="notetec"/>
+                    <p:inputText id="notetec" value="#{inserisciVloController.tecnico.note}" maxlength="128" />
+                </p:outputPanel>
+                <f:facet name="footer">                    
+                    <p:commandButton value="Inserisci" process="tecnicoDialog" action="#{inserisciVloController.salvaTecnico()}" update="form:tecnico form:tecnicoPanel form:msgs" />
+                </f:facet>
+            </p:dialog>
+        </h:form>        
     </ui:define>
 
 </ui:composition>

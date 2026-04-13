@@ -5,24 +5,23 @@
 package it.usr.web.usromniapp.service;
 
 import it.usr.web.producer.AppLogger;
+import it.usr.web.service.BaseService;
+import it.usr.web.usromniapp.controller.AccessDeniedException;
 import static it.usr.web.usromniapp.domain.Tables.*;
-import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcRecord;
-import it.usr.web.usromniapp.model.Autorizzazione;
-import it.usr.web.usromniapp.model.ElencoVisibili;
+import it.usr.web.usromniapp.domain.tables.records.VProcAclAttiviRecord;
+import it.usr.web.usromniapp.model.ACL;
 import it.usr.web.usromniapp.model.Utente;
+import it.usr.web.usromniapp.producer.DSLCtx;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
-import org.jooq.DSLContext;
-import it.usr.web.usromniapp.producer.DSLCtx;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 
@@ -32,253 +31,193 @@ import org.slf4j.Logger;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class SecurityService {
+public class SecurityService extends BaseService {
     @Inject
     @DSLCtx
     DSLContext ctx;
     @Inject
     @AppLogger
     Logger logger;
-
+    
     /**
-     * Restituisce true se l'utente indicato ha i diritti indicati
+     * Verifica che la funzione sia associata all'utente con le autorizzazioni richieste.
+     * Il metodo estrae la prima riga della query attuando la seguente politica di estrazione:
      * 
-     * @param user
-     * @param auth
+     *  - prima i dinieghi
+     *  - prima i permessi personali e poi quelli all'ufficio
+     *  - prima le autorizzazioni con bit A (assegnazione)
+     *  - prima le autorizzazioni con bit M (modifica)
+     *  - il resto
+     * 
+     * La prima riga risultate verrà poi confrontata con il permesso richiesto e verrà
+     * restituito true solo se contemplato. False altrimenti.
+     * 
+     * @param function
+     * @param utente
+     * @param autorizzazioni
      * @return 
      */
-    //@SuppressWarnings("empty-statement")
-    public boolean canOpen(Utente user, String auth) {
-        if(auth==null || auth.trim().length()==0) {
-            throw new IllegalArgumentException("Le autorizzazioni non possono essere vuote o null.");
-        }
-        
-        // Estrae tutti i deleganti attivi alla data attuale, indipendentemente dalla procedura
-        LocalDateTime now = LocalDateTime.now();
-        String sql = """
-                     SELECT distinct u.id_utente from utenti u join delega d on u.id_utente = d.id_delegante where d.id_utente = {0} and 
-                     ((data_inizio <= {1} and data_fine is null) or ({1} between data_inizio and data_fine))
-                     """;
-        List<Integer> lDeleganti = ctx.fetch(sql, user.getUtente().getIdUtente(), now).into(Integer.class);
-        logger.info("L'utente [{}] è stato delegato dagli utenti [{}].", user.getUtente().getIdUtente(), lDeleganti);
-        
-        // Controlla la possibilità di accesso per ciascun delegante
-        sql =    "((SELECT id_tipo_proc, null as id_proc, null as id_tipo_proc_rif, id_utente, id_ufficio, autorizzazioni FROM decreti.tipo_proc_ass where " +
-                        "(id_utente = {0} or " +
-                        "(id_ufficio in (select id_ufficio from istruttori_uffici where id_utente = {0}))) " +
-                        "and ((data_assegnazione <= {1} and data_rimozione is null) or ({1} between data_assegnazione and data_rimozione)) " +
-                        "and (autorizzazioni like {2}) "+
-                        "order by id_utente, id_ufficio) " +
-                        "union " +
-                        "(SELECT null as id_tipo_proc, id_proc, (select p.id_tipo_proc from proc p where p.id_proc = pa.id_proc) as id_tipo_proc_rif, id_utente, id_ufficio, autorizzazioni FROM decreti.proc_ass pa where " +
-                        "(id_utente_delegante = {0} or " +
-                        "(id_ufficio in (select id_ufficio from istruttori_uffici where id_utente = {0}))) " +
-                        "and ((data_assegnazione <= {1} and data_rimozione is null) or ({1} between data_assegnazione and data_rimozione)) " +
-                        "and (autorizzazioni like {2}) "+
-                        "order by id_utente desc, id_ufficio desc)) as x " +
-                        "order by id_tipo_proc is null, id_tipo_proc, " +
-                        "id_proc is null, id_proc, " +
-                        "id_utente is null, id_utente, " +
-                        "id_ufficio is null, id_ufficio, " +
-                        "autorizzazioni<>'X', autorizzazioni";        
-        for(int idDelegante : lDeleganti) {
-            List<Autorizzazione> lAuth = ctx.selectFrom(sql, idDelegante, now, fixSecurityAuth(auth)).fetchInto(Autorizzazione.class);
-
-            int tipoProcCnt = 0;
-            int procCnt = 0;
-            for(int i=0;i<lAuth.size();i++) {
-                Autorizzazione a = lAuth.get(i);
-                if(a.getIdTipoProc()!=null) {
-                    if(a.getAutorizzazioni().contains("X")) {                    
-                        while(i<lAuth.size() && a.getIdTipoProc().equals(lAuth.get(i).getIdTipoProc())) i++;
-                        i--;
-                    }
-                    else {
-                        tipoProcCnt++;
-                    }
-                }    
-                else {
-                    if(a.getAutorizzazioni().contains("X")) {                                        
-                        while(i<lAuth.size() && a.getIdProc().equals(lAuth.get(i).getIdProc())) i++;
-                        i--;
-                    }
-                    else {
-                        procCnt++; 
-                    }
-                }
-            } 
-
-            // Se sono presenti autorizzazioni attive, conferma (ne è sufficiente 1 sola di uno qualsiasi dei deleganti)
-            if((tipoProcCnt+procCnt)>0) return true;
-        }
-        
-        // nessuna autorizzazione nemmeno per delega
-        return false;
-    }
-        
-    public ElencoVisibili getElencoVisibili(Utente user, TipoOperazioneEnum tipoOp) {
-        return getElencoVisibili(user, new TipoOperazioneEnum[]{tipoOp});
+    public boolean checkFunction(String function, Utente utente, int autorizzazioni) {
+        List<Integer> idUff = utente.getUffici().stream().map(u -> u.getIdUfficio()).collect(Collectors.toList());
+        org.jooq.Record r = ctx.select(V_PROC_AUTH_FUN_ATTIVI.fields()).from(V_PROC_AUTH_FUN_ATTIVI)
+                            .join(PROC_FUN).on(V_PROC_AUTH_FUN_ATTIVI.ID_PROC_FUN.eq(PROC_FUN.ID_PROC_FUN))
+                            .leftJoin(RUOLI_UTENTE).on(V_PROC_AUTH_FUN_ATTIVI.ID_RUOLI_UTENTE.eq(RUOLI_UTENTE.ID_RUOLI_UTENTE))
+                                .where(PROC_FUN.CODICE_FUN.eq(function).and(RUOLI_UTENTE.ID_UTENTE.eq(utente.getUtente().getIdUtente())
+                                   //.or(V_PROC_AUTH_FUN_ATTIVI.ID_UFFICIO.eq(utente.getUfficio().getIdUfficio()))))
+                                    .or(V_PROC_AUTH_FUN_ATTIVI.ID_UFFICIO.in(idUff))))
+                                .orderBy(
+                                        V_PROC_AUTH_FUN_ATTIVI.AUTORIZZAZIONI.bitAnd(8).desc(), 
+                                        RUOLI_UTENTE.ID_UTENTE.isNotNull().desc(),
+                                        V_PROC_AUTH_FUN_ATTIVI.AUTORIZZAZIONI.bitAnd(1).desc(),  
+                                        V_PROC_AUTH_FUN_ATTIVI.AUTORIZZAZIONI.bitAnd(2).desc()
+                                )
+                .fetchAny();
+        return (r!=null) ? (r.getValue(V_PROC_AUTH_FUN_ATTIVI.AUTORIZZAZIONI) & autorizzazioni)==autorizzazioni : false;
     }
     
-    public ElencoVisibili getElencoVisibili(Utente user, TipoOperazioneEnum[] tipoOp) {
-        String likeOp = fixSecurityAuth(arrayToString(tipoOp));
-        String sql =    "((SELECT id_tipo_proc, null as id_proc, null as id_tipo_proc_rif, id_utente, id_ufficio, autorizzazioni FROM decreti.tipo_proc_ass where " +
-                        "((id_utente = {0} or " +
-                        "(id_ufficio in (select id_ufficio from istruttori_uffici where id_utente = {0}))) " +
-                        "and ((data_assegnazione <= {1} and data_rimozione is null) or ({1} between data_assegnazione and data_rimozione)) " +
-                        "and (autorizzazioni like {2})) " +
-                        "order by id_utente, id_ufficio) " +
-                        "union " +
-                        "(SELECT null as id_tipo_proc, id_proc, (select p.id_tipo_proc from proc p where p.id_proc = pa.id_proc) as id_tipo_proc_rif, id_utente, id_ufficio, autorizzazioni FROM decreti.proc_ass pa where " +
-                        "(id_utente = {0} or " +
-                        "(id_ufficio in (select id_ufficio from istruttori_uffici where id_utente = {0}))) " +
-                        "and ((data_assegnazione <= {1} and data_rimozione is null) or ({1} between data_assegnazione and data_rimozione)) " +
-                        "and (autorizzazioni like {2}) " +
-                        "order by id_utente desc, id_ufficio desc)) as x " +
-                        "order by id_tipo_proc is null, id_tipo_proc, " +
-                        "id_proc is null, id_proc, " +
-                        "id_utente is null, id_utente, " +
-                        "id_ufficio is null, id_ufficio, " + 
-                        "autorizzazioni<>'X', autorizzazioni";
-        List<Autorizzazione> lAuth = ctx.selectFrom(sql, user.getUtente().getIdUtente(), LocalDateTime.now(), likeOp).fetchInto(Autorizzazione.class);
+    /**
+     * Restituisce l'elenco delle ACL (Access Control List) per l'utente e le operazioni indicate.
+     * Le ACL contentono gli elenchi di tipi di procedura ammessi e negati e le singole procedure
+     * ammesse e indicate.
+     * 
+     * @param utente l'utente
+     * @param op le operazioni
+     * @return l'ACL di risultato
+     */
+    public ACL getACL(Utente utente, TipoOperazioneEnum[] op) {
+        final int id_utente = utente.getUtente().getIdUtente();
+        final int autorizzazioni = TipoOperazioneEnum.combina(op);
+        final int diniego = TipoOperazioneEnum.X.getOperazione();
+        //final int id_ufficio = utente.getUfficio().getIdUfficio();
+        final List<Integer> idUffici = utente.getUffici().stream().map(u -> u.getIdUfficio()).collect(Collectors.toList());
         
-        ElencoVisibili ev = new ElencoVisibili();        
-        List<Autorizzazione> lTipoProcNotIn = new ArrayList<>(); 
-        for (int i = 0; i < lAuth.size(); i++) {
-            Autorizzazione a = lAuth.get(i);
-            if (a.getIdTipoProc() != null) {
-                if (safeContains(a.getAutorizzazioni(), "X")) {
-                    lTipoProcNotIn.add(a);
-                    while (i < lAuth.size() && a.getIdTipoProc().equals(lAuth.get(i).getIdTipoProc())) i++;
-                    i--;
-                } else {
-                    ev.getIdTipiProc().add(a.getIdTipoProc());
-                }
-            } else {
-                if (safeContains(a.getAutorizzazioni(), "X")) {
-                    ev.getIdProcEsclusi().add(a.getIdProc());
-                    while (i < lAuth.size() && a.getIdProc().equals(lAuth.get(i).getIdProc())) i++;
-                    i--;
-                } else {
-                    if(!negata(lTipoProcNotIn, a)) {
-                        ev.getIdProcVisibili().add(a.getIdProc());
-                    }
-                }
+        Condition[] cond = { DSL.noCondition() };
+                       
+        // verifica per ogni tipo procedura se l'utente disponde dei diritti 
+        utente.getDeleghe().forEach((id_tipo_proc, id_delega) -> {
+            cond[0] = cond[0]
+                        .or(                    
+                                 V_PROC_ACL_ATTIVI.ID_TIPO_PROC.eq(id_tipo_proc)
+                            .and(V_PROC_ACL_ATTIVI.ID_UTENTE.eq(id_delega)
+                            .and(
+                                        V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(autorizzazioni).eq(autorizzazioni)
+                                .andNot(V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(diniego).eq(diniego))                            
+                                )
+                            )
+                        );
+        });
+        
+        // verifica per ogni tipo procedura se l'ufficio a cui appartiene l'utente disponde dei diritti 
+        utente.getDeleghe().forEach((id_tipo_proc, id_delega) -> {
+            cond[0] = cond[0]
+                        .or(                    
+                                 V_PROC_ACL_ATTIVI.ID_TIPO_PROC.eq(id_tipo_proc)
+                            //.and(V_PROC_ACL_ATTIVI.ID_UFFICIO.eq(id_ufficio)
+                            .and(V_PROC_ACL_ATTIVI.ID_UFFICIO.in(idUffici)
+                            .and(
+                                        V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(autorizzazioni).eq(autorizzazioni)
+                                .andNot(V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(diniego).eq(diniego))                            
+                                )
+                            )
+                        );
+        });
+        
+        // aggiunge le singole procedure ESPLICITAMENTE AMMESSE
+        cond[0] = cond[0]
+                        .or(
+                                V_PROC_ACL_ATTIVI.ID_PROC.isNotNull()
+                                .and(V_PROC_ACL_ATTIVI.ID_UTENTE.eq(id_utente)
+                                    //.or(V_PROC_ACL_ATTIVI.ID_UFFICIO.eq(id_ufficio))
+                                    .or(V_PROC_ACL_ATTIVI.ID_UFFICIO.in(idUffici))    
+                                )
+                                .and(
+                                        V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(autorizzazioni).eq(autorizzazioni)
+                                    .and(V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(diniego).ne(diniego))
+                                )
+                        );
+        
+        
+        List<VProcAclAttiviRecord> lAmmessi = ctx.selectFrom(V_PROC_ACL_ATTIVI).where(cond[0]).fetch();
+        
+        // tipi procedure ecluse esplicitamente all'utente
+        cond[0] = DSL.noCondition();        
+        utente.getDeleghe().forEach((id_tipo_proc, id_delega) -> {
+            cond[0] = cond[0]
+                        .or(                    
+                                 V_PROC_ACL_ATTIVI.ID_TIPO_PROC.eq(id_tipo_proc)
+                            .and(V_PROC_ACL_ATTIVI.ID_UTENTE.eq(id_utente)
+                            .and(
+                                         V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(autorizzazioni).ne(autorizzazioni)
+                                    .and(V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(diniego).eq(diniego))                            
+                                )
+                            )
+                        );
+        });
+        
+        List<VProcAclAttiviRecord> lTipiProcNegate = ctx.selectFrom(V_PROC_ACL_ATTIVI).where(cond[0]).fetch();
+        
+        // Singole procedure escluse esplicitamente all'utente
+        cond[0] = DSL.noCondition();        
+        cond[0] = cond[0]
+                        .or(
+                                V_PROC_ACL_ATTIVI.ID_PROC.isNotNull()
+                                .and(V_PROC_ACL_ATTIVI.ID_UTENTE.eq(id_utente)
+                                    //.or(V_PROC_ACL_ATTIVI.ID_UFFICIO.eq(id_ufficio))
+                                    .or(V_PROC_ACL_ATTIVI.ID_UFFICIO.in(idUffici))
+                                )
+                                .and(
+                                        V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(autorizzazioni).ne(autorizzazioni)
+                                    .and(V_PROC_ACL_ATTIVI.AUTORIZZAZIONI.bitAnd(diniego).eq(diniego))
+                                )
+                        );
+        List<VProcAclAttiviRecord> lProcNegate = ctx.selectFrom(V_PROC_ACL_ATTIVI).where(cond[0]).fetch();
+        
+        // Costruisce l'elenco delle procedure/tipi di procedura
+        ACL acl = new ACL();        
+        lAmmessi.forEach(ammesso -> {
+            if(ammesso.getIdProc()!=null) {
+                acl.getProcedureAmmesse().add(ammesso.getIdProc());
             }
-        }
-        
-        return ev;
-    }
-    
-    private boolean safeContains(String where, String what) {
-        what = (what!=null) ? what.toUpperCase() : null;
-        return (where!=null) ? where.toUpperCase().contains(what) : false;
-    }
-    
-    private boolean negata(List<Autorizzazione> esclusi, Autorizzazione a) {
-        if(esclusi.isEmpty()) return false; // nessuna esclusione, procedura ammessa
-        
-        for(Autorizzazione e : esclusi) {
-            if(Objects.equals(e.getIdTipoProc(), a.getIdTipoProcRif())) {
-                if(e.getIdUtente()!=null && a.getIdUtente()!=null) return true;  // esclude la singola procedura per l'utente specifico
-                if(e.getIdUtente()!=null && a.getIdUtente()==null) return true;  // il tipo procedura è escluso per l'utente
-                if(e.getIdUtente()==null && a.getIdUtente()!=null) return false; // esclusione a livello di ufficio ma non di utenza
-                if(e.getIdUtente()==null && a.getIdUtente()==null) return true;  // esclusde la singola procedura per l'ufficio
+            else {
+                acl.getTipiProcedureAmmesse().add(ammesso.getIdTipoProc());
             }
-        }
+        });
         
-        return true; // negazione per default
+        lTipiProcNegate.forEach(tipoProc -> {
+            acl.getTipiProcedureEscluse().add(tipoProc.getIdTipoProc()); 
+        });
+        
+        lProcNegate.forEach(proc -> {
+            acl.getProcedureEscluse().add(proc.getIdProc());
+        });
+        
+        //logger.info("Elenco di visibilità per l'utente/ufficio id=[{}/{}] con autorizzazioni [{}]: {}", id_utente, id_ufficio, autorizzazioni, acl);
+        logger.info("Elenco di visibilità per l'utente/uffici id=[{}/{}] con autorizzazioni [{}]: {}", id_utente, idUffici, autorizzazioni, acl);
+        return acl;
     }
     
-    public boolean isAuthorized(Utente user, LTipoProcRecord tipoProc, TipoOperazioneEnum tipoOp) {
-        return isAuthorized(user, tipoProc, new TipoOperazioneEnum[]{tipoOp});
+    /**
+     * Verifica l'accessibilità da parte dell'utente specificato alla procedura e con i diritti di
+     * accesso indicati. Il metodo rialza un'eccezione che porterà l'applicazione nella
+     * pagina di "access denied".
+     * 
+     * @param proc la procedura
+     * @param utente l'utente
+     * @param op i tipi di diritti di accesso
+     */
+    public void verificaAccessibilitaProcedimento(ProcRecord proc, Utente utente, TipoOperazioneEnum[] op) {
+        ACL acl = getACL(utente, op);
+        int idProc = proc.getIdProc(); 
+        int idTipoProc = proc.getIdTipoProc();
+         
+        // La procedura è tra quelle esplicitamente concesse?
+        // OPPURE
+        // La procedura è del tipo ammesso ma non è tra quelle esplicitamente escluse?
+        boolean res = (acl.getProcedureAmmesse().contains(idProc) || (acl.getTipiProcedureAmmesse().contains(idTipoProc) && !acl.getProcedureEscluse().contains(idProc)));
+        if(!res) {
+            String msg = String.format("L'utente [%s] non ha la visibilitità [%s] per il procedimento [%s].", utente.getUtente().getUtente(), Arrays.toString(op), proc.getIdProc());
+            logger.info(msg);
+            throw new AccessDeniedException(msg);
+        }                
     }
-    
-    public boolean isAuthorized(Utente user, LTipoProcRecord tipoProc, TipoOperazioneEnum[] tipoOp) {
-        String likeOp = fixSecurityAuth(arrayToString(tipoOp));
-        LocalDateTime now = LocalDateTime.now();
-        return ctx.select(DSL.count())
-                .from(L_TIPO_PROC)
-                .join(TIPO_PROC_ASS)
-                    .on(L_TIPO_PROC.ID_TIPO_PROC.eq(TIPO_PROC_ASS.ID_TIPO_PROC))
-                .join(DELEGA)
-                    .on(TIPO_PROC_ASS.ID_UTENTE.eq(DELEGA.ID_DELEGANTE).and(TIPO_PROC_ASS.ID_TIPO_PROC.eq(DELEGA.ID_TIPO_PROC)))
-                .where(DELEGA.ID_UTENTE.eq(user.getUtente().getIdUtente()))
-                    .and(L_TIPO_PROC.ID_TIPO_PROC.eq(tipoProc.getIdTipoProc()))
-                    .and(TIPO_PROC_ASS.AUTORIZZAZIONI.like(likeOp))
-                    .and(TIPO_PROC_ASS.DATA_ASSEGNAZIONE.le(now).and(TIPO_PROC_ASS.DATA_RIMOZIONE.isNull()))
-                    .or(DSL.val(now).between(TIPO_PROC_ASS.DATA_ASSEGNAZIONE, TIPO_PROC_ASS.DATA_RIMOZIONE))
-                .fetchOneInto(Long.class)>0;
-    }
-
-    public boolean isAuthorized(Utente user, TipoOperazioneEnum tipoOp) {
-        return isAuthorized(user, new TipoOperazioneEnum[]{tipoOp});
-    }
-    
-    public boolean isAuthorized(Utente user, TipoOperazioneEnum[] tipoOp) {
-        String likeOp = fixSecurityAuth(arrayToString(tipoOp));
-        LocalDateTime now = LocalDateTime.now();
-        return ctx.select(DSL.count())
-                .from(L_TIPO_PROC)
-                .join(TIPO_PROC_ASS)
-                    .on(L_TIPO_PROC.ID_TIPO_PROC.eq(TIPO_PROC_ASS.ID_TIPO_PROC))                
-                .join(DELEGA)
-                    .on(TIPO_PROC_ASS.ID_UTENTE.eq(DELEGA.ID_DELEGANTE).and(TIPO_PROC_ASS.ID_TIPO_PROC.eq(DELEGA.ID_TIPO_PROC)))    
-                .where(DELEGA.ID_UTENTE.eq(user.getUtente().getIdUtente()))                    
-                    .and(TIPO_PROC_ASS.AUTORIZZAZIONI.like(likeOp))
-                    .and(TIPO_PROC_ASS.DATA_ASSEGNAZIONE.le(now).and(TIPO_PROC_ASS.DATA_RIMOZIONE.isNull()))
-                    .or(DSL.val(now).between(TIPO_PROC_ASS.DATA_ASSEGNAZIONE, TIPO_PROC_ASS.DATA_RIMOZIONE))
-                .fetchOneInto(Long.class)>0;
-    }
-    
-    public boolean isAuthorized(Utente user, ProcRecord proc, TipoOperazioneEnum tipoOp) {
-        return isAuthorized(user, proc, new TipoOperazioneEnum[]{tipoOp});
-    }
-    
-    public boolean isAuthorized(Utente user, ProcRecord proc, TipoOperazioneEnum[] tipoOp) {
-        String likeOp = fixSecurityAuth(arrayToString(tipoOp));
-        LocalDateTime now = LocalDateTime.now();
-        return ctx.select(DSL.count())
-                .from(PROC)
-                .join(PROC_ASS)
-                    .on(PROC.ID_PROC.eq(PROC_ASS.ID_PROC))                
-                .where(PROC_ASS.ID_UTENTE.eq(user.getUtente().getIdUtente()))
-                    .and(PROC_ASS.AUTORIZZAZIONI.like(likeOp))
-                    .and(PROC_ASS.DATA_ASSEGNAZIONE.le(now).and(PROC_ASS.DATA_RIMOZIONE.isNull()))
-                    .or(DSL.val(now).between(PROC_ASS.DATA_ASSEGNAZIONE, PROC_ASS.DATA_RIMOZIONE))
-                .fetchOneInto(Long.class)>0;
-    }
-    
-    public boolean isAssigned(Utente user, int idProc, LocalDateTime when) {
-        return ctx.select(DSL.count())
-                .from(PROC_ASS)                
-                .where(PROC_ASS.ID_UTENTE.eq(user.getUtente().getIdUtente()))
-                    .and(PROC_ASS.AUTORIZZAZIONI.like("%M%"))
-                    .and(PROC_ASS.DATA_ASSEGNAZIONE.le(when).and(PROC_ASS.DATA_RIMOZIONE.isNull()))
-                    .or(DSL.val(when).between(PROC_ASS.DATA_ASSEGNAZIONE, PROC_ASS.DATA_RIMOZIONE))
-                .fetchOneInto(Long.class)>0;
-    }
-    
-    public String fixSecurityAuth(String auth) {
-        final String[] order = {"L", "A", "M", "E", "X"};
-        List<String> lAuth = new ArrayList<>();
-        for(String c : order) {
-            for(int i=0;i<auth.toUpperCase().length();i++) {
-                String s = String.valueOf(auth.charAt(i));
-                if(c.equals(s) && !lAuth.contains(s)) lAuth.add(s);
-            }
-        }
-        StringJoiner sj = new StringJoiner("%", "%", "%");
-        lAuth.forEach(a -> sj.add(a));
-        return sj.toString();
-    }
-    
-    public String arrayToString(TipoOperazioneEnum[] ops) {
-        if(ops==null) return "";
-        LinkedHashSet<String> las = new LinkedHashSet<>();
-        for(TipoOperazioneEnum v : ops) las.add(v.toString());
-        StringJoiner sj = new StringJoiner("");
-        for(String s : las) sj.add(s);
-        return sj.toString();
-    } 
 }

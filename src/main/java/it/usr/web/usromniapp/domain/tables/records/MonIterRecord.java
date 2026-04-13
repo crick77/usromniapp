@@ -181,6 +181,6 @@ public class MonIterRecord extends UpdatableRecordImpl<MonIterRecord> {
         setIstanzamude(istanzamude);
         setTipoistanza(tipoistanza);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

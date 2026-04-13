@@ -136,6 +136,6 @@ public class GisSegnalazioniRecord extends UpdatableRecordImpl<GisSegnalazioniRe
         setIp(ip);
         setTesto(testo);
         setRisolto(risolto);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

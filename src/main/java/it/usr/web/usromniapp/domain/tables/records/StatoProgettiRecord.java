@@ -634,6 +634,6 @@ public class StatoProgettiRecord extends UpdatableRecordImpl<StatoProgettiRecord
         setDataSalFinale(dataSalFinale);
         setDurataLavori(durataLavori);
         setDataPresuntaFineLavori(dataPresuntaFineLavori);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

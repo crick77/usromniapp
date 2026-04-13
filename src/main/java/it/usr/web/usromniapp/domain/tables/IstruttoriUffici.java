@@ -9,7 +9,9 @@ import it.usr.web.usromniapp.domain.Keys;
 import it.usr.web.usromniapp.domain.tables.records.IstruttoriUfficiRecord;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
@@ -118,6 +120,11 @@ public class IstruttoriUffici extends TableImpl<IstruttoriUfficiRecord> {
     @Override
     public UniqueKey<IstruttoriUfficiRecord> getPrimaryKey() {
         return Keys.KEY_ISTRUTTORI_UFFICI_PRIMARY;
+    }
+
+    @Override
+    public List<UniqueKey<IstruttoriUfficiRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.KEY_ISTRUTTORI_UFFICI_UQ_UTENTE_UFFICIO);
     }
 
     @Override

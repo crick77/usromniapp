@@ -149,6 +149,6 @@ public class LTipoDecretoRecord extends UpdatableRecordImpl<LTipoDecretoRecord> 
         setTipoDecreto(tipoDecreto);
         setIdAmbitoDecreto(idAmbitoDecreto);
         setCodiceDecreto(codiceDecreto);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

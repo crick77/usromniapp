@@ -32,6 +32,14 @@
         <param-name>primefaces.FONT_AWESOME</param-name>
         <param-value>true</param-value>
     </context-param>
+    <context-param>
+        <param-name>org.omnifaces.EXCEPTION_TYPES_TO_UNWRAP</param-name>
+        <param-value>jakarta.ejb.EJBException,jakarta.persistence.RollbackException</param-value>
+    </context-param>
+    <context-param>
+        <param-name>org.omnifaces.EXCEPTION_TYPES_TO_IGNORE_IN_LOGGING</param-name>
+        <param-value>jakarta.faces.application.ViewExpiredException,it.usr.web.usromniapp.controller.AccessDeniedException</param-value>
+    </context-param>
   
     <mime-mapping>
         <extension>ttf</extension>
@@ -147,7 +155,11 @@
         <location>/notfound.xhtml</location>
     </error-page>
     <error-page>
+        <exception-type>it.usr.web.usromniapp.controller.AccessDeniedException</exception-type>
+        <location>/access.xhtml</location>
+    </error-page>
+    <error-page>
         <error-code>500</error-code>
         <location>/error.xhtml</location>
-    </error-page>
+    </error-page>    
 </web-app>

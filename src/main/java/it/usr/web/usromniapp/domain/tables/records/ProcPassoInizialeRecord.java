@@ -74,6 +74,6 @@ public class ProcPassoInizialeRecord extends UpdatableRecordImpl<ProcPassoInizia
 
         setIdTipoProc(idTipoProc);
         setCodicePasso(codicePasso);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

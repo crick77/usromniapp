@@ -104,6 +104,6 @@ public class ProcIncarichiRecord extends UpdatableRecordImpl<ProcIncarichiRecord
         setIdProc(idProc);
         setIdTecnico(idTecnico);
         setIdRuoloTecnico(idRuoloTecnico);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

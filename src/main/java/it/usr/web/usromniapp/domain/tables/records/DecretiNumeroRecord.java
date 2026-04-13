@@ -126,6 +126,6 @@ public class DecretiNumeroRecord extends TableRecordImpl<DecretiNumeroRecord> {
         setIdAtto(idAtto);
         setDataOra(dataOra);
         setPubblicato(pubblicato);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

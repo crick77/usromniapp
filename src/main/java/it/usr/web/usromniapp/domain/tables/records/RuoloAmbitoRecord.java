@@ -104,6 +104,6 @@ public class RuoloAmbitoRecord extends UpdatableRecordImpl<RuoloAmbitoRecord> {
         setIdRuolo(idRuolo);
         setIdAmbito(idAmbito);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

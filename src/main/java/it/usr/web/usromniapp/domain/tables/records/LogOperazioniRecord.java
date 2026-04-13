@@ -196,6 +196,6 @@ public class LogOperazioniRecord extends UpdatableRecordImpl<LogOperazioniRecord
         setOriginale(originale);
         setOperatore(operatore);
         setDataOra(dataOra);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

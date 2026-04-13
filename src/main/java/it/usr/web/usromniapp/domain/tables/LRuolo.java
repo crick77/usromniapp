@@ -8,11 +8,10 @@ import it.usr.web.usromniapp.domain.Decreti;
 import it.usr.web.usromniapp.domain.Keys;
 import it.usr.web.usromniapp.domain.tables.Incarico.IncaricoPath;
 import it.usr.web.usromniapp.domain.tables.LAmbito.LAmbitoPath;
-import it.usr.web.usromniapp.domain.tables.ProcAss.ProcAssPath;
-import it.usr.web.usromniapp.domain.tables.ProcAssAttuali.ProcAssAttualiPath;
+import it.usr.web.usromniapp.domain.tables.ProcAcl.ProcAclPath;
+import it.usr.web.usromniapp.domain.tables.ProcAclIstruttori.ProcAclIstruttoriPath;
 import it.usr.web.usromniapp.domain.tables.RuoliUtente.RuoliUtentePath;
 import it.usr.web.usromniapp.domain.tables.RuoloAmbito.RuoloAmbitoPath;
-import it.usr.web.usromniapp.domain.tables.TipoProcAss.TipoProcAssPath;
 import it.usr.web.usromniapp.domain.tables.Utenti.UtentiPath;
 import it.usr.web.usromniapp.domain.tables.records.LRuoloRecord;
 
@@ -82,7 +81,7 @@ public class LRuolo extends TableImpl<LRuoloRecord> {
     /**
      * The column <code>decreti.l_ruolo.permessi_predefiniti</code>.
      */
-    public final TableField<LRuoloRecord, String> PERMESSI_PREDEFINITI = createField(DSL.name("permessi_predefiniti"), SQLDataType.VARCHAR(8).defaultValue(DSL.inline("NULL", SQLDataType.VARCHAR)), this, "");
+    public final TableField<LRuoloRecord, Integer> PERMESSI_PREDEFINITI = createField(DSL.name("permessi_predefiniti"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", SQLDataType.INTEGER)), this, "");
 
     private LRuolo(Name alias, Table<LRuoloRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -179,30 +178,30 @@ public class LRuolo extends TableImpl<LRuoloRecord> {
         return _incarico;
     }
 
-    private transient ProcAssAttualiPath _procAssAttuali;
+    private transient ProcAclPath _procAcl;
+
+    /**
+     * Get the implicit to-many join path to the <code>decreti.proc_acl</code>
+     * table
+     */
+    public ProcAclPath procAcl() {
+        if (_procAcl == null)
+            _procAcl = new ProcAclPath(this, null, Keys.FK_PROCACL_RUOLO.getInverseKey());
+
+        return _procAcl;
+    }
+
+    private transient ProcAclIstruttoriPath _procAclIstruttori;
 
     /**
      * Get the implicit to-many join path to the
-     * <code>decreti.proc_ass_attuali</code> table
+     * <code>decreti.proc_acl_istruttori</code> table
      */
-    public ProcAssAttualiPath procAssAttuali() {
-        if (_procAssAttuali == null)
-            _procAssAttuali = new ProcAssAttualiPath(this, null, Keys.FK_PROCASSATT_RUOLO.getInverseKey());
+    public ProcAclIstruttoriPath procAclIstruttori() {
+        if (_procAclIstruttori == null)
+            _procAclIstruttori = new ProcAclIstruttoriPath(this, null, Keys.FK_PROCACLISTR_RUOLO.getInverseKey());
 
-        return _procAssAttuali;
-    }
-
-    private transient ProcAssPath _procAss;
-
-    /**
-     * Get the implicit to-many join path to the <code>decreti.proc_ass</code>
-     * table
-     */
-    public ProcAssPath procAss() {
-        if (_procAss == null)
-            _procAss = new ProcAssPath(this, null, Keys.FK_PROCCASS_RUOLO.getInverseKey());
-
-        return _procAss;
+        return _procAclIstruttori;
     }
 
     private transient RuoliUtentePath _ruoliUtente;
@@ -229,19 +228,6 @@ public class LRuolo extends TableImpl<LRuoloRecord> {
             _ruoloAmbito = new RuoloAmbitoPath(this, null, Keys.FK_RUOLOAMBITO_RUOLO.getInverseKey());
 
         return _ruoloAmbito;
-    }
-
-    private transient TipoProcAssPath _tipoProcAss;
-
-    /**
-     * Get the implicit to-many join path to the
-     * <code>decreti.tipo_proc_ass</code> table
-     */
-    public TipoProcAssPath tipoProcAss() {
-        if (_tipoProcAss == null)
-            _tipoProcAss = new TipoProcAssPath(this, null, Keys.FK_TIPOPROCASS_RUOLO.getInverseKey());
-
-        return _tipoProcAss;
     }
 
     private transient UtentiPath _utenti;

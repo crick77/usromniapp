@@ -259,6 +259,6 @@ public class ProcIterRecord extends UpdatableRecordImpl<ProcIterRecord> {
         setIdEsito(idEsito);
         setIdProcIterLink(idProcIterLink);
         setGiorniSospensione(giorniSospensione);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

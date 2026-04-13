@@ -74,6 +74,6 @@ public class LPosizioneRecord extends UpdatableRecordImpl<LPosizioneRecord> {
 
         setIdPosizione(idPosizione);
         setPosizione(posizione);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

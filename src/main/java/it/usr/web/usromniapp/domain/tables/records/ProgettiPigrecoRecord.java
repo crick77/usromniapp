@@ -74,6 +74,6 @@ public class ProgettiPigrecoRecord extends UpdatableRecordImpl<ProgettiPigrecoRe
 
         setId(id);
         setIdPratica(idPratica);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

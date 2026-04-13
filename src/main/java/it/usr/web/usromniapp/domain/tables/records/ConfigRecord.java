@@ -89,6 +89,6 @@ public class ConfigRecord extends UpdatableRecordImpl<ConfigRecord> {
         setChiave(chiave);
         setValore(valore);
         setNota(nota);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

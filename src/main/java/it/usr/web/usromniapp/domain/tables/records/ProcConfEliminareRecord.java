@@ -104,6 +104,6 @@ public class ProcConfEliminareRecord extends UpdatableRecordImpl<ProcConfElimina
         setVariabile(variabile);
         setValore(valore);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

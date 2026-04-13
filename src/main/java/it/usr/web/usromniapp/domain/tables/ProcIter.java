@@ -7,6 +7,7 @@ package it.usr.web.usromniapp.domain.tables;
 import it.usr.web.usromniapp.domain.Decreti;
 import it.usr.web.usromniapp.domain.Indexes;
 import it.usr.web.usromniapp.domain.Keys;
+import it.usr.web.usromniapp.domain.tables.DocLink.DocLinkPath;
 import it.usr.web.usromniapp.domain.tables.LTipoPasso.LTipoPassoPath;
 import it.usr.web.usromniapp.domain.tables.Proc.ProcPath;
 import it.usr.web.usromniapp.domain.tables.ProcEsiti.ProcEsitiPath;
@@ -269,6 +270,71 @@ public class ProcIter extends TableImpl<ProcIterRecord> {
             _utenti = new UtentiPath(this, Keys.FK_PROCITER_UTENTE, null);
 
         return _utenti;
+    }
+
+    private transient DocLinkPath _docLink;
+
+    /**
+     * Get the implicit to-many join path to the <code>decreti.doc_link</code>
+     * table
+     */
+    public DocLinkPath docLink() {
+        if (_docLink == null)
+            _docLink = new DocLinkPath(this, null, Keys.FK_DOCLINK_POCITER.getInverseKey());
+
+        return _docLink;
+    }
+
+    private transient ProcPath _fkProcIterEsito;
+
+    /**
+     * Get the implicit to-many join path to the <code>decreti.proc</code>
+     * table, via the <code>fk_proc_iter_esito</code> key
+     */
+    public ProcPath fkProcIterEsito() {
+        if (_fkProcIterEsito == null)
+            _fkProcIterEsito = new ProcPath(this, null, Keys.FK_PROC_ITER_ESITO.getInverseKey());
+
+        return _fkProcIterEsito;
+    }
+
+    private transient ProcPath _fkProcIterFirma;
+
+    /**
+     * Get the implicit to-many join path to the <code>decreti.proc</code>
+     * table, via the <code>fk_proc_iter_firma</code> key
+     */
+    public ProcPath fkProcIterFirma() {
+        if (_fkProcIterFirma == null)
+            _fkProcIterFirma = new ProcPath(this, null, Keys.FK_PROC_ITER_FIRMA.getInverseKey());
+
+        return _fkProcIterFirma;
+    }
+
+    private transient ProcPath _fkProcIterUltimo;
+
+    /**
+     * Get the implicit to-many join path to the <code>decreti.proc</code>
+     * table, via the <code>fk_proc_iter_ultimo</code> key
+     */
+    public ProcPath fkProcIterUltimo() {
+        if (_fkProcIterUltimo == null)
+            _fkProcIterUltimo = new ProcPath(this, null, Keys.FK_PROC_ITER_ULTIMO.getInverseKey());
+
+        return _fkProcIterUltimo;
+    }
+
+    private transient ProcPath _fkProcIterUltimouff;
+
+    /**
+     * Get the implicit to-many join path to the <code>decreti.proc</code>
+     * table, via the <code>fk_proc_iter_ultimouff</code> key
+     */
+    public ProcPath fkProcIterUltimouff() {
+        if (_fkProcIterUltimouff == null)
+            _fkProcIterUltimouff = new ProcPath(this, null, Keys.FK_PROC_ITER_ULTIMOUFF.getInverseKey());
+
+        return _fkProcIterUltimouff;
     }
 
     @Override

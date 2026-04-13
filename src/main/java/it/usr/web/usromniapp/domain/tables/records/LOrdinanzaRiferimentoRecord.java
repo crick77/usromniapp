@@ -110,6 +110,6 @@ public class LOrdinanzaRiferimentoRecord extends UpdatableRecordImpl<LOrdinanzaR
         setIdAmbitoRicostruzione(idAmbitoRicostruzione);
         setAttivo(attivo);
         setOrdinanzaRiferimento(ordinanzaRiferimento);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

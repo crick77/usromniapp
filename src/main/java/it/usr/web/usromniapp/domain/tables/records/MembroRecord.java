@@ -96,6 +96,6 @@ public class MembroRecord extends TableRecordImpl<MembroRecord> {
         setIdGruppo(idGruppo);
         setDataInizio(dataInizio);
         setDataFine(dataFine);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

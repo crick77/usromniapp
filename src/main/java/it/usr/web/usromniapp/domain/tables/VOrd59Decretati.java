@@ -63,7 +63,7 @@ public class VOrd59Decretati extends TableImpl<VOrd59DecretatiRecord> {
     }
 
     private VOrd59Decretati(Name alias, Table<VOrd59DecretatiRecord> aliased, Field<?>[] parameters, Condition where) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view `v_ord59_decretati` as select `decreti`.`decreti`.`ID_Pratica` AS `ID_Pratica`,min(`decreti`.`decreti`.`data_ora_provvedimento`) AS `data_ora_provvedimento` from `decreti`.`decreti` where `decreti`.`decreti`.`da_rendicontare` = 1 and `decreti`.`decreti`.`numero_provvedimento` is not null and `decreti`.`decreti`.`id_tipo_provvedimento` > 0 and `decreti`.`decreti`.`id_tipo_decreto` = 1 and `decreti`.`decreti`.`id_tipo_pratica` in (1,2,11) and `decreti`.`decreti`.`ID_Pratica` > 0 and (`decreti`.`decreti`.`ORD_100` is null or `decreti`.`decreti`.`ORD_100` = 0) group by `decreti`.`decreti`.`ID_Pratica`"), where);
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("CREATE VIEW `v_ord59_decretati` AS select `decreti`.`decreti`.`ID_Pratica` AS `ID_Pratica`,min(`decreti`.`decreti`.`data_ora_provvedimento`) AS `data_ora_provvedimento` from `decreti`.`decreti` where `decreti`.`decreti`.`da_rendicontare` = 1 and `decreti`.`decreti`.`numero_provvedimento` is not null and `decreti`.`decreti`.`id_tipo_provvedimento` > 0 and `decreti`.`decreti`.`id_tipo_decreto` = 1 and `decreti`.`decreti`.`id_tipo_pratica` in (1,2,11) and `decreti`.`decreti`.`ID_Pratica` > 0 and (`decreti`.`decreti`.`ORD_100` is null or `decreti`.`decreti`.`ORD_100` = 0) group by `decreti`.`decreti`.`ID_Pratica`"), where);
     }
 
     /**

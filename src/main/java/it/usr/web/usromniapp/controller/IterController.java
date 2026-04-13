@@ -4,6 +4,7 @@
  */
 package it.usr.web.usromniapp.controller;
 
+import it.usr.web.controller.Redirector;
 import it.usr.web.producer.AppLogger;
 import it.usr.web.usromniapp.domain.tables.records.LTipoPassoRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcEsitiRecord;
@@ -18,11 +19,13 @@ import it.usr.web.usromniapp.service.ProcedimentoService;
 import it.usr.web.usromniapp.service.SecurityService;
 import it.usr.web.usromniapp.service.TipoOperazioneEnum;
 import it.usr.web.usromniapp.service.UtenteService;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.model.SelectItem;
 import jakarta.faces.model.SelectItemGroup;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +44,7 @@ import org.slf4j.Logger;
 @Named
 @ViewScoped
 public class IterController extends OmniappBaseController {
+    public final static TipoOperazioneEnum[] M = new TipoOperazioneEnum[] { TipoOperazioneEnum.M };
     @Inject
     IterService is;
     @Inject
@@ -53,6 +57,7 @@ public class IterController extends OmniappBaseController {
     @AppLogger
     Logger logger;
     Integer idProc;
+    String backViewId;
     ProcRecord procedimento;
     List<ProcIterRecord> iterPratica;
     List<ProcIterRecord> iterPraticaLink;
@@ -68,9 +73,10 @@ public class IterController extends OmniappBaseController {
     @SecurityCheck
     @RequiredAuthorization(TipoOperazioneEnum.M)
     public String init() {    
-        if(!ss.isAssigned(getUtenteOmniapp(), idProc, LocalDateTime.now())) {
-            return "/access";
-        }
+        List<UtentiRecord> ur = us.getUtenti();
+        utenti = new HashMap<>();
+        ur.forEach(u -> utenti.put(u.getIdUtente(), u)); 
+        
         aggiornaIter(); 
         
         return SAME_VIEW;
@@ -84,6 +90,14 @@ public class IterController extends OmniappBaseController {
         this.idProc = idProc;
     }
 
+    public String getBackViewId() {
+        return backViewId;
+    }
+
+    public void setBackViewId(String backViewId) {
+        this.backViewId = backViewId;
+    }
+        
     public List<ProcIterRecord> getIterPratica() {
         return iterPratica;
     }
@@ -138,14 +152,16 @@ public class IterController extends OmniappBaseController {
                             
     public void aggiornaIter() {
         procedimento = ps.getProcedimentoById(idProc);
+        ss.verificaAccessibilitaProcedimento(procedimento, getUtenteOmniapp(), M);
+        
         tipiPasso = is.getTipiPasso(procedimento.getIdTipoProc());
         esiti = is.getEsiti(procedimento.getIdTipoProc()); 
         
         iterPratica = is.getIterAttiviByIdProc(idProc);                         
-        List<Integer> utentiIter = iterPratica.stream().map(ProcIterRecord::getIdUtente).distinct().collect(Collectors.toList());
-        List<UtentiRecord> ur = us.getUtenti(utentiIter);
-        utenti = new HashMap<>();
-        ur.forEach(u -> utenti.put(u.getIdUtente(), u));        
+        //List<Integer> utentiIter = iterPratica.stream().map(ProcIterRecord::getIdUtente).distinct().collect(Collectors.toList());
+        //List<UtentiRecord> ur = us.getUtentiById(utentiIter);
+        //utenti = new HashMap<>();
+        //ur.forEach(u -> utenti.put(u.getIdUtente(), u));        
         
         iter = new ProcIterRecord();
         tipiPassoIter = null;
@@ -156,7 +172,7 @@ public class IterController extends OmniappBaseController {
     }        
     
     public void nuovo() { 
-        iter = new ProcIterRecord();
+        iter = new ProcIterRecord();       
         iter.setIdProc(idProc);
         iter.setIdUtente(getUtenteOmniapp().getUtente().getIdUtente());
         
@@ -210,6 +226,9 @@ public class IterController extends OmniappBaseController {
     
     public void aggiornaPasso() {
         passoSelezionato = is.getPassoByCodice(iter.getCodicePasso());
+        if(passoSelezionato.getDataAutomatica()) {
+            iter.setDataProt(LocalDate.now());
+        }
     }
     
     public boolean isEsitoObbligatorio() {
@@ -243,5 +262,9 @@ public class IterController extends OmniappBaseController {
          
     public String tornaElencoPratiche() {
         return "incarico";
+    }
+    
+    public String indietro() {
+        return Redirector.toPath(backViewId).withRedirect().go();
     }
 }

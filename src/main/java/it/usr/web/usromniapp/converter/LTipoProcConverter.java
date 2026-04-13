@@ -23,7 +23,7 @@ public class LTipoProcConverter implements Converter<LTipoProcRecord> {
     
     @Override
     public LTipoProcRecord getAsObject(FacesContext fc, UIComponent uic, String string) {
-        return (string!=null) ? ps.getTipoProcedimento(Integer.parseInt(string)) : null;        
+        return (string!=null) ? ps.getTipoProcedimentoById(Integer.parseInt(string)) : null;        
     }
 
     @Override

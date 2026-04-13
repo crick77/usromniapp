@@ -151,6 +151,6 @@ public class LogUtentiRecord extends UpdatableRecordImpl<LogUtentiRecord> {
         setIdUtente(idUtente);
         setIdSessione(idSessione);
         setBrowserClient(browserClient);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

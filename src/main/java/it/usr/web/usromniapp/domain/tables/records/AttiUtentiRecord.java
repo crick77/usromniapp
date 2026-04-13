@@ -104,6 +104,6 @@ public class AttiUtentiRecord extends UpdatableRecordImpl<AttiUtentiRecord> {
         setAttivo(attivo);
         setIdAtto(idAtto);
         setIdUtente(idUtente);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

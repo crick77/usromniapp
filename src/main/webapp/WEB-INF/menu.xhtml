@@ -14,11 +14,18 @@
                     <p:submenu id="m_assegnazioni" label="Assegnazioni" icon="pi pi-fw pi-arrow-right-arrow-left">
                         <p:menuitem id="m_assegna" value="Da assegnare" icon="pi pi-fw pi-user-plus" outcome="/secure/assegna" />
                         <p:menuitem id="m_assegnate" value="Assegnate" icon="pi pi-fw pi-users" outcome="/secure/assegnate" />
+                        <p:menuitem id="m_statodifatto" value="Stato di fatto" icon="pi pi-fw pi-camera" outcome="/secure/statodifatto" />
+                        <p:menuitem id="m_carichilavoro" value="Carico di lavoro" icon="pi pi-fw pi-truck" outcome="/secure/caricolavoro" />
                     </p:submenu>
-                    <p:submenu id="m_procedimento" label="Procedimento" icon="pi pi-fw pi-objects-column">                        
-                        <p:menuitem id="m_apri" value="Nuovo" icon="pi pi-fw pi-file-plus" outcome="/secure/nuovoprocedimento"/>                        
-                        <p:menuitem id="m_incarico" value="In carico" icon="pi pi-fw pi-wrench" outcome="/secure/incarico"/>
+                    <p:submenu id="m_procedimento" label="Procedimento" icon="pi pi-fw pi-objects-column">                                                
+                        <p:menuitem id="m_incarico_da_istruire" value="Assegnate - Da istruire" icon="pi pi-fw pi-wrench" outcome="/secure/incarico?tipo=0"/>
+                        <p:menuitem id="m_incarico_istruite" value="Istruiti" icon="pi pi-fw pi-cog" outcome="/secure/incarico?tipo=1"/>
+                        <p:menuitem id="m_incarico_integrate" value="Integrati" icon="pi pi-fw pi-file-import" outcome="/secure/incarico?tipo=2"/>
+                        <p:menuitem id="m_incarico_allafirma" value="Alla firma" icon="pi pi-fw pi-file-edit" outcome="/secure/incarico?tipo=3"/>
+                        <p:menuitem id="m_incarico_conclusi" value="Conclusi" icon="pi pi-fw pi-verified" outcome="/secure/incarico?tipo=4"/>
+                        <p:menuitem id="m_incarico_inrevisione" value="In revisione" icon="pi pi-fw pi-exclamation-triangle" outcome="/secure/incarico?tipo=5"/>
                     </p:submenu>                                        
+                    <p:menuitem id="m_apri" value="Nuova istanza" icon="pi pi-fw pi-file-plus" outcome="/secure/nuovoprocedimento"/>                        
                     <p:submenu id="m_amministrazione" label="Amministrazione" icon="pi pi-fw pi-server">                        
                         <p:menuitem id="m_tipiprocass" value="Autorizzazione Tipi Procedure" icon="pi pi-fw pi-flag" outcome="/secure/tipiprocauth"/>                        
                         <p:menuitem id="m_uffici" value="Uffici" icon="pi pi-fw pi-building" outcome="/secure/uffici"/>                        

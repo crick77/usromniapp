@@ -121,6 +121,6 @@ public class IterBRecord extends UpdatableRecordImpl<IterBRecord> {
         setDataEvento(dataEvento);
         setProtocollo(protocollo);
         setCodiceEvento(codiceEvento);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

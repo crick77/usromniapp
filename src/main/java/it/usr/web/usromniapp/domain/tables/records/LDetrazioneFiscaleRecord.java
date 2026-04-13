@@ -91,6 +91,6 @@ public class LDetrazioneFiscaleRecord extends UpdatableRecordImpl<LDetrazioneFis
         setIdDetrazioneFiscale(idDetrazioneFiscale);
         setAttivo(attivo);
         setDetrazioneFiscale(detrazioneFiscale);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

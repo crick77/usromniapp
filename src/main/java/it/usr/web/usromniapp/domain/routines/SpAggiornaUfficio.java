@@ -8,6 +8,7 @@ import it.usr.web.usromniapp.domain.Decreti;
 
 import org.jooq.Parameter;
 import org.jooq.impl.AbstractRoutine;
+import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 
@@ -50,7 +51,7 @@ public class SpAggiornaUfficio extends AbstractRoutine<java.lang.Void> {
      * Create a new routine call instance
      */
     public SpAggiornaUfficio() {
-        super("sp_aggiorna_ufficio", Decreti.DECRETI);
+        super("sp_aggiorna_ufficio", Decreti.DECRETI, DSL.comment(""));
 
         addInParameter(ID_UFFICIO);
         addInParameter(NOMEUFFICIO);

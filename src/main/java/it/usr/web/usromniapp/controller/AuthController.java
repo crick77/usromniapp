@@ -10,10 +10,13 @@ import it.usr.web.domain.AppUser;
 import it.usr.web.usromniapp.domain.tables.records.UfficiRecord;
 import it.usr.web.usromniapp.domain.tables.records.UtentiRecord;
 import it.usr.web.usromniapp.model.Utente;
+import it.usr.web.usromniapp.producer.LocalUserLogin;
 import it.usr.web.usromniapp.service.UtenteService;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -24,10 +27,14 @@ import jakarta.inject.Named;
 public class AuthController extends AbstractAuthController {
     @Inject
     UtenteService us;
+    @Inject
+    @LocalUserLogin
+    boolean permettiLocalLogin;
 
     @Override
     public String doLogin() {
-        if(!isEmpty(getUsername()) && getUsername().toLowerCase().endsWith("@local")) {
+        logger.info("Accesso locale consentito: [{}].", permettiLocalLogin);
+        if(!isEmpty(getUsername()) && getUsername().toLowerCase().endsWith("@local") && permettiLocalLogin) {
             String userName = getUsername().toLowerCase().replace("@local", "");
             UtentiRecord _user = us.login(userName, getPassword());
             if(_user!=null) {
@@ -35,12 +42,12 @@ public class AuthController extends AbstractAuthController {
                 AppUser u = new AppUser(userName, _attr);
                 user.setCurrentUser(u);
                 putIntoSession(u);
-                logger.debug("L'utente [{}] ha effettuato l'accesso locale.", userName);
+                logger.info("L'utente [{}] ha effettuato l'accesso locale.", userName);
                 return redirect("/secure/index");
             }
         
                 
-            logger.debug("L'utente [{}] non esiste o la password è errata o l'utente non abilitato.", userName);
+            logger.info("L'utente [{}] non esiste o la password è errata o l'utente non abilitato.", userName);
             message = "Credenziali di accesso errate o utente non abilitato.";
             return SAME_VIEW;                
         }
@@ -51,11 +58,15 @@ public class AuthController extends AbstractAuthController {
         
     @Override
     protected Object getUser(String username) {
-        UtentiRecord u = us.getUtente(username);
+        UtentiRecord u = us.getUtenteByUsername(username);
         if(u!=null & u.getAttivo()==1 && u.getUtenteFisico()==1) {
-            UfficiRecord uff = us.getUfficioUtente(u);
-            return new Utente(u, uff);
-        }
+            List<UfficiRecord> uff = us.getUfficiUtente(u);
+            Map<Integer, Integer> deleghe = us.getDelegheComplete(u);
+            Map<Integer, List<Integer>> gerarchia = us.getGerarchiaRP(u.getIdUtente());
+            Utente ut = new Utente(u, uff, deleghe, gerarchia);
+            logger.info("Informazioni complete utente: {}", ut);
+            return ut;
+        } 
         return null;
     }      
-} 
+}  

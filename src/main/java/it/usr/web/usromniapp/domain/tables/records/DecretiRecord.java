@@ -874,6 +874,6 @@ public class DecretiRecord extends UpdatableRecordImpl<DecretiRecord> {
         setCup_Chiuso(cup_Chiuso);
         setNota(nota);
         setDataNotifica(dataNotifica);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

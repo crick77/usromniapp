@@ -74,6 +74,6 @@ public class LTipoLayerRecord extends UpdatableRecordImpl<LTipoLayerRecord> {
 
         setIdLayer(idLayer);
         setDescrizione(descrizione);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

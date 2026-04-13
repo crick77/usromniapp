@@ -93,6 +93,6 @@ public class GisPrivataInterfacciaRecord extends UpdatableRecordImpl<GisPrivataI
         setIdPraticaPoligono(idPraticaPoligono);
         setIdPratica(idPratica);
         setDataora(dataora);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

@@ -151,6 +151,6 @@ public class IncaricoRecord extends UpdatableRecordImpl<IncaricoRecord> {
         setDataInizio(dataInizio);
         setDataFine(dataFine);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

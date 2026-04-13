@@ -224,6 +224,6 @@ public class MonMudeAccessRecord extends UpdatableRecordImpl<MonMudeAccessRecord
         setUnitaImmobiliariTotali(unitaImmobiliariTotali);
         setIstruttoreTecnico(istruttoreTecnico);
         setRp(rp);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

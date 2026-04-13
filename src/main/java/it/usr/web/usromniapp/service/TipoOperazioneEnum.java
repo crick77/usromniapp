@@ -9,24 +9,40 @@ package it.usr.web.usromniapp.service;
  * @author riccardo.iovenitti
  */
 public enum TipoOperazioneEnum {    
-    M("M"), // modifica
-    E("E"), // elimina
-    A("A"), // assegna
-    L("L"), // leggi
-    ANY("%"); // tutto
-    
-    private final String operazione;
+    X(8), // diniego
+    L(4), // leggi
+    M(2), // modifica
+    A(1), // assegna    
+    ANY(15), // tutto    
+    ADMIN(16); 
+    private final int operazione;
 
-    private TipoOperazioneEnum(String operazione) {
+    private TipoOperazioneEnum(int operazione) {
         this.operazione = operazione;
     }
 
-    public String getOperazione() {
+    public int getOperazione() {
         return this.operazione;
     }
  
     @Override
     public String toString() {
-        return this.operazione;
+        return this.name()+"("+String.valueOf(this.operazione)+")";
+    }
+    
+    /*public static int combina(TipoOperazioneEnum[] ops) {
+        int out = 0;
+        for(TipoOperazioneEnum op : ops) {
+            out = out | op.operazione; 
+        }
+        return out;
+    }*/
+    
+    public static int combina(TipoOperazioneEnum... ops) {
+        int out = 0;
+        for(TipoOperazioneEnum op : ops) {
+            out = out | op.operazione; 
+        }
+        return out;
     }
 }

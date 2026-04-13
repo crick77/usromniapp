@@ -212,6 +212,6 @@ public class MonTblIstanzaRecord extends UpdatableRecordImpl<MonTblIstanzaRecord
         setMappale(mappale);
         setMappaleTesto(mappaleTesto);
         setStatoIstruttorio(statoIstruttorio);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

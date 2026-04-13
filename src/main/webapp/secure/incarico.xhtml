@@ -12,6 +12,7 @@
     <ui:define name="title">Lavorazione</ui:define>
     <ui:define name="head">
         <f:metadata>            
+            <f:viewParam name="tipo" value="#{inCaricoController.tipo}" />
             <f:viewAction action="#{inCaricoController.init()}" />
         </f:metadata>        
     </ui:define>
@@ -22,7 +23,16 @@
 
             <div class="grid">
                 <div class="col-12">
-                    <div class="card">                        
+                    <div class="card">    
+                        <div class="grid">
+                            <div class="col-2">
+                                <p:selectOneMenu id="tipiproc" value="#{inCaricoController.tipoProcedimentoSelezionato}" hideNoSelectionOption="#{not empty inCaricoController.tipoProcedimentoSelezionato}" converter="lTipoProcConverter" style="width: 100%">
+                                    <p:ajax update="@this assegnazioni" listener="#{inCaricoController.aggiornaProcedimenti()}" />
+                                    <f:selectItem itemLabel="Selezionare un tipo di procedura..." itemValue="#{null}" noSelectionOption="true" />
+                                    <f:selectItems value="#{inCaricoController.tipiProcedimento}" var="tp" itemValue="#{tp}" itemLabel="#{tp.tipoProc}" />
+                                </p:selectOneMenu>
+                            </div>                            
+                        </div>
                         <div class="formgrid grid">
                             <p:dataTable id="assegnazioni" widgetVar="wvAssegnazioni" var="ass" value="#{inCaricoController.assegnazioni}" size="small" paginator="true"                                         
                                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rows="10"
@@ -31,14 +41,22 @@
 
                                 <f:facet name="header">
                                     <div class="flex align-items-center justify-content-between">
-                                        <span>ELENCO PROCEDIMENTI IN CARICO</span>
+                                        <span>ELENCO PROCEDIMENTI IN CARICO - #{inCaricoController.descrizione}</span>
+                                        <div>
+                                            <!--
+                                            <p:selectOneMenu id="ruoli">
+                                                
+                                            </p:selectOneMenu>
+                                            -->
+                                        </div>
                                         <div>
                                             <p:inputText id="globalFilter" onkeyup="PrimeFaces.debounce(() => PF('wvAssegnazioni').filter())" style="width:20rem"
                                                          placeholder="Ricerca globale..." />
                                         </div>
                                     </div>
                                 </f:facet>
-
+                                
+                                <!--
                                 <p:column headerText="PROCEDIMENTO" width="6%" filterBy="#{ass.idTipoProc}" filterMatchMode="exact">
                                     <f:facet name="filter">
                                         <p:selectOneMenu onchange="PF('wvAssegnazioni').filter()" style="width: 100%">
@@ -48,7 +66,8 @@
                                     </f:facet>
                                     #{inCaricoController.decodificatProcedimento(ass.idTipoProc).tipoProc}
                                 </p:column>
-
+                                -->
+                                
                                 <p:column headerText="N." filterBy="#{ass.codice}" filterMatchMode="contains" width="7%">
                                     #{ass.codice}
                                 </p:column>
@@ -61,6 +80,14 @@
                                     #{ass.indirizzo}
                                 </p:column>
 
+                                <p:column headerText="FOGLI" filterBy="#{ass.fogli}" filterMatchMode="contains">
+                                    #{ass.fogli}
+                                </p:column>
+                                
+                                <p:column headerText="PARTICELLE" filterBy="#{ass.particelle}" filterMatchMode="contains">
+                                    #{ass.particelle}
+                                </p:column>
+                                
                                 <p:column headerText="COMUNE" width="10%" filterBy="#{inCaricoController.decodificaCentroide(ass.codiceCom).comune}" filterMatchMode="contains">
                                     #{inCaricoController.decodificaCentroide(ass.codiceCom).comune}
                                 </p:column>
@@ -81,14 +108,14 @@
                                     </h:outputText>
                                 </p:column>
 
-                                <p:column headerText="ESITO" width="10%" filterBy="#{ass.iter.idEsito}" filterMatchMode="exact">
+                                <p:column headerText="ESITO ISTRUTTORIA" width="10%" filterBy="#{ass.idProcIterEsito}" filterMatchMode="exact" rendered="#{inCaricoController.tipo gt 3}">
                                     <f:facet name="filter">
                                         <p:selectOneMenu onchange="PF('wvAssegnazioni').filter()" style="width: 100%">
                                             <f:selectItem itemValue="#{null}" itemLabel="TUTTI" noSelectionOption="true" />                                            
                                             <f:selectItems value="#{inCaricoController.esiti}" var="e" itemValue="#{e.idEsito}" itemLabel="#{e.codice}" />
                                         </p:selectOneMenu>
                                     </f:facet>
-                                    #{inCaricoController.decodificaEsito(ass.iter.idEsito).codice}
+                                    #{inCaricoController.decodificaEsito(ass.iterEsito.idEsito).codice}
                                 </p:column>
 
                                 <p:column style="width:3rem">                                    

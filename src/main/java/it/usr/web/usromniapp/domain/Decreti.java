@@ -14,6 +14,8 @@ import it.usr.web.usromniapp.domain.tables.Config;
 import it.usr.web.usromniapp.domain.tables.Cup;
 import it.usr.web.usromniapp.domain.tables.DecretiNumero;
 import it.usr.web.usromniapp.domain.tables.Delega;
+import it.usr.web.usromniapp.domain.tables.DocLink;
+import it.usr.web.usromniapp.domain.tables.Docs;
 import it.usr.web.usromniapp.domain.tables.ElencoProgettiNeve;
 import it.usr.web.usromniapp.domain.tables.EsitiAttivazione;
 import it.usr.web.usromniapp.domain.tables.GisAccessi;
@@ -67,12 +69,14 @@ import it.usr.web.usromniapp.domain.tables.MonMudeAccess;
 import it.usr.web.usromniapp.domain.tables.MonPrivataNeveCatastale;
 import it.usr.web.usromniapp.domain.tables.MonTblIstanza;
 import it.usr.web.usromniapp.domain.tables.Proc;
-import it.usr.web.usromniapp.domain.tables.ProcAss;
-import it.usr.web.usromniapp.domain.tables.ProcAssAttuali;
+import it.usr.web.usromniapp.domain.tables.ProcAcl;
+import it.usr.web.usromniapp.domain.tables.ProcAclIstruttori;
+import it.usr.web.usromniapp.domain.tables.ProcAuthFun;
 import it.usr.web.usromniapp.domain.tables.ProcCat;
 import it.usr.web.usromniapp.domain.tables.ProcConfEliminare;
 import it.usr.web.usromniapp.domain.tables.ProcDipendenze;
 import it.usr.web.usromniapp.domain.tables.ProcEsiti;
+import it.usr.web.usromniapp.domain.tables.ProcFun;
 import it.usr.web.usromniapp.domain.tables.ProcIncarichi;
 import it.usr.web.usromniapp.domain.tables.ProcIter;
 import it.usr.web.usromniapp.domain.tables.ProcPassoIniziale;
@@ -89,17 +93,18 @@ import it.usr.web.usromniapp.domain.tables.RuoliUtente;
 import it.usr.web.usromniapp.domain.tables.RuoloAmbito;
 import it.usr.web.usromniapp.domain.tables.StatoProgetti;
 import it.usr.web.usromniapp.domain.tables.Tecnico;
-import it.usr.web.usromniapp.domain.tables.TipoProcAss;
 import it.usr.web.usromniapp.domain.tables.TipoProcProgressivo;
 import it.usr.web.usromniapp.domain.tables.TipoProcUffici;
 import it.usr.web.usromniapp.domain.tables.Uffici;
 import it.usr.web.usromniapp.domain.tables.UfficiProvvedimenti;
 import it.usr.web.usromniapp.domain.tables.Utenti;
 import it.usr.web.usromniapp.domain.tables.UtentiUtenti;
-import it.usr.web.usromniapp.domain.tables.VAssegnantiAttivi;
+import it.usr.web.usromniapp.domain.tables.VDelegheAttive;
 import it.usr.web.usromniapp.domain.tables.VEstrazioniLavori;
 import it.usr.web.usromniapp.domain.tables.VOrd100Decretati;
 import it.usr.web.usromniapp.domain.tables.VOrd59Decretati;
+import it.usr.web.usromniapp.domain.tables.VProcAclAttivi;
+import it.usr.web.usromniapp.domain.tables.VProcAuthFunAttivi;
 import it.usr.web.usromniapp.domain.tables.VRuoliutenteAttivi;
 import it.usr.web.usromniapp.domain.tables.VUtentiAttivi;
 
@@ -108,6 +113,7 @@ import java.util.List;
 
 import org.jooq.Catalog;
 import org.jooq.Table;
+import org.jooq.impl.DSL;
 import org.jooq.impl.SchemaImpl;
 
 
@@ -178,6 +184,16 @@ public class Decreti extends SchemaImpl {
      * The table <code>decreti.delega</code>.
      */
     public final Delega DELEGA = Delega.DELEGA;
+
+    /**
+     * The table <code>decreti.doc_link</code>.
+     */
+    public final DocLink DOC_LINK = DocLink.DOC_LINK;
+
+    /**
+     * The table <code>decreti.docs</code>.
+     */
+    public final Docs DOCS = Docs.DOCS;
 
     /**
      * The table <code>decreti.elenco_progetti_neve</code>.
@@ -446,14 +462,19 @@ public class Decreti extends SchemaImpl {
     public final Proc PROC = Proc.PROC;
 
     /**
-     * The table <code>decreti.proc_ass</code>.
+     * The table <code>decreti.proc_acl</code>.
      */
-    public final ProcAss PROC_ASS = ProcAss.PROC_ASS;
+    public final ProcAcl PROC_ACL = ProcAcl.PROC_ACL;
 
     /**
-     * The table <code>decreti.proc_ass_attuali</code>.
+     * The table <code>decreti.proc_acl_istruttori</code>.
      */
-    public final ProcAssAttuali PROC_ASS_ATTUALI = ProcAssAttuali.PROC_ASS_ATTUALI;
+    public final ProcAclIstruttori PROC_ACL_ISTRUTTORI = ProcAclIstruttori.PROC_ACL_ISTRUTTORI;
+
+    /**
+     * The table <code>decreti.proc_auth_fun</code>.
+     */
+    public final ProcAuthFun PROC_AUTH_FUN = ProcAuthFun.PROC_AUTH_FUN;
 
     /**
      * The table <code>decreti.proc_cat</code>.
@@ -474,6 +495,11 @@ public class Decreti extends SchemaImpl {
      * The table <code>decreti.proc_esiti</code>.
      */
     public final ProcEsiti PROC_ESITI = ProcEsiti.PROC_ESITI;
+
+    /**
+     * The table <code>decreti.proc_fun</code>.
+     */
+    public final ProcFun PROC_FUN = ProcFun.PROC_FUN;
 
     /**
      * The table <code>decreti.proc_incarichi</code>.
@@ -556,11 +582,6 @@ public class Decreti extends SchemaImpl {
     public final Tecnico TECNICO = Tecnico.TECNICO;
 
     /**
-     * The table <code>decreti.tipo_proc_ass</code>.
-     */
-    public final TipoProcAss TIPO_PROC_ASS = TipoProcAss.TIPO_PROC_ASS;
-
-    /**
      * The table <code>decreti.tipo_proc_progressivo</code>.
      */
     public final TipoProcProgressivo TIPO_PROC_PROGRESSIVO = TipoProcProgressivo.TIPO_PROC_PROGRESSIVO;
@@ -591,9 +612,9 @@ public class Decreti extends SchemaImpl {
     public final UtentiUtenti UTENTI_UTENTI = UtentiUtenti.UTENTI_UTENTI;
 
     /**
-     * The table <code>decreti.v_assegnanti_attivi</code>.
+     * The table <code>decreti.v_deleghe_attive</code>.
      */
-    public final VAssegnantiAttivi V_ASSEGNANTI_ATTIVI = VAssegnantiAttivi.V_ASSEGNANTI_ATTIVI;
+    public final VDelegheAttive V_DELEGHE_ATTIVE = VDelegheAttive.V_DELEGHE_ATTIVE;
 
     /**
      * The table <code>decreti.v_estrazioni_lavori</code>.
@@ -611,6 +632,16 @@ public class Decreti extends SchemaImpl {
     public final VOrd59Decretati V_ORD59_DECRETATI = VOrd59Decretati.V_ORD59_DECRETATI;
 
     /**
+     * The table <code>decreti.v_proc_acl_attivi</code>.
+     */
+    public final VProcAclAttivi V_PROC_ACL_ATTIVI = VProcAclAttivi.V_PROC_ACL_ATTIVI;
+
+    /**
+     * The table <code>decreti.v_proc_auth_fun_attivi</code>.
+     */
+    public final VProcAuthFunAttivi V_PROC_AUTH_FUN_ATTIVI = VProcAuthFunAttivi.V_PROC_AUTH_FUN_ATTIVI;
+
+    /**
      * The table <code>decreti.v_ruoliutente_attivi</code>.
      */
     public final VRuoliutenteAttivi V_RUOLIUTENTE_ATTIVI = VRuoliutenteAttivi.V_RUOLIUTENTE_ATTIVI;
@@ -624,7 +655,7 @@ public class Decreti extends SchemaImpl {
      * No further instances allowed
      */
     private Decreti() {
-        super("decreti", null);
+        super(DSL.name("decreti"), null, DSL.comment(""));
     }
 
 
@@ -647,6 +678,8 @@ public class Decreti extends SchemaImpl {
             it.usr.web.usromniapp.domain.tables.Decreti.DECRETI_,
             DecretiNumero.DECRETI_NUMERO,
             Delega.DELEGA,
+            DocLink.DOC_LINK,
+            Docs.DOCS,
             ElencoProgettiNeve.ELENCO_PROGETTI_NEVE,
             EsitiAttivazione.ESITI_ATTIVAZIONE,
             GisAccessi.GIS_ACCESSI,
@@ -700,12 +733,14 @@ public class Decreti extends SchemaImpl {
             MonPrivataNeveCatastale.MON_PRIVATA_NEVE_CATASTALE,
             MonTblIstanza.MON_TBL_ISTANZA,
             Proc.PROC,
-            ProcAss.PROC_ASS,
-            ProcAssAttuali.PROC_ASS_ATTUALI,
+            ProcAcl.PROC_ACL,
+            ProcAclIstruttori.PROC_ACL_ISTRUTTORI,
+            ProcAuthFun.PROC_AUTH_FUN,
             ProcCat.PROC_CAT,
             ProcConfEliminare.PROC_CONF_ELIMINARE,
             ProcDipendenze.PROC_DIPENDENZE,
             ProcEsiti.PROC_ESITI,
+            ProcFun.PROC_FUN,
             ProcIncarichi.PROC_INCARICHI,
             ProcIter.PROC_ITER,
             ProcPassoIniziale.PROC_PASSO_INIZIALE,
@@ -722,17 +757,18 @@ public class Decreti extends SchemaImpl {
             RuoloAmbito.RUOLO_AMBITO,
             StatoProgetti.STATO_PROGETTI,
             Tecnico.TECNICO,
-            TipoProcAss.TIPO_PROC_ASS,
             TipoProcProgressivo.TIPO_PROC_PROGRESSIVO,
             TipoProcUffici.TIPO_PROC_UFFICI,
             Uffici.UFFICI,
             UfficiProvvedimenti.UFFICI_PROVVEDIMENTI,
             Utenti.UTENTI,
             UtentiUtenti.UTENTI_UTENTI,
-            VAssegnantiAttivi.V_ASSEGNANTI_ATTIVI,
+            VDelegheAttive.V_DELEGHE_ATTIVE,
             VEstrazioniLavori.V_ESTRAZIONI_LAVORI,
             VOrd100Decretati.V_ORD100_DECRETATI,
             VOrd59Decretati.V_ORD59_DECRETATI,
+            VProcAclAttivi.V_PROC_ACL_ATTIVI,
+            VProcAuthFunAttivi.V_PROC_AUTH_FUN_ATTIVI,
             VRuoliutenteAttivi.V_RUOLIUTENTE_ATTIVI,
             VUtentiAttivi.V_UTENTI_ATTIVI
         );

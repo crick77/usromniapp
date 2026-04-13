@@ -8,6 +8,7 @@ import it.usr.web.producer.AppLogger;
 import it.usr.web.usromniapp.domain.tables.records.GisCentroidiRecord;
 import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcRecord;
+import it.usr.web.usromniapp.domain.tables.records.UfficiRecord;
 import it.usr.web.usromniapp.domain.tables.records.UtentiRecord;
 import it.usr.web.usromniapp.interceptor.RequiredAuthorization;
 import it.usr.web.usromniapp.interceptor.SecurityCheck;
@@ -16,18 +17,20 @@ import it.usr.web.usromniapp.service.CodiceService;
 import it.usr.web.usromniapp.service.DatabaseException;
 import it.usr.web.usromniapp.service.ProcedimentoService;
 import it.usr.web.usromniapp.service.TipoOperazioneEnum;
+import it.usr.web.usromniapp.service.UfficiUtentiService;
 import it.usr.web.usromniapp.service.UtenteService;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
-
+ 
 /**
  *
  * @author riccardo.iovenitti
@@ -44,6 +47,8 @@ public class AssegnaController extends OmniappBaseController {
     UtenteService us;
     @Inject
     CodiceService cs;
+    @Inject
+    UfficiUtentiService uus;
     List<LTipoProcRecord> tipiProcedimento;
     LTipoProcRecord tipoProcedimentoSelezionato;
     List<ProcRecord> procedimenti;
@@ -52,11 +57,16 @@ public class AssegnaController extends OmniappBaseController {
     DualListModel<UtenteRuolo> utenti;
     Map<Integer, LTipoProcRecord> mTipiProc;
     Map<Integer, GisCentroidiRecord> mCentroidi;
+    //Map<Integer, UfficiRecord> uffici;
     
     @SecurityCheck
     @RequiredAuthorization(TipoOperazioneEnum.A)
     public String init() {                       
        mTipiProc = ps.getTipiProcedimentoMap();      
+       /*List<UfficiRecord> lUff = uus.getUffici();
+       uffici = new HashMap<>();
+       lUff.forEach(u -> uffici.put(u.getIdUfficio(), u));*/
+       
        utenti = new DualListModel<>();
        aggiorna();
        
@@ -125,23 +135,29 @@ public class AssegnaController extends OmniappBaseController {
         }
     }
     
+    /*public UfficiRecord decodificaUfficio(int idUfficio) {
+        return uffici.get(idUfficio);
+    }*/
+    
     public void aggiorna() {
-        tipiProcedimento = ps.getTipiProcedureAutorizzate(getUtenteOmniapp());
+        tipiProcedimento = ps.getTipiProcedureAutorizzate(getUtenteOmniapp(), new TipoOperazioneEnum[] { TipoOperazioneEnum.A });
         mCentroidi = cs.getCentroidiMap();
         tipoProcedimentoSelezionato = null;
         procedimenti = null;
         procedimentiSelezionati = null;
         procedimentiFiltrati = null;
     }
-    
+     
     public void aggiornaProcedimenti() {
-        UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());
-        procedimenti = ps.getProcedureDaAssegnare(delegato.getIdUtente(), tipoProcedimentoSelezionato.getIdTipoProc(), LocalDateTime.now()); 
+        //UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());
+        //procedimenti = ps.getProcedureDaAssegnare(delegato.getIdUtente(), tipoProcedimentoSelezionato.getIdTipoProc(), LocalDateTime.now()); 
+        procedimenti = ps.getProcedureAssegnazione(getUtenteOmniapp(),  tipoProcedimentoSelezionato.getIdTipoProc(), ProcRecord.class);
         procedimentiSelezionati = null;
     }
     
     public void preparaAssegnazione() {        
-        utenti.setSource(us.getUtentiRuoloUfficio(getUtenteOmniapp().getUfficio().getIdUfficio(), tipoProcedimentoSelezionato.getIdTipoProc()));
+        //utenti.setSource(us.getUtentiRuoloUfficio(getUtenteOmniapp().getUfficio().getIdUfficio(), tipoProcedimentoSelezionato.getIdTipoProc()));
+        utenti.setSource(us.getUtentiRuoloUfficio(getUtenteOmniapp().getUffici(), tipoProcedimentoSelezionato.getIdTipoProc()));
         utenti.setTarget(new ArrayList<>());
     }
      
@@ -153,17 +169,16 @@ public class AssegnaController extends OmniappBaseController {
     }
     
     public void salva() {
-        try {
-            UtentiRecord delegato = us.getUtenteDelegato(getUtenteOmniapp().getUtente(), tipoProcedimentoSelezionato.getIdTipoProc());
-            ps.inserisciAssegnazioni(procedimentiSelezionati, utenti.getTarget(), getUtenteOmniapp().getUtente(), delegato);
+        try {            
+            ps.inserisciAssegnazioni(procedimentiSelezionati, utenti.getTarget(), tipoProcedimentoSelezionato.getIdTipoProc(), getUtenteOmniapp());
  
-            aggiorna();            
+            aggiornaProcedimenti();            
             
             PrimeFaces.current().executeScript("PF('wvUtentiDialog').hide();");
             addMessage(Message.info("Assegnazione effettuata."));
         }
         catch(DatabaseException dbe) {
             addMessage(Message.error(dbe.toString()));
-        }
+        } 
     }
 }

@@ -7,8 +7,10 @@ package it.usr.web.usromniapp.domain.tables;
 import it.usr.web.usromniapp.domain.Decreti;
 import it.usr.web.usromniapp.domain.Indexes;
 import it.usr.web.usromniapp.domain.Keys;
-import it.usr.web.usromniapp.domain.tables.ProcAss.ProcAssPath;
-import it.usr.web.usromniapp.domain.tables.TipoProcAss.TipoProcAssPath;
+import it.usr.web.usromniapp.domain.tables.ProcAcl.ProcAclPath;
+import it.usr.web.usromniapp.domain.tables.ProcAclIstruttori.ProcAclIstruttoriPath;
+import it.usr.web.usromniapp.domain.tables.ProcAuthFun.ProcAuthFunPath;
+import it.usr.web.usromniapp.domain.tables.RuoliUtente.RuoliUtentePath;
 import it.usr.web.usromniapp.domain.tables.TipoProcUffici.TipoProcUfficiPath;
 import it.usr.web.usromniapp.domain.tables.Uffici.UfficiPath;
 import it.usr.web.usromniapp.domain.tables.records.UfficiRecord;
@@ -197,30 +199,56 @@ public class Uffici extends TableImpl<UfficiRecord> {
         return _uffici;
     }
 
-    private transient ProcAssPath _procAss;
-
-    /**
-     * Get the implicit to-many join path to the <code>decreti.proc_ass</code>
-     * table
-     */
-    public ProcAssPath procAss() {
-        if (_procAss == null)
-            _procAss = new ProcAssPath(this, null, Keys.FK_PROCASS_UFFICIO.getInverseKey());
-
-        return _procAss;
-    }
-
-    private transient TipoProcAssPath _tipoProcAss;
+    private transient ProcAuthFunPath _procAuthFun;
 
     /**
      * Get the implicit to-many join path to the
-     * <code>decreti.tipo_proc_ass</code> table
+     * <code>decreti.proc_auth_fun</code> table
      */
-    public TipoProcAssPath tipoProcAss() {
-        if (_tipoProcAss == null)
-            _tipoProcAss = new TipoProcAssPath(this, null, Keys.FK_TIPOPROCASS_UFFICIO.getInverseKey());
+    public ProcAuthFunPath procAuthFun() {
+        if (_procAuthFun == null)
+            _procAuthFun = new ProcAuthFunPath(this, null, Keys.FK_AUTHFUN_UFFICI.getInverseKey());
 
-        return _tipoProcAss;
+        return _procAuthFun;
+    }
+
+    private transient ProcAclPath _procAcl;
+
+    /**
+     * Get the implicit to-many join path to the <code>decreti.proc_acl</code>
+     * table
+     */
+    public ProcAclPath procAcl() {
+        if (_procAcl == null)
+            _procAcl = new ProcAclPath(this, null, Keys.FK_PROCACL_UFFICIO.getInverseKey());
+
+        return _procAcl;
+    }
+
+    private transient ProcAclIstruttoriPath _procAclIstruttori;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>decreti.proc_acl_istruttori</code> table
+     */
+    public ProcAclIstruttoriPath procAclIstruttori() {
+        if (_procAclIstruttori == null)
+            _procAclIstruttori = new ProcAclIstruttoriPath(this, null, Keys.FK_PROCACLISTR_UFFICIO.getInverseKey());
+
+        return _procAclIstruttori;
+    }
+
+    private transient RuoliUtentePath _ruoliUtente;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>decreti.ruoli_utente</code> table
+     */
+    public RuoliUtentePath ruoliUtente() {
+        if (_ruoliUtente == null)
+            _ruoliUtente = new RuoliUtentePath(this, null, Keys.FK_RUOLIUTENTE_UFFICI.getInverseKey());
+
+        return _ruoliUtente;
     }
 
     private transient TipoProcUfficiPath _tipoProcUffici;

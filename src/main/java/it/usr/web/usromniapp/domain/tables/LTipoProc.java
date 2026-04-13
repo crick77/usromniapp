@@ -9,10 +9,10 @@ import it.usr.web.usromniapp.domain.Keys;
 import it.usr.web.usromniapp.domain.tables.Delega.DelegaPath;
 import it.usr.web.usromniapp.domain.tables.LTipoPasso.LTipoPassoPath;
 import it.usr.web.usromniapp.domain.tables.Proc.ProcPath;
+import it.usr.web.usromniapp.domain.tables.ProcAcl.ProcAclPath;
 import it.usr.web.usromniapp.domain.tables.ProcDipendenze.ProcDipendenzePath;
 import it.usr.web.usromniapp.domain.tables.ProcEsiti.ProcEsitiPath;
 import it.usr.web.usromniapp.domain.tables.ProcPassoIniziale.ProcPassoInizialePath;
-import it.usr.web.usromniapp.domain.tables.TipoProcAss.TipoProcAssPath;
 import it.usr.web.usromniapp.domain.tables.TipoProcProgressivo.TipoProcProgressivoPath;
 import it.usr.web.usromniapp.domain.tables.TipoProcUffici.TipoProcUfficiPath;
 import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
@@ -199,6 +199,19 @@ public class LTipoProc extends TableImpl<LTipoProcRecord> {
         return _proc;
     }
 
+    private transient ProcAclPath _procAcl;
+
+    /**
+     * Get the implicit to-many join path to the <code>decreti.proc_acl</code>
+     * table
+     */
+    public ProcAclPath procAcl() {
+        if (_procAcl == null)
+            _procAcl = new ProcAclPath(this, null, Keys.FK_PROCACL_TIPOPROC.getInverseKey());
+
+        return _procAcl;
+    }
+
     private transient ProcDipendenzePath _procDipendenze;
 
     /**
@@ -225,30 +238,32 @@ public class LTipoProc extends TableImpl<LTipoProcRecord> {
         return _procPassoIniziale;
     }
 
-    private transient LTipoPassoPath _lTipoPasso;
+    private transient LTipoPassoPath _fkTipopassTipoproc;
 
     /**
      * Get the implicit to-many join path to the
-     * <code>decreti.l_tipo_passo</code> table
+     * <code>decreti.l_tipo_passo</code> table, via the
+     * <code>fk_tipopass_tipoproc</code> key
      */
-    public LTipoPassoPath lTipoPasso() {
-        if (_lTipoPasso == null)
-            _lTipoPasso = new LTipoPassoPath(this, null, Keys.FK_TIPOPASS_TIPOPROC.getInverseKey());
+    public LTipoPassoPath fkTipopassTipoproc() {
+        if (_fkTipopassTipoproc == null)
+            _fkTipopassTipoproc = new LTipoPassoPath(this, null, Keys.FK_TIPOPASS_TIPOPROC.getInverseKey());
 
-        return _lTipoPasso;
+        return _fkTipopassTipoproc;
     }
 
-    private transient TipoProcAssPath _tipoProcAss;
+    private transient LTipoPassoPath _fkTipopasssubTipoproc;
 
     /**
      * Get the implicit to-many join path to the
-     * <code>decreti.tipo_proc_ass</code> table
+     * <code>decreti.l_tipo_passo</code> table, via the
+     * <code>fk_tipopasssub_tipoproc</code> key
      */
-    public TipoProcAssPath tipoProcAss() {
-        if (_tipoProcAss == null)
-            _tipoProcAss = new TipoProcAssPath(this, null, Keys.FK_TIPOPROCASS_LTIPOPROC.getInverseKey());
+    public LTipoPassoPath fkTipopasssubTipoproc() {
+        if (_fkTipopasssubTipoproc == null)
+            _fkTipopasssubTipoproc = new LTipoPassoPath(this, null, Keys.FK_TIPOPASSSUB_TIPOPROC.getInverseKey());
 
-        return _tipoProcAss;
+        return _fkTipopasssubTipoproc;
     }
 
     private transient TipoProcProgressivoPath _tipoProcProgressivo;

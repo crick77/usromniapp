@@ -121,6 +121,6 @@ public class ProgettiAnnullatiRecord extends UpdatableRecordImpl<ProgettiAnnulla
         setTipoAnnullamento(tipoAnnullamento);
         setData(data);
         setNota(nota);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

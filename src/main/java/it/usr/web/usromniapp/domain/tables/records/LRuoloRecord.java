@@ -63,15 +63,15 @@ public class LRuoloRecord extends UpdatableRecordImpl<LRuoloRecord> {
     /**
      * Setter for <code>decreti.l_ruolo.permessi_predefiniti</code>.
      */
-    public void setPermessiPredefiniti(String value) {
+    public void setPermessiPredefiniti(Integer value) {
         set(3, value);
     }
 
     /**
      * Getter for <code>decreti.l_ruolo.permessi_predefiniti</code>.
      */
-    public String getPermessiPredefiniti() {
-        return (String) get(3);
+    public Integer getPermessiPredefiniti() {
+        return (Integer) get(3);
     }
 
     // -------------------------------------------------------------------------
@@ -97,13 +97,13 @@ public class LRuoloRecord extends UpdatableRecordImpl<LRuoloRecord> {
     /**
      * Create a detached, initialised LRuoloRecord
      */
-    public LRuoloRecord(Integer idRuolo, String codice, String ruolo, String permessiPredefiniti) {
+    public LRuoloRecord(Integer idRuolo, String codice, String ruolo, Integer permessiPredefiniti) {
         super(LRuolo.L_RUOLO);
 
         setIdRuolo(idRuolo);
         setCodice(codice);
         setRuolo(ruolo);
         setPermessiPredefiniti(permessiPredefiniti);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

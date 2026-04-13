@@ -44,6 +44,10 @@ public abstract class BaseService {
     }
     
     public boolean safeEqualsIgnoreCase(String a, String b) {        
-        return (b == a) || (a!=null && a.equalsIgnoreCase(b));
+        return (b == null ? a == null : b.equals(a)) || (a!=null && a.equalsIgnoreCase(b));
+    }
+    
+    public String truncate(String s, int len) {
+        return (s==null || s.length()<len) ? s : s.substring(0, len);
     }
 }

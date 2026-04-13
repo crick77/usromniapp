@@ -89,6 +89,6 @@ public class ComFascicoliObsoletiRecord extends UpdatableRecordImpl<ComFascicoli
         setIdPratica(idPratica);
         setFascicoloMude(fascicoloMude);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

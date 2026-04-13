@@ -119,6 +119,6 @@ public class ManifestazioniCatRecord extends UpdatableRecordImpl<ManifestazioniC
         setIstat(istat);
         setFoglio(foglio);
         setPart(part);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

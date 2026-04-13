@@ -81,6 +81,6 @@ public class ComStatofascicoloRecord extends TableRecordImpl<ComStatofascicoloRe
         setIdpratica(idpratica);
         setDataNotifica(dataNotifica);
         setStato(stato);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

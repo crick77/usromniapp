@@ -64,6 +64,11 @@ public class VRuoliutenteAttivi extends TableImpl<VRuoliutenteAttiviRecord> {
     public final TableField<VRuoliutenteAttiviRecord, Integer> ID_UTENTE = createField(DSL.name("id_utente"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>decreti.v_ruoliutente_attivi.id_ufficio</code>.
+     */
+    public final TableField<VRuoliutenteAttiviRecord, Integer> ID_UFFICIO = createField(DSL.name("id_ufficio"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("4", SQLDataType.INTEGER)), this, "");
+
+    /**
      * The column <code>decreti.v_ruoliutente_attivi.data_inizio</code>.
      */
     public final TableField<VRuoliutenteAttiviRecord, LocalDateTime> DATA_INIZIO = createField(DSL.name("data_inizio"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "");
@@ -78,7 +83,7 @@ public class VRuoliutenteAttivi extends TableImpl<VRuoliutenteAttiviRecord> {
     }
 
     private VRuoliutenteAttivi(Name alias, Table<VRuoliutenteAttiviRecord> aliased, Field<?>[] parameters, Condition where) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view `v_ruoliutente_attivi` as select `decreti`.`ruoli_utente`.`id_ruoli_utente` AS `id_ruoli_utente`,`decreti`.`ruoli_utente`.`id_ruolo` AS `id_ruolo`,`decreti`.`ruoli_utente`.`id_utente` AS `id_utente`,`decreti`.`ruoli_utente`.`data_inizio` AS `data_inizio`,`decreti`.`ruoli_utente`.`data_fine` AS `data_fine` from `decreti`.`ruoli_utente` where `decreti`.`ruoli_utente`.`data_inizio` <= current_timestamp() and `decreti`.`ruoli_utente`.`data_fine` is null or current_timestamp() between `decreti`.`ruoli_utente`.`data_inizio` and `decreti`.`ruoli_utente`.`data_fine`"), where);
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("CREATE VIEW `v_ruoliutente_attivi` AS select `decreti`.`ruoli_utente`.`id_ruoli_utente` AS `id_ruoli_utente`,`decreti`.`ruoli_utente`.`id_ruolo` AS `id_ruolo`,`decreti`.`ruoli_utente`.`id_utente` AS `id_utente`,`decreti`.`ruoli_utente`.`id_ufficio` AS `id_ufficio`,`decreti`.`ruoli_utente`.`data_inizio` AS `data_inizio`,`decreti`.`ruoli_utente`.`data_fine` AS `data_fine` from `decreti`.`ruoli_utente` where `decreti`.`ruoli_utente`.`data_inizio` <= current_timestamp() and `decreti`.`ruoli_utente`.`data_fine` is null or current_timestamp() between `decreti`.`ruoli_utente`.`data_inizio` and `decreti`.`ruoli_utente`.`data_fine`"), where);
     }
 
     /**

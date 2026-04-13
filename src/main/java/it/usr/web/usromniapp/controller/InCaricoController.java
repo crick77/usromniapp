@@ -10,15 +10,20 @@ import it.usr.web.usromniapp.domain.tables.records.GisCentroidiRecord;
 import it.usr.web.usromniapp.domain.tables.records.LTipoPassoRecord;
 import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcEsitiRecord;
-import it.usr.web.usromniapp.domain.tables.records.ProcRecord;
+import it.usr.web.usromniapp.interceptor.RequiredAuthorization;
+import it.usr.web.usromniapp.interceptor.SecurityCheck;
 import it.usr.web.usromniapp.record.RProc;
 import it.usr.web.usromniapp.service.CodiceService;
 import it.usr.web.usromniapp.service.ProcedimentoService;
 import it.usr.web.usromniapp.service.SecurityService;
+import it.usr.web.usromniapp.service.TipoOperazioneEnum;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -30,6 +35,7 @@ import org.slf4j.Logger;
 @Named
 @ViewScoped
 public class InCaricoController extends OmniappBaseController {
+    final static String[] TIPO_CARICO = {"DA ISTRUIRE", "ISTRUITI", "INTEGRATI", "ALLA FIRMA", "CONCLUSI", "IN REVISIONE"};
     @Inject
     @AppLogger
     Logger logger;
@@ -42,27 +48,48 @@ public class InCaricoController extends OmniappBaseController {
     List<RProc> assegnazioni;
     List<RProc> assegnazioniFiltrate;
     RProc assegnazioneSelezionata;
+    int tipo;
+    List<LTipoProcRecord> tipiProcedimento;
+    LTipoProcRecord tipoProcedimentoSelezionato;
     Map<Integer, LTipoProcRecord> mTipiProc;
     Map<Integer, LTipoPassoRecord> mTipiPasso;
     Map<Integer, ProcEsitiRecord> mEsiti;
     Map<Integer, GisCentroidiRecord> mCentroidi;
     
-    public String init() {        
-       if(!ss.canOpen(getUtenteOmniapp(), "A")) {
-           logger.warn("L'utente [{}] non ha alcun accesso alla pagina assegnazioni. Invio pagina di notifica.", getUtenteOmniapp().getUtente().getNomeUtente());
-           return "/access";
-       }
-       
-       assegnazioni = ps.getAssegnazioni(getUtenteOmniapp());
-       mTipiProc = ps.getTipiProcedimentoMap();
-       mTipiPasso = cs.getTipiPassoMap();
-       mEsiti = cs.getProcEsitiMap();
-       mCentroidi = cs.getCentroidiMap();
-       assegnazioneSelezionata = null;
-       assegnazioniFiltrate = null;
-       return SAME_VIEW;
+    @SecurityCheck
+    @RequiredAuthorization(TipoOperazioneEnum.M)
+    public String init() {
+        tipiProcedimento = ps.getTipiProcedureAutorizzate(getUtenteOmniapp(), new TipoOperazioneEnum[] { TipoOperazioneEnum.M });                
+        mTipiProc = ps.getTipiProcedimentoMap();        
+        mEsiti = cs.getProcEsitiMap();
+        mCentroidi = cs.getCentroidiMap();
+        tipoProcedimentoSelezionato = null;
+         
+        aggiornaProcedimenti();
+        
+        return SAME_VIEW;
+    } 
+
+    public LTipoProcRecord getTipoProcedimentoSelezionato() {
+        return tipoProcedimentoSelezionato;
     }
 
+    public void setTipoProcedimentoSelezionato(LTipoProcRecord tipoProcedimentoSelezionato) {
+        this.tipoProcedimentoSelezionato = tipoProcedimentoSelezionato;
+    }
+        
+    public List<LTipoProcRecord> getTipiProcedimento() {
+        return this.tipiProcedimento;
+    }
+    
+    public int getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
+    }
+        
     public List<RProc> getAssegnazioniFiltrate() {
         return assegnazioniFiltrate;
     }
@@ -75,15 +102,10 @@ public class InCaricoController extends OmniappBaseController {
         return assegnazioni;
     }
     
-
     public Map<Integer, LTipoProcRecord> getmTipiProc() {
         return mTipiProc;
     }
-
-    public Collection<LTipoProcRecord> getTipiProcedimento() {
-        return mTipiProc.values();
-    }
-    
+       
     public Map<Integer, LTipoPassoRecord> getmTipiPasso() { 
         return mTipiPasso;
     }
@@ -107,8 +129,7 @@ public class InCaricoController extends OmniappBaseController {
     public void setAssegnazioneSelezionata(RProc assegnazioneSelezionata) {
         this.assegnazioneSelezionata = assegnazioneSelezionata;
     }
-    
-    
+        
     public LTipoProcRecord decodificatProcedimento(int idTipoProc) {
         return mTipiProc.get(idTipoProc);
     }
@@ -126,7 +147,25 @@ public class InCaricoController extends OmniappBaseController {
     }
     
     public String mostraIter(RProc proc) {
-        return Redirector.toPath("iter").withParam("idproc", proc.getIdProc()).withRedirect().go();
+        return Redirector.toPath("iter").withParam("idproc", proc.getIdProc()).withParam("back", FacesContext.getCurrentInstance().getViewRoot().getViewId()).withRedirect().go();
+    }
+    
+    public String getDescrizione() {
+        return TIPO_CARICO[tipo];
+    }
+
+    public void aggiornaProcedimenti() {
+        //assegnazioni = ps.getAssegnazioni(getUtenteOmniapp(), true);        
+        assegnazioneSelezionata = null; 
+        assegnazioniFiltrate = null;
+        if(tipoProcedimentoSelezionato!=null) {
+            assegnazioni = ps.getPraticheInCarico(getUtenteOmniapp(), tipoProcedimentoSelezionato.getIdTipoProc(), new TipoOperazioneEnum[] { TipoOperazioneEnum.L, TipoOperazioneEnum.M }, tipo);             
+            mTipiPasso = cs.getTipiPassoMap(tipoProcedimentoSelezionato);
+        }
+        else {
+            assegnazioni = new LinkedList<>();
+            mTipiPasso = new HashMap<>();
+        }
     }
 }
-  
+   

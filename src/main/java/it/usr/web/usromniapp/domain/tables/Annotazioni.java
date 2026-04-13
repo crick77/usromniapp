@@ -64,7 +64,7 @@ public class Annotazioni extends TableImpl<AnnotazioniRecord> {
     /**
      * The column <code>decreti.annotazioni.nota</code>.
      */
-    public final TableField<AnnotazioniRecord, String> NOTA = createField(DSL.name("nota"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<AnnotazioniRecord, String> NOTA = createField(DSL.name("nota"), SQLDataType.CLOB(65535).nullable(false), this, "");
 
     private Annotazioni(Name alias, Table<AnnotazioniRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

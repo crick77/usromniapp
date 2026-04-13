@@ -91,6 +91,6 @@ public class MonImpRichRecord extends UpdatableRecordImpl<MonImpRichRecord> {
         setIdpratica(idpratica);
         setImportototale(importototale);
         setId(id);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

@@ -151,6 +151,6 @@ public class UfficiRecord extends UpdatableRecordImpl<UfficiRecord> {
         setIdUfficioSovraordinato(idUfficioSovraordinato);
         setDataDisattivazione(dataDisattivazione);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

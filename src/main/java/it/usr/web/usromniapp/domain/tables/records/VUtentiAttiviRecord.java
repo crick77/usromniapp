@@ -216,6 +216,6 @@ public class VUtentiAttiviRecord extends TableRecordImpl<VUtentiAttiviRecord> {
         setUtentePigrego(utentePigrego);
         setPassword(password);
         setDataScadenzaPassword(dataScadenzaPassword);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

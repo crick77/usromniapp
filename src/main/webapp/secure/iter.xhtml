@@ -13,6 +13,7 @@
     <ui:define name="head">
         <f:metadata>            
             <f:viewParam name="idproc" value="#{iterController.idProc}" />
+            <f:viewParam name="back" value="#{iterController.backViewId}" />
             <f:viewAction action="#{iterController.init()}" />
         </f:metadata>        
     </ui:define>
@@ -33,7 +34,7 @@
                         <div class="ui-fluid formgrid grid">
                             <p:dataTable id="iter" widgetVar="wviter" var="it" value="#{iterController.iterPratica}" size="small" rowKey="#{it.idProcIter}" selection="#{iterController.iterPraticaSelezionato}">
                                 <p:ajax event="rowToggle" listener="#{iterController.onRowToggle}" update="iter_link" />
-                                
+
                                 <p:column style="width:2rem" ariaHeaderText="Row Toggler">
                                     <p:rowToggler rendered="#{not empty it.idProcIterLink}"/>
                                 </p:column>
@@ -49,6 +50,14 @@
                                         <f:convertDateTime pattern="dd-MM-yyyy" type="localDate" />
                                     </h:outputText>
                                 </p:column>
+                                <p:column headerText="RICHIESTA/ESITO">
+                                    <h:outputText value="#{iterController.decodeEsito(it.idEsito).codice}" />
+                                </p:column>
+                                
+                                <p:column headerText="ANNOTAZIONI">
+                                    <h:outputText value="#{it.annotazioni}" />
+                                </p:column>
+                                
                                 <p:column headerText="UTENTE">
                                     #{iterController.decodificaUtente(it.idUtente).nomeUtente}
                                 </p:column>
@@ -64,7 +73,7 @@
                                         <f:facet name="header">
                                             PASSI DI ITER PRECEDENTI
                                         </f:facet>
-                                        
+
                                         <p:column headerText="PASSO">
                                             #{iterController.decodeTipoPasso(itl.codicePasso).testoPasso}
                                         </p:column>
@@ -75,6 +84,9 @@
                                             <h:outputText value="#{itl.dataProt}">
                                                 <f:convertDateTime pattern="dd-MM-yyyy" type="localDate" />
                                             </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="RICHIESTA/ESITO">
+                                            <h:outputText value="#{iterController.decodeEsito(itl.idEsito).codice}" />
                                         </p:column>
                                         <p:column headerText="UTENTE">
                                             #{iterController.decodificaUtente(itl.idUtente).nomeUtente}
@@ -89,8 +101,14 @@
                     </div>
                     <div class="card">
                         <div class="grid mt-3">
-                            <div class="col-12">
+                            <div class="col-2">
                                 <p:commandButton value="Nuovo passo" icon="pi pi-plus" action="#{iterController.nuovo()}" process="@this" update="iterPanel" oncomplete="PF('iterDialogWV').show()"/>
+                            </div>
+                            <div class="col-9">
+                                &#160;
+                            </div>
+                            <div class="col-1">
+                                <p:commandButton value="Indietro" icon="pi pi-arrow-left" action="#{iterController.indietro()}" rendered="#{not empty iterController.backViewId}"/>
                             </div>
                         </div>
                     </div>
@@ -119,7 +137,7 @@
                         <p:outputLabel id="dataprot_lab" for="@next">
                             Data protocollo                          
                         </p:outputLabel>
-                        <p:datePicker id="dataprot" value="#{iterController.iter.dataProt}" pattern="dd/MM/yyyy" required="#{iterController.passoSelezionato.protRichiesto}" requiredMessage="Data protocollo obbligatoria" />
+                        <p:datePicker id="dataprot" value="#{iterController.iter.dataProt}" pattern="dd/MM/yyyy" required="#{iterController.passoSelezionato.protRichiesto}" requiredMessage="Data protocollo obbligatoria" readonly="#{iterController.passoSelezionato.dataAutomatica}" />
                     </div>
                     <div class="field col-12">
                         <p:outputLabel for="@next">
@@ -147,7 +165,7 @@
                     <p:commandButton id="annulla" value="Annulla" icon="pi pi-times" oncomplete="PF('iterDialogWV').hide();" immediate="true" />                    
                 </f:facet>
             </p:dialog>
-            
+
             <p:dialog id="dettaglioDialog" widgetVar="dettaglioDialogWV" header="Dettaglio iter" showEffect="fade" modal="true" responsive="true" width="60%" visible="hidden">
                 <p:outputPanel class="ui-fluid grid formgrid" id="iterDetailPanel">
                     <div class="field col-12">

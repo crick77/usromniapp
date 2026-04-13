@@ -79,6 +79,6 @@ public class ProcDipendenzeRecord extends TableRecordImpl<ProcDipendenzeRecord> 
         setCodicePasso(codicePasso);
         setCodicePassoSucc(codicePassoSucc);
         setIdTipoProc(idTipoProc);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

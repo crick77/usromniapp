@@ -64,32 +64,32 @@ public class LogOperazioni extends TableImpl<LogOperazioniRecord> {
     /**
      * The column <code>decreti.log_operazioni.arg1</code>.
      */
-    public final TableField<LogOperazioniRecord, String> ARG1 = createField(DSL.name("arg1"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<LogOperazioniRecord, String> ARG1 = createField(DSL.name("arg1"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>decreti.log_operazioni.arg2</code>.
      */
-    public final TableField<LogOperazioniRecord, String> ARG2 = createField(DSL.name("arg2"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<LogOperazioniRecord, String> ARG2 = createField(DSL.name("arg2"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>decreti.log_operazioni.arg3</code>.
      */
-    public final TableField<LogOperazioniRecord, String> ARG3 = createField(DSL.name("arg3"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<LogOperazioniRecord, String> ARG3 = createField(DSL.name("arg3"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>decreti.log_operazioni.arg4</code>.
      */
-    public final TableField<LogOperazioniRecord, String> ARG4 = createField(DSL.name("arg4"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<LogOperazioniRecord, String> ARG4 = createField(DSL.name("arg4"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>decreti.log_operazioni.arg5</code>.
      */
-    public final TableField<LogOperazioniRecord, String> ARG5 = createField(DSL.name("arg5"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<LogOperazioniRecord, String> ARG5 = createField(DSL.name("arg5"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>decreti.log_operazioni.originale</code>.
      */
-    public final TableField<LogOperazioniRecord, String> ORIGINALE = createField(DSL.name("originale"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<LogOperazioniRecord, String> ORIGINALE = createField(DSL.name("originale"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>decreti.log_operazioni.operatore</code>.

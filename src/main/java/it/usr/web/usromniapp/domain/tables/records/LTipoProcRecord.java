@@ -106,6 +106,6 @@ public class LTipoProcRecord extends UpdatableRecordImpl<LTipoProcRecord> {
         setTipoProc(tipoProc);
         setGruppo(gruppo);
         setFunzione(funzione);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

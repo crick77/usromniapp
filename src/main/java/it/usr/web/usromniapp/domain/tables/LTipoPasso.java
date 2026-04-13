@@ -108,6 +108,33 @@ public class LTipoPasso extends TableImpl<LTipoPassoRecord> {
      */
     public final TableField<LTipoPassoRecord, Boolean> ESITO_OBBLIGATORIO = createField(DSL.name("esito_obbligatorio"), SQLDataType.BIT.nullable(false).defaultValue(DSL.inline("b'0'", SQLDataType.BIT)), this, "");
 
+    /**
+     * The column <code>decreti.l_tipo_passo.data_automatica</code>.
+     */
+    public final TableField<LTipoPassoRecord, Boolean> DATA_AUTOMATICA = createField(DSL.name("data_automatica"), SQLDataType.BIT.nullable(false).defaultValue(DSL.inline("b'0'", SQLDataType.BIT)), this, "");
+
+    /**
+     * The column <code>decreti.l_tipo_passo.passo_ufficio</code>.
+     */
+    public final TableField<LTipoPassoRecord, Boolean> PASSO_UFFICIO = createField(DSL.name("passo_ufficio"), SQLDataType.BIT.nullable(false).defaultValue(DSL.inline("b'1'", SQLDataType.BIT)), this, "");
+
+    /**
+     * The column <code>decreti.l_tipo_passo.passo_firma</code>.
+     */
+    public final TableField<LTipoPassoRecord, Boolean> PASSO_FIRMA = createField(DSL.name("passo_firma"), SQLDataType.BIT.nullable(false).defaultValue(DSL.inline("b'0'", SQLDataType.BIT)), this, "");
+
+    /**
+     * The column <code>decreti.l_tipo_passo.allegati_obbligatori</code>. 0 = NO
+     * DOCUMENTI, 1 = DOCUMENTI OBBLIGATORI, 2 = COME 1 + ALMENO UNO FIRMATO
+     * DIGITALMENTE
+     */
+    public final TableField<LTipoPassoRecord, Integer> ALLEGATI_OBBLIGATORI = createField(DSL.name("allegati_obbligatori"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.inline("0", SQLDataType.INTEGER)), this, "0 = NO DOCUMENTI, 1 = DOCUMENTI OBBLIGATORI, 2 = COME 1 + ALMENO UNO FIRMATO DIGITALMENTE");
+
+    /**
+     * The column <code>decreti.l_tipo_passo.id_tipo_proc_sub</code>.
+     */
+    public final TableField<LTipoPassoRecord, Integer> ID_TIPO_PROC_SUB = createField(DSL.name("id_tipo_proc_sub"), SQLDataType.INTEGER.defaultValue(DSL.inline("NULL", SQLDataType.INTEGER)), this, "");
+
     private LTipoPasso(Name alias, Table<LTipoPassoRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -177,7 +204,7 @@ public class LTipoPasso extends TableImpl<LTipoPassoRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.L_TIPO_PASSO_FK_TIPOPASS_TIPOPROC_IDX);
+        return Arrays.asList(Indexes.L_TIPO_PASSO_FK_TIPOPASS_TIPOPROC_IDX, Indexes.L_TIPO_PASSO_FK_TIPOPASSSUB_TIPOPROC_IDX);
     }
 
     @Override
@@ -187,19 +214,33 @@ public class LTipoPasso extends TableImpl<LTipoPassoRecord> {
 
     @Override
     public List<ForeignKey<LTipoPassoRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_TIPOPASS_TIPOPROC);
+        return Arrays.asList(Keys.FK_TIPOPASS_TIPOPROC, Keys.FK_TIPOPASSSUB_TIPOPROC);
     }
 
-    private transient LTipoProcPath _lTipoProc;
+    private transient LTipoProcPath _fkTipopassTipoproc;
 
     /**
-     * Get the implicit join path to the <code>decreti.l_tipo_proc</code> table.
+     * Get the implicit join path to the <code>decreti.l_tipo_proc</code> table,
+     * via the <code>fk_tipopass_tipoproc</code> key.
      */
-    public LTipoProcPath lTipoProc() {
-        if (_lTipoProc == null)
-            _lTipoProc = new LTipoProcPath(this, Keys.FK_TIPOPASS_TIPOPROC, null);
+    public LTipoProcPath fkTipopassTipoproc() {
+        if (_fkTipopassTipoproc == null)
+            _fkTipopassTipoproc = new LTipoProcPath(this, Keys.FK_TIPOPASS_TIPOPROC, null);
 
-        return _lTipoProc;
+        return _fkTipopassTipoproc;
+    }
+
+    private transient LTipoProcPath _fkTipopasssubTipoproc;
+
+    /**
+     * Get the implicit join path to the <code>decreti.l_tipo_proc</code> table,
+     * via the <code>fk_tipopasssub_tipoproc</code> key.
+     */
+    public LTipoProcPath fkTipopasssubTipoproc() {
+        if (_fkTipopasssubTipoproc == null)
+            _fkTipopasssubTipoproc = new LTipoProcPath(this, Keys.FK_TIPOPASSSUB_TIPOPROC, null);
+
+        return _fkTipopasssubTipoproc;
     }
 
     private transient EsitiAttivazionePath _esitiAttivazione;

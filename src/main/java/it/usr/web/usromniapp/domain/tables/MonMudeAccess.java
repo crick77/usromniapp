@@ -67,7 +67,7 @@ public class MonMudeAccess extends TableImpl<MonMudeAccessRecord> {
     /**
      * The column <code>decreti.mon_mude_access.Tipo istanza</code>.
      */
-    public final TableField<MonMudeAccessRecord, String> TIPO_ISTANZA = createField(DSL.name("Tipo istanza"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<MonMudeAccessRecord, String> TIPO_ISTANZA = createField(DSL.name("Tipo istanza"), SQLDataType.CLOB(16777215).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>decreti.mon_mude_access.Comune</code>.

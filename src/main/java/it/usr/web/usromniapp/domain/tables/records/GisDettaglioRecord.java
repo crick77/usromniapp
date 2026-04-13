@@ -287,6 +287,6 @@ public class GisDettaglioRecord extends UpdatableRecordImpl<GisDettaglioRecord> 
         setDataConcessione(dataConcessione);
         setDataUltimoProvvedimento(dataUltimoProvvedimento);
         setGiorniDurataLavori(giorniDurataLavori);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

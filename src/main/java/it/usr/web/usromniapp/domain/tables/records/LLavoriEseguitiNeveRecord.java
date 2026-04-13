@@ -93,6 +93,6 @@ public class LLavoriEseguitiNeveRecord extends UpdatableRecordImpl<LLavoriEsegui
         setIdLavoriEseguitiNeve(idLavoriEseguitiNeve);
         setAttivo(attivo);
         setLavoriEseguitiNeve(lavoriEseguitiNeve);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

@@ -387,6 +387,6 @@ public class ElencoProgettiNeveRecord extends TableRecordImpl<ElencoProgettiNeve
         setIstruttoriaTipologia(istruttoriaTipologia);
         setResponsabileUfficio(responsabileUfficio);
         setResponsabileUfficio2(responsabileUfficio2);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

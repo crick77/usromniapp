@@ -63,31 +63,45 @@ public class RuoliUtenteRecord extends UpdatableRecordImpl<RuoliUtenteRecord> {
     }
 
     /**
+     * Setter for <code>decreti.ruoli_utente.id_ufficio</code>.
+     */
+    public void setIdUfficio(Integer value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>decreti.ruoli_utente.id_ufficio</code>.
+     */
+    public Integer getIdUfficio() {
+        return (Integer) get(3);
+    }
+
+    /**
      * Setter for <code>decreti.ruoli_utente.data_inizio</code>.
      */
     public void setDataInizio(LocalDateTime value) {
-        set(3, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>decreti.ruoli_utente.data_inizio</code>.
      */
     public LocalDateTime getDataInizio() {
-        return (LocalDateTime) get(3);
+        return (LocalDateTime) get(4);
     }
 
     /**
      * Setter for <code>decreti.ruoli_utente.data_fine</code>.
      */
     public void setDataFine(LocalDateTime value) {
-        set(4, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>decreti.ruoli_utente.data_fine</code>.
      */
     public LocalDateTime getDataFine() {
-        return (LocalDateTime) get(4);
+        return (LocalDateTime) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -113,14 +127,15 @@ public class RuoliUtenteRecord extends UpdatableRecordImpl<RuoliUtenteRecord> {
     /**
      * Create a detached, initialised RuoliUtenteRecord
      */
-    public RuoliUtenteRecord(Integer idRuoliUtente, Integer idRuolo, Integer idUtente, LocalDateTime dataInizio, LocalDateTime dataFine) {
+    public RuoliUtenteRecord(Integer idRuoliUtente, Integer idRuolo, Integer idUtente, Integer idUfficio, LocalDateTime dataInizio, LocalDateTime dataFine) {
         super(RuoliUtente.RUOLI_UTENTE);
 
         setIdRuoliUtente(idRuoliUtente);
         setIdRuolo(idRuolo);
         setIdUtente(idUtente);
+        setIdUfficio(idUfficio);
         setDataInizio(dataInizio);
         setDataFine(dataFine);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

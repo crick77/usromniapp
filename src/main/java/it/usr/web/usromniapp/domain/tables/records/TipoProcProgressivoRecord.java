@@ -89,6 +89,6 @@ public class TipoProcProgressivoRecord extends UpdatableRecordImpl<TipoProcProgr
         setIdTipoProc(idTipoProc);
         setProgressivo(progressivo);
         setFormato(formato);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

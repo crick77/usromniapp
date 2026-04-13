@@ -22,11 +22,18 @@ public class RProc {
     String indirizzo;
     Integer codiceCom;
     String descrizione;
-    String note;
+    String note;    
     Integer idProcIterUltimo;
+    Integer idProcIterEsito;
+    String fogli;
+    String particelle;
     RProcIter iter;
+    RProcIter iterEsito;
 
-    public RProc(Integer idProc, Integer idTipoProc, LocalDateTime dataOra, BigDecimal lat, BigDecimal lon, String codice, String richiedente, String indirizzo, Integer codiceCom, String descrizione, String note, Integer idProcIterUltimo, RProcIter iter) {
+    public RProc() {
+    }
+        
+    public RProc(Integer idProc, Integer idTipoProc, LocalDateTime dataOra, BigDecimal lat, BigDecimal lon, String codice, String richiedente, String indirizzo, Integer codiceCom, String descrizione, String note, Integer idProcIterUltimo, Integer idProcIterEsito, String fogli, String particelle, RProcIter iter, RProcIter iterEsito) {
         this.idProc = idProc;
         this.idTipoProc = idTipoProc;
         this.dataOra = dataOra;
@@ -39,9 +46,29 @@ public class RProc {
         this.descrizione = descrizione;
         this.note = note;
         this.idProcIterUltimo = idProcIterUltimo;
+        this.idProcIterEsito = idProcIterEsito;
+        this.fogli = fogli;
+        this.particelle = particelle;
         this.iter = iter;
+        this.iterEsito = iterEsito;
+    }
+       
+    public String getFogli() {
+        return fogli;
     }
 
+    public void setFogli(String fogli) {
+        this.fogli = fogli;
+    }
+
+    public String getParticelle() {
+        return particelle;
+    }
+
+    public void setParticelle(String particelle) {
+        this.particelle = particelle;
+    }
+        
     public Integer getIdProc() {
         return idProc;
     }
@@ -138,11 +165,27 @@ public class RProc {
         this.idProcIterUltimo = idProcIterUltimo;
     }
 
+    public Integer getIdProcIterEsito() {
+        return idProcIterEsito;
+    }
+
+    public void setIdProcIterEsito(Integer idProcIterEsito) {
+        this.idProcIterEsito = idProcIterEsito;
+    }
+       
     public RProcIter getIter() {
         return iter;
     }
 
     public void setIter(RProcIter iter) {
         this.iter = iter;
+    }        
+
+    public RProcIter getIterEsito() {
+        return iterEsito;
+    }
+
+    public void setIterEsito(RProcIter iterEsito) {
+        this.iterEsito = iterEsito;
     }        
 }

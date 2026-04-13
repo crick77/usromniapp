@@ -182,6 +182,6 @@ public class MonAssegnazioniRecord extends UpdatableRecordImpl<MonAssegnazioniRe
         setIdAmbito(idAmbito);
         setData(data);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

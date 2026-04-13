@@ -149,6 +149,6 @@ public class ProcCatRecord extends UpdatableRecordImpl<ProcCatRecord> {
         setSezione(sezione);
         setFoglio(foglio);
         setParticella(particella);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

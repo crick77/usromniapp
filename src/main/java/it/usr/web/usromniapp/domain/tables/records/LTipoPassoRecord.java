@@ -144,6 +144,80 @@ public class LTipoPassoRecord extends UpdatableRecordImpl<LTipoPassoRecord> {
         return (Boolean) get(8);
     }
 
+    /**
+     * Setter for <code>decreti.l_tipo_passo.data_automatica</code>.
+     */
+    public void setDataAutomatica(Boolean value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>decreti.l_tipo_passo.data_automatica</code>.
+     */
+    public Boolean getDataAutomatica() {
+        return (Boolean) get(9);
+    }
+
+    /**
+     * Setter for <code>decreti.l_tipo_passo.passo_ufficio</code>.
+     */
+    public void setPassoUfficio(Boolean value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>decreti.l_tipo_passo.passo_ufficio</code>.
+     */
+    public Boolean getPassoUfficio() {
+        return (Boolean) get(10);
+    }
+
+    /**
+     * Setter for <code>decreti.l_tipo_passo.passo_firma</code>.
+     */
+    public void setPassoFirma(Boolean value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>decreti.l_tipo_passo.passo_firma</code>.
+     */
+    public Boolean getPassoFirma() {
+        return (Boolean) get(11);
+    }
+
+    /**
+     * Setter for <code>decreti.l_tipo_passo.allegati_obbligatori</code>. 0 = NO
+     * DOCUMENTI, 1 = DOCUMENTI OBBLIGATORI, 2 = COME 1 + ALMENO UNO FIRMATO
+     * DIGITALMENTE
+     */
+    public void setAllegatiObbligatori(Integer value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>decreti.l_tipo_passo.allegati_obbligatori</code>. 0 = NO
+     * DOCUMENTI, 1 = DOCUMENTI OBBLIGATORI, 2 = COME 1 + ALMENO UNO FIRMATO
+     * DIGITALMENTE
+     */
+    public Integer getAllegatiObbligatori() {
+        return (Integer) get(12);
+    }
+
+    /**
+     * Setter for <code>decreti.l_tipo_passo.id_tipo_proc_sub</code>.
+     */
+    public void setIdTipoProcSub(Integer value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>decreti.l_tipo_passo.id_tipo_proc_sub</code>.
+     */
+    public Integer getIdTipoProcSub() {
+        return (Integer) get(13);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -167,7 +241,7 @@ public class LTipoPassoRecord extends UpdatableRecordImpl<LTipoPassoRecord> {
     /**
      * Create a detached, initialised LTipoPassoRecord
      */
-    public LTipoPassoRecord(Integer codicePasso, String testoPasso, Integer visibile, String stato, Integer influenzaStato, Integer idTipoProc, Integer durataPrevista, Boolean protRichiesto, Boolean esitoObbligatorio) {
+    public LTipoPassoRecord(Integer codicePasso, String testoPasso, Integer visibile, String stato, Integer influenzaStato, Integer idTipoProc, Integer durataPrevista, Boolean protRichiesto, Boolean esitoObbligatorio, Boolean dataAutomatica, Boolean passoUfficio, Boolean passoFirma, Integer allegatiObbligatori, Integer idTipoProcSub) {
         super(LTipoPasso.L_TIPO_PASSO);
 
         setCodicePasso(codicePasso);
@@ -179,6 +253,11 @@ public class LTipoPassoRecord extends UpdatableRecordImpl<LTipoPassoRecord> {
         setDurataPrevista(durataPrevista);
         setProtRichiesto(protRichiesto);
         setEsitoObbligatorio(esitoObbligatorio);
-        resetChangedOnNotNull();
+        setDataAutomatica(dataAutomatica);
+        setPassoUfficio(passoUfficio);
+        setPassoFirma(passoFirma);
+        setAllegatiObbligatori(allegatiObbligatori);
+        setIdTipoProcSub(idTipoProcSub);
+        resetTouchedOnNotNull();
     }
 }

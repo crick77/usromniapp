@@ -89,7 +89,7 @@ public class LogQuery extends TableImpl<LogQueryRecord> {
     /**
      * The column <code>decreti.log_query.query</code>.
      */
-    public final TableField<LogQueryRecord, String> QUERY = createField(DSL.name("query"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<LogQueryRecord, String> QUERY = createField(DSL.name("query"), SQLDataType.CLOB(65535).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     private LogQuery(Name alias, Table<LogQueryRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

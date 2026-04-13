@@ -202,6 +202,6 @@ public class MonAssegnazioneGeneraleRecord extends UpdatableRecordImpl<MonAssegn
         setDataAssegnazioneTesto(dataAssegnazioneTesto);
         setDataAssegnazione(dataAssegnazione);
         setNote(note);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

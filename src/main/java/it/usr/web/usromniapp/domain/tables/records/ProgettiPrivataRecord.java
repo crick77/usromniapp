@@ -201,6 +201,6 @@ public class ProgettiPrivataRecord extends TableRecordImpl<ProgettiPrivataRecord
         setAssistenza(assistenza);
         setAttProduttiva(attProduttiva);
         setOrd100(ord100);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

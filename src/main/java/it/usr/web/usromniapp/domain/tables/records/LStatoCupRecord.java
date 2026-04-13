@@ -74,6 +74,6 @@ public class LStatoCupRecord extends UpdatableRecordImpl<LStatoCupRecord> {
 
         setIdStatoCup(idStatoCup);
         setStatoCup(statoCup);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

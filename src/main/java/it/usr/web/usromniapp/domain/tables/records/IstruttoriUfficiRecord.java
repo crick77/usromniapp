@@ -121,6 +121,6 @@ public class IstruttoriUfficiRecord extends UpdatableRecordImpl<IstruttoriUffici
         setIdUfficio(idUfficio);
         setDataInizio(dataInizio);
         setDataFine(dataFine);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

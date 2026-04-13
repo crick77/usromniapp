@@ -4,13 +4,17 @@
  */
 package it.usr.web.usromniapp.service;
 
+import it.usr.web.service.BaseService;
 import static it.usr.web.usromniapp.domain.Tables.*;
 import it.usr.web.usromniapp.domain.tables.records.GisCentroidiRecord;
 import it.usr.web.usromniapp.domain.tables.records.LTipoPassoRecord;
+import it.usr.web.usromniapp.domain.tables.records.LTipoProcRecord;
 import it.usr.web.usromniapp.domain.tables.records.ProcEsitiRecord;
 import it.usr.web.usromniapp.domain.tables.records.TipoProcProgressivoRecord;
 import it.usr.web.usromniapp.producer.DSLCtx;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +26,8 @@ import org.jooq.DSLContext;
  * @author riccardo.iovenitti
  */
 @Stateless
-public class CodiceService {    
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+public class CodiceService extends BaseService {    
     @Inject
     @DSLCtx
     DSLContext ctx;
@@ -50,6 +55,10 @@ public class CodiceService {
     
     public Map<Integer, LTipoPassoRecord> getTipiPassoMap() {
         return ctx.selectFrom(L_TIPO_PASSO).fetchMap(L_TIPO_PASSO.CODICE_PASSO);
+    }
+        
+    public Map<Integer, LTipoPassoRecord> getTipiPassoMap(LTipoProcRecord tipoProcedimento) {
+        return ctx.selectFrom(L_TIPO_PASSO).where(L_TIPO_PASSO.ID_TIPO_PROC.eq(tipoProcedimento.getIdTipoProc())).fetchMap(L_TIPO_PASSO.CODICE_PASSO);
     }
     
     public Map<Integer, ProcEsitiRecord> getProcEsitiMap() {

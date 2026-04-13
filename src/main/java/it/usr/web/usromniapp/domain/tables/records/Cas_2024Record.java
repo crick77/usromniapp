@@ -149,6 +149,6 @@ public class Cas_2024Record extends UpdatableRecordImpl<Cas_2024Record> {
         setIstatComune(istatComune);
         setComune(comune);
         setIndirizzoAbitazione(indirizzoAbitazione);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

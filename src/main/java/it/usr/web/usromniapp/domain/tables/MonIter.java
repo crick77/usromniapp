@@ -98,7 +98,7 @@ public class MonIter extends TableImpl<MonIterRecord> {
     /**
      * The column <code>decreti.mon_iter.note</code>.
      */
-    public final TableField<MonIterRecord, String> NOTE = createField(DSL.name("note"), SQLDataType.CLOB.defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
+    public final TableField<MonIterRecord, String> NOTE = createField(DSL.name("note"), SQLDataType.CLOB(16777215).defaultValue(DSL.inline("NULL", SQLDataType.CLOB)), this, "");
 
     private MonIter(Name alias, Table<MonIterRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

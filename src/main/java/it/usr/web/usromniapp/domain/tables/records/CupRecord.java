@@ -212,6 +212,6 @@ public class CupRecord extends UpdatableRecordImpl<CupRecord> {
         setNumeroLiquidazioni(numeroLiquidazioni);
         setContributoLiquidato(contributoLiquidato);
         setPassoUltimoSal(passoUltimoSal);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

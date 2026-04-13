@@ -149,6 +149,6 @@ public class MonLivOpRecord extends UpdatableRecordImpl<MonLivOpRecord> {
         setIstatComune(istatComune);
         setFg(fg);
         setPart(part);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

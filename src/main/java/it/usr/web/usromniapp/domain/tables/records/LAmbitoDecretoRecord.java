@@ -64,6 +64,6 @@ public class LAmbitoDecretoRecord extends TableRecordImpl<LAmbitoDecretoRecord> 
 
         setIdAmbitoDecreto(idAmbitoDecreto);
         setAmbitoDecreto(ambitoDecreto);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

@@ -66,6 +66,6 @@ public class ReportcommissarioAgg2Record extends TableRecordImpl<Reportcommissar
 
         setIdPratica(idPratica);
         setConformUrbanistica(conformUrbanistica);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

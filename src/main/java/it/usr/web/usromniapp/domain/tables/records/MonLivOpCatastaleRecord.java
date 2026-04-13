@@ -167,6 +167,6 @@ public class MonLivOpCatastaleRecord extends UpdatableRecordImpl<MonLivOpCatasta
         setFoglio(foglio);
         setMappale(mappale);
         setDataIstanza(dataIstanza);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

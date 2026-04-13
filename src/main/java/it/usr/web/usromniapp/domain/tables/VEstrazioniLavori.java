@@ -78,7 +78,7 @@ public class VEstrazioniLavori extends TableImpl<VEstrazioniLavoriRecord> {
     }
 
     private VEstrazioniLavori(Name alias, Table<VEstrazioniLavoriRecord> aliased, Field<?>[] parameters, Condition where) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view `v_estrazioni_lavori` as select `decreti`.`gis_dettaglio`.`id_pratica` AS `id_pratica`,`decreti`.`gis_dettaglio`.`data_concessione` AS `data_concessione`,`decreti`.`gis_dettaglio`.`data_concessione` + interval `decreti`.`gis_dettaglio`.`giorni_durata_lavori` day AS `data_finelavori`,`decreti`.`gis_dettaglio`.`data_concessione` + interval ceiling(`decreti`.`gis_dettaglio`.`giorni_durata_lavori` / 2) day AS `data_metalavori`,`decreti`.`gis_dettaglio`.`ord100` AS `ord100` from `decreti`.`gis_dettaglio`"), where);
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("CREATE VIEW `v_estrazioni_lavori` AS select `decreti`.`gis_dettaglio`.`id_pratica` AS `id_pratica`,`decreti`.`gis_dettaglio`.`data_concessione` AS `data_concessione`,`decreti`.`gis_dettaglio`.`data_concessione` + interval `decreti`.`gis_dettaglio`.`giorni_durata_lavori` day AS `data_finelavori`,`decreti`.`gis_dettaglio`.`data_concessione` + interval ceiling(`decreti`.`gis_dettaglio`.`giorni_durata_lavori` / 2) day AS `data_metalavori`,`decreti`.`gis_dettaglio`.`ord100` AS `ord100` from `decreti`.`gis_dettaglio`"), where);
     }
 
     /**

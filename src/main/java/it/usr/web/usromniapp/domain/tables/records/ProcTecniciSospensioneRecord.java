@@ -122,6 +122,6 @@ public class ProcTecniciSospensioneRecord extends UpdatableRecordImpl<ProcTecnic
         setDataora(dataora);
         setDataInizio(dataInizio);
         setDataFine(dataFine);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

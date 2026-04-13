@@ -138,6 +138,6 @@ public class LTipoProvvedimentoRecord extends UpdatableRecordImpl<LTipoProvvedim
         setNumerare(numerare);
         setNota(nota);
         setAttivo(attivo);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }

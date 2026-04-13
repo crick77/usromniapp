@@ -166,6 +166,6 @@ public class LogQueryRecord extends UpdatableRecordImpl<LogQueryRecord> {
         setIdSessione(idSessione);
         setBrowserClient(browserClient);
         setQuery(query);
-        resetChangedOnNotNull();
+        resetTouchedOnNotNull();
     }
 }
